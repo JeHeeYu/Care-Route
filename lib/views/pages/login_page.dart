@@ -7,6 +7,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 
 import '../../consts/images.dart';
@@ -82,6 +83,27 @@ class _LoginPageState extends State<LoginPage> {
         print('카카오계정으로 로그인 실패 $error');
       }
     }
+  }
+
+  void googleLogin() async {
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    final GoogleSignInAuthentication? googleAuth =
+        await googleUser?.authentication;
+
+    if (googleUser != null) {
+      print('name = ${googleUser.displayName}');
+      print('email = ${googleUser.email}');
+      print('id = ${googleUser.id}');
+
+      Map<String, dynamic> userData = {
+        "idToken": googleUser.id,
+        "email": googleUser.email,
+        "name": googleUser.displayName,
+        "sns": "google",
+      };
+
+      print("User Data : ${userData}");
+    } else {}
   }
 
   @override
@@ -184,8 +206,10 @@ class _LoginPageState extends State<LoginPage> {
                 weight: FontWeight.w500,
                 size: ScreenUtil().setSp(12.0)),
             SizedBox(height: ScreenUtil().setHeight(8.0)),
-            _buildLoginButton(context, Images.googleLogin),
-            SizedBox(height: ScreenUtil().setHeight(8.0)),
+            ButtonImage(
+                imagePath: Images.googleLogin,
+                width: MediaQuery.of(context).size.width,
+                callback: () => googleLogin()),
             ButtonImage(
                 imagePath: Images.kakaoLogin,
                 width: MediaQuery.of(context).size.width,
