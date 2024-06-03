@@ -39,24 +39,86 @@ class _LoginPageState extends State<LoginPage> {
           children: [
             Expanded(
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                UserText(
-                    text: "TEST1",
-                    color: Colors.black,
-                    weight: FontWeight.w500,
-                    size: ScreenUtil().setSp(42.0)),
-                UserText(
-                    text: "TEST4",
-                    color: Colors.black,
-                    weight: FontWeight.w500,
-                    size: ScreenUtil().setSp(21.0)),
-                UserText(
-                    text: "TEST3",
-                    color: Colors.black,
-                    weight: FontWeight.w500,
-                    size: ScreenUtil().setSp(32.0)),
+                // 첫 번째 라인
+                RichText(
+                  text: TextSpan(
+                    children: <TextSpan>[
+                      TextSpan(
+                        text: Strings.loginColorGuide1,
+                        style: TextStyle(
+                          fontSize: ScreenUtil().setSp(20.0),
+                          fontWeight: FontWeight.w800,
+                          color: const Color(UserColors.pointGreen),
+                        ),
+                      ),
+                      TextSpan(
+                        text: Strings.loginGuide1,
+                        style: TextStyle(
+                          fontSize: ScreenUtil().setSp(20.0),
+                          fontWeight: FontWeight.w800,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                // 두 번째 라인
+                RichText(
+                  text: TextSpan(
+                    children: <TextSpan>[
+                      TextSpan(
+                        text: Strings.loginGuide2,
+                        style: TextStyle(
+                          fontSize: ScreenUtil().setSp(20.0),
+                          fontWeight: FontWeight.w800,
+                          color: Colors.black,
+                        ),
+                      ),
+                      TextSpan(
+                        text: Strings.loginColorGuide2,
+                        style: TextStyle(
+                          fontSize: ScreenUtil().setSp(20.0),
+                          fontWeight: FontWeight.w800,
+                          color: const Color(UserColors.pointGreen),
+                        ),
+                      ),
+                      TextSpan(
+                        text: Strings.loginGuide2_1,
+                        style: TextStyle(
+                          fontSize: ScreenUtil().setSp(20.0),
+                          fontWeight: FontWeight.w800,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                // 세 번째 라인
+                RichText(
+                  text: TextSpan(
+                    children: <TextSpan>[
+                      TextSpan(
+                        text: Strings.loginColorGuide3,
+                        style: TextStyle(
+                          fontSize: ScreenUtil().setSp(20.0),
+                          fontWeight: FontWeight.w800,
+                          color: const Color(UserColors.pointGreen),
+                        ),
+                      ),
+                      TextSpan(
+                        text: Strings.loginGuide3,
+                        style: TextStyle(
+                          fontSize: ScreenUtil().setSp(20.0),
+                          fontWeight: FontWeight.w800,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ],
             )),
             UserText(
