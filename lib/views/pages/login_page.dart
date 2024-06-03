@@ -128,6 +128,7 @@ class _LoginPageState extends State<LoginPage> {
                       TextSpan(
                         text: Strings.loginColorGuide1,
                         style: TextStyle(
+                          fontFamily: "Pretendard",
                           fontSize: ScreenUtil().setSp(20.0),
                           fontWeight: FontWeight.w800,
                           color: const Color(UserColors.pointGreen),
@@ -136,6 +137,7 @@ class _LoginPageState extends State<LoginPage> {
                       TextSpan(
                         text: Strings.loginGuide1,
                         style: TextStyle(
+                          fontFamily: "Pretendard",
                           fontSize: ScreenUtil().setSp(20.0),
                           fontWeight: FontWeight.w800,
                           color: Colors.black,
@@ -151,6 +153,7 @@ class _LoginPageState extends State<LoginPage> {
                       TextSpan(
                         text: Strings.loginGuide2,
                         style: TextStyle(
+                          fontFamily: "Pretendard",
                           fontSize: ScreenUtil().setSp(20.0),
                           fontWeight: FontWeight.w800,
                           color: Colors.black,
@@ -159,6 +162,7 @@ class _LoginPageState extends State<LoginPage> {
                       TextSpan(
                         text: Strings.loginColorGuide2,
                         style: TextStyle(
+                          fontFamily: "Pretendard",
                           fontSize: ScreenUtil().setSp(20.0),
                           fontWeight: FontWeight.w800,
                           color: const Color(UserColors.pointGreen),
@@ -167,6 +171,7 @@ class _LoginPageState extends State<LoginPage> {
                       TextSpan(
                         text: Strings.loginGuide2_1,
                         style: TextStyle(
+                          fontFamily: "Pretendard",
                           fontSize: ScreenUtil().setSp(20.0),
                           fontWeight: FontWeight.w800,
                           color: Colors.black,
@@ -182,6 +187,7 @@ class _LoginPageState extends State<LoginPage> {
                       TextSpan(
                         text: Strings.loginColorGuide3,
                         style: TextStyle(
+                          fontFamily: "Pretendard",
                           fontSize: ScreenUtil().setSp(20.0),
                           fontWeight: FontWeight.w800,
                           color: const Color(UserColors.pointGreen),
@@ -190,6 +196,7 @@ class _LoginPageState extends State<LoginPage> {
                       TextSpan(
                         text: Strings.loginGuide3,
                         style: TextStyle(
+                          fontFamily: "Pretendard",
                           fontSize: ScreenUtil().setSp(20.0),
                           fontWeight: FontWeight.w800,
                           color: Colors.black,

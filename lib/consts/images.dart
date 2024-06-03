@@ -14,4 +14,5 @@ class Images {
   static const String favoriteDisable = "assets/images/favorite_disable.svg";
   static const String locationEnable = "assets/images/location_enable.svg";
   static const String locationDisable = "assets/images/location_disable.svg";
+  static const String ear = "assets/images/ear.svg";
 }

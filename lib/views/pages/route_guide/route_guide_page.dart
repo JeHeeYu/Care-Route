@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:care_route/consts/images.dart';
+import 'package:care_route/views/pages/route_guide/destination_dialog.dart';
 import 'package:care_route/views/pages/widgets/button_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
@@ -8,8 +9,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../consts/colors.dart';
-import '../../consts/strings.dart';
+import '../../../consts/colors.dart';
+import '../../../consts/strings.dart';
 
 class RouteGuidePage extends StatefulWidget {
   const RouteGuidePage({super.key});
@@ -44,6 +45,15 @@ class _RouteGuidePageState extends State<RouteGuidePage> {
         desiredAccuracy: LocationAccuracy.high);
 
     return position;
+  }
+
+    void _showDestinationDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const DestinationDialog();
+      },
+    );
   }
 
   Widget _buildNaverMap() {
@@ -130,7 +140,7 @@ class _RouteGuidePageState extends State<RouteGuidePage> {
               fillColor: Colors.white,
               suffixIcon: Padding(
                 padding: EdgeInsets.all(ScreenUtil().setHeight(12.0)),
-                child: const ButtonImage(imagePath: Images.mic),
+                child: ButtonImage(imagePath: Images.mic, callback: () => _showDestinationDialog(),),
               ),
             ),
           ),
