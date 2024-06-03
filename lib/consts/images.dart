@@ -7,4 +7,6 @@ class Images {
   static const String notificationDisable = "assets/images/notification_disable.svg";
   static const String myPageEnable = "assets/images/my_page_enable.svg";
   static const String myPageDisable = "assets/images/my_page_disable.svg";
+  static const String googleLogin = "assets/images/google_login.svg";
+  static const String kakaoLogin = "assets/images/kakao_login.svg";
 }
