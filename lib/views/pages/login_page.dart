@@ -1,10 +1,13 @@
 import 'package:care_route/consts/colors.dart';
-import 'package:care_route/views/pages/widgets/UserText.dart';
+import 'package:care_route/views/pages/widgets/button_image.dart';
+import 'package:care_route/views/pages/widgets/user_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 
 import '../../consts/images.dart';
 import '../../consts/strings.dart';
@@ -16,17 +19,71 @@ class LoginPage extends StatefulWidget {
   State<LoginPage> createState() => _LoginPageState();
 }
 
-Widget _buildLoginButton(BuildContext context, String image) {
-  return SizedBox(
-    width: MediaQuery.of(context).size.width,
-    child: SvgPicture.asset(
-      image,
-      fit: BoxFit.fitWidth,
-    ),
-  );
-}
-
 class _LoginPageState extends State<LoginPage> {
+  Widget _buildLoginButton(BuildContext context, String image) {
+    return SizedBox(
+      width: MediaQuery.of(context).size.width,
+      child: SvgPicture.asset(
+        image,
+        fit: BoxFit.fitWidth,
+      ),
+    );
+  }
+
+  void kakaoLogin() async {
+    if (await isKakaoTalkInstalled()) {
+      try {
+        OAuthToken token = await UserApi.instance.loginWithKakaoTalk();
+        print('카카오톡으로 로그인 성공');
+
+        User user = await UserApi.instance.me();
+        Map<String, dynamic> userData = {
+          "idToken": user.id,
+          "email": user.kakaoAccount?.email,
+          "name": user.kakaoAccount?.profile?.nickname,
+          "sns": "kakao",
+        };
+        print("User Data : ${userData}");
+      } catch (error) {
+        print('카카오톡으로 로그인 실패 $error');
+
+        if (error is PlatformException && error.code == 'CANCELED') {
+          return;
+        }
+
+        try {
+          OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
+          print('카카오계정으로 로그인 성공');
+
+          User user = await UserApi.instance.me();
+          Map<String, dynamic> userData = {
+            "idToken": user.id,
+            "email": user.kakaoAccount?.email,
+            "name": user.kakaoAccount?.profile?.nickname,
+            "sns": "kakao",
+          };
+        } catch (error) {
+          print('카카오계정으로 로그인 실패 $error');
+        }
+      }
+    } else {
+      try {
+        OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
+        print('카카오계정으로 로그인 성공');
+
+        User user = await UserApi.instance.me();
+        Map<String, dynamic> userData = {
+          "idToken": user.id,
+          "email": user.kakaoAccount?.email,
+          "name": user.kakaoAccount?.profile?.nickname,
+          "sns": "kakao",
+        };
+      } catch (error) {
+        print('카카오계정으로 로그인 실패 $error');
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -129,7 +186,10 @@ class _LoginPageState extends State<LoginPage> {
             SizedBox(height: ScreenUtil().setHeight(8.0)),
             _buildLoginButton(context, Images.googleLogin),
             SizedBox(height: ScreenUtil().setHeight(8.0)),
-            _buildLoginButton(context, Images.kakaoLogin),
+            ButtonImage(
+                imagePath: Images.kakaoLogin,
+                width: MediaQuery.of(context).size.width,
+                callback: () => kakaoLogin()),
             SizedBox(height: ScreenUtil().setHeight(16.0)),
           ],
         ),
