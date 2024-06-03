@@ -11,4 +11,5 @@ class Strings {
   static const String loginGuide2_1 = "을";
   static const String loginGuide3 = "하게 만들어요!";
   static const String loginColorGuide3 = "안전";
+  static const String destinationHint = "목적지를 입력해주세요.";
 }

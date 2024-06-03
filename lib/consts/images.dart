@@ -9,4 +9,9 @@ class Images {
   static const String myPageDisable = "assets/images/my_page_disable.svg";
   static const String googleLogin = "assets/images/google_login.svg";
   static const String kakaoLogin = "assets/images/kakao_login.svg";
+  static const String mic = "assets/images/mic.svg";
+  static const String favoriteEnable = "assets/images/favorite_enable.svg";
+  static const String favoriteDisable = "assets/images/favorite_disable.svg";
+  static const String locationEnable = "assets/images/location_enable.svg";
+  static const String locationDisable = "assets/images/location_disable.svg";
 }
