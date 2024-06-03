@@ -24,6 +24,7 @@ class _RouteGuidePageState extends State<RouteGuidePage> {
   final Completer<NaverMapController> _mapControllerCompleter = Completer();
   Position? _currentPosition;
   final TextEditingController _destinationController = TextEditingController();
+  bool _destinationDialogOpen = false;
 
   @override
   void initState() {
@@ -47,13 +48,29 @@ class _RouteGuidePageState extends State<RouteGuidePage> {
     return position;
   }
 
-    void _showDestinationDialog() {
+  void _showDestinationDialog() {
+    setState(() {
+      _destinationDialogOpen = true;
+    });
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return const DestinationDialog();
       },
-    );
+    ).then((_) {
+      setState(() {
+        _destinationDialogOpen = false;
+      });
+    });
+
+    Future.delayed(const Duration(seconds: 4), () {
+      if (_destinationDialogOpen) {
+        Navigator.of(context).pop();
+        setState(() {
+          _destinationDialogOpen = false;
+        });
+      }
+    });
   }
 
   Widget _buildNaverMap() {
@@ -140,12 +157,18 @@ class _RouteGuidePageState extends State<RouteGuidePage> {
               fillColor: Colors.white,
               suffixIcon: Padding(
                 padding: EdgeInsets.all(ScreenUtil().setHeight(12.0)),
-                child: ButtonImage(imagePath: Images.mic, callback: () => _showDestinationDialog(),),
+                child: ButtonImage(
+                  imagePath: Images.mic,
+                  callback: _destinationDialogOpen ? () {} : _showDestinationDialog,
+                ),
               ),
             ),
           ),
           SizedBox(height: ScreenUtil().setHeight(16.0)),
-          const ButtonImage(imagePath: Images.favoriteEnable),
+          ButtonImage(
+            imagePath: (_destinationDialogOpen == false) ? Images.favoriteEnable : Images.favoriteDisable,
+            callback: _destinationDialogOpen ? () {} : () {},
+          ),
         ],
       ),
     );
@@ -155,7 +178,10 @@ class _RouteGuidePageState extends State<RouteGuidePage> {
     return Positioned(
       bottom: ScreenUtil().setHeight(66.0),
       right: ScreenUtil().setWidth(16.0),
-      child: const ButtonImage(imagePath: Images.locationEnable),
+      child: ButtonImage(
+        imagePath: (_destinationDialogOpen == false) ? Images.locationEnable : Images.locationDisable,
+        callback: _destinationDialogOpen ? () {} : () {},
+      ),
     );
   }
 
