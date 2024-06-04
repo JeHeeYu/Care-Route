@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:care_route/consts/images.dart';
 import 'package:care_route/views/pages/route_guide/destination_dialog.dart';
 import 'package:care_route/views/pages/widgets/button_image.dart';
@@ -8,7 +7,6 @@ import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
 import '../../../consts/colors.dart';
 import '../../../consts/strings.dart';
 import '../favorite_page.dart';
@@ -26,6 +24,7 @@ class _RouteGuidePageState extends State<RouteGuidePage> {
   Position? _currentPosition;
   final TextEditingController _destinationController = TextEditingController();
   bool _destinationDialogOpen = false;
+  NMarker? _currentMarker;
 
   @override
   void initState() {
@@ -42,10 +41,8 @@ class _RouteGuidePageState extends State<RouteGuidePage> {
 
   Future<Position> getCurrentLocation() async {
     LocationPermission permission = await Geolocator.requestPermission();
-
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
-
     return position;
   }
 
@@ -92,30 +89,30 @@ class _RouteGuidePageState extends State<RouteGuidePage> {
           consumeSymbolTapEvents: false,
           locale: const Locale('ko'),
           logoClickEnable: false,
-          // initialCameraPosition: NCameraPosition(
-          //   target: NLatLng(
-          //   _currentPosition.latitude,
-          //   _currentPosition.longitude),
-          //   zoom: 10,
-          //   bearing: 0,
-          //   tilt: 0,
-          // ),
         ),
         onMapReady: (controller) async {
           _mapController = controller;
           if (!_mapControllerCompleter.isCompleted) {
             _mapControllerCompleter.complete(controller);
           }
+        },
+        onMapTapped: (point, latLng) {
+          NOverlayImage markerImage = const NOverlayImage.fromAssetImage(Images.defaultMarker);
+          final marker = NMarker(
+            id: DateTime.now().millisecondsSinceEpoch.toString(),
+            position: latLng,
+            icon: markerImage,
+            size: Size(ScreenUtil().setWidth(40.0), ScreenUtil().setHeight(44.0)), 
+          );
 
-          // final markerImage =
-          //     await NOverlayImage.fromAssetImage(Images.marker);
+          if (_currentMarker != null) {
+            _mapController.clearOverlays();
+          }
 
-          // final marker = NMarker(
-          //     id: '1',
-          //     position: NLatLng(37.5666, 126.979),
-          //     icon: markerImage);
+          _mapController.addOverlay(marker);
+          _currentMarker = marker;
 
-          // _mapController.addOverlay(marker);
+          print('Marker added at: ${latLng.latitude}, ${latLng.longitude}');
         },
       );
     }
