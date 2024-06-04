@@ -1,3 +1,4 @@
+import 'package:care_route/views/pages/favorite_page.dart';
 import 'package:care_route/views/pages/login_page.dart';
 import 'package:care_route/views/pages/splash_page.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +30,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: const App(),
+        home: const FavoritePage(),
       ),
     );
   }

@@ -11,6 +11,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../consts/colors.dart';
 import '../../../consts/strings.dart';
+import '../favorite_page.dart';
 
 class RouteGuidePage extends StatefulWidget {
   const RouteGuidePage({super.key});
@@ -71,6 +72,13 @@ class _RouteGuidePageState extends State<RouteGuidePage> {
         });
       }
     });
+  }
+
+  void _showFavoriteScreen() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const FavoritePage()),
+    );
   }
 
   Widget _buildNaverMap() {
@@ -159,15 +167,19 @@ class _RouteGuidePageState extends State<RouteGuidePage> {
                 padding: EdgeInsets.all(ScreenUtil().setHeight(12.0)),
                 child: ButtonImage(
                   imagePath: Images.mic,
-                  callback: _destinationDialogOpen ? () {} : _showDestinationDialog,
+                  callback:
+                      _destinationDialogOpen ? () {} : _showDestinationDialog,
                 ),
               ),
             ),
           ),
           SizedBox(height: ScreenUtil().setHeight(16.0)),
           ButtonImage(
-            imagePath: (_destinationDialogOpen == false) ? Images.favoriteEnable : Images.favoriteDisable,
-            callback: _destinationDialogOpen ? () {} : () {},
+            imagePath: (_destinationDialogOpen == false)
+                ? Images.favoriteEnable
+                : Images.favoriteDisable,
+            callback:
+                _destinationDialogOpen ? () {} : () => _showFavoriteScreen(),
           ),
         ],
       ),
@@ -179,7 +191,9 @@ class _RouteGuidePageState extends State<RouteGuidePage> {
       bottom: ScreenUtil().setHeight(66.0),
       right: ScreenUtil().setWidth(16.0),
       child: ButtonImage(
-        imagePath: (_destinationDialogOpen == false) ? Images.locationEnable : Images.locationDisable,
+        imagePath: (_destinationDialogOpen == false)
+            ? Images.locationEnable
+            : Images.locationDisable,
         callback: _destinationDialogOpen ? () {} : () {},
       ),
     );

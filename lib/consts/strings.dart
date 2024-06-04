@@ -16,4 +16,6 @@ class Strings {
   static const String inputDestinationGuide2 = "처럼";
   static const String inputDestinationGuide3 = "가고 싶은 곳을 말씀해주세요!";
   static const String inputDestinationSub = "* 4초 동안 말이 없으면 종료돼요!";
+  static const String favoriteHint = "즐겨찾기할 장소를 입력해주세요.";
+  static const String favoriteMaxCount = "* 최대 5개까지 등록 가능합니다.";
 }
