@@ -204,11 +204,14 @@ class _FavoritePageState extends State<FavoritePage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          UserText(
-                              text: result,
-                              color: const Color(UserColors.gray07),
-                              weight: FontWeight.w400,
-                              size: ScreenUtil().setSp(16.0)),
+                          RichText(
+                            text: _buildHighlightedText(
+                              result,
+                              _searchController.text,
+                              const Color(UserColors.gray07),
+                              const Color(UserColors.pointGreen),
+                            ),
+                          ),
                           SizedBox(height: ScreenUtil().setHeight(8.0)),
                           UserText(
                               text: address,
@@ -227,6 +230,51 @@ class _FavoritePageState extends State<FavoritePage> {
         ),
       ),
     );
+  }
+
+  TextSpan _buildHighlightedText(String fullText, String searchText,
+      Color defaultColor, Color highlightColor) {
+    int startIndex = fullText.indexOf(searchText);
+    if (startIndex == -1 || searchText.isEmpty) {
+      return TextSpan(
+        text: fullText,
+        style: TextStyle(
+            color: const Color(UserColors.gray07),
+            fontWeight: FontWeight.w400,
+            fontSize: ScreenUtil().setSp(16.0),
+            fontFamily: "Pretendard"),
+      );
+    }
+
+    List<TextSpan> spans = [];
+    spans.add(TextSpan(
+      text: fullText.substring(0, startIndex),
+      style: TextStyle(
+          color: defaultColor,
+          fontSize: ScreenUtil().setSp(16.0),
+          fontFamily: "Pretendard",
+          fontWeight: FontWeight.w400),
+    ));
+
+    spans.add(TextSpan(
+      text: fullText.substring(startIndex, startIndex + searchText.length),
+      style: TextStyle(
+          color: highlightColor,
+          fontSize: ScreenUtil().setSp(16.0),
+          fontFamily: "Pretendard",
+          fontWeight: FontWeight.w600),
+    ));
+
+    spans.add(TextSpan(
+      text: fullText.substring(startIndex + searchText.length),
+      style: TextStyle(
+          color: defaultColor,
+          fontSize: ScreenUtil().setSp(16.0),
+          fontFamily: "Pretendard",
+          fontWeight: FontWeight.w400),
+    ));
+
+    return TextSpan(children: spans);
   }
 
   Widget _buildSubText() {
