@@ -17,4 +17,5 @@ class Images {
   static const String ear = "assets/images/ear.svg";
   static const String favoriteWhite = "assets/images/favorite_white.svg";
   static const String defaultMarker = "assets/images/marker_default.png";
+  static const String favoriteButtonEnable = "assets/images/favorite_button_disable.svg";
 }

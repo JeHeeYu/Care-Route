@@ -23,6 +23,7 @@ class _FavoritePageState extends State<FavoritePage> {
   final TextEditingController _searchController = TextEditingController();
   bool _destinationDialogOpen = false;
   final List<String> _favoriteTexts = ["우리집", "회사", "학교", "마트", "공원"];
+  String _searchText = "";
 
   void _showDestinationDialog() {
     setState(() {
@@ -48,6 +49,11 @@ class _FavoritePageState extends State<FavoritePage> {
         children: [
           TextField(
             controller: _searchController,
+            onChanged: (text) {
+              setState(() {
+                _searchText = text;
+              });
+            },
             style: const TextStyle(
                 color: Colors.black,
                 fontSize: 16.0,
@@ -119,7 +125,8 @@ class _FavoritePageState extends State<FavoritePage> {
           borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0)),
         ),
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(22.0)),
+          padding:
+              EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(22.0)),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -138,7 +145,56 @@ class _FavoritePageState extends State<FavoritePage> {
               ButtonIcon(
                   icon: Icons.close,
                   iconColor: Colors.red,
-                  callback: () => {}),//Navigator.of(context).pop()),
+                  callback: () => {}), //Navigator.of(context).pop()),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSearchList(String result, String address) {
+    return Padding(
+      padding: EdgeInsets.only(
+          top: ScreenUtil().setHeight(8.0),
+          left: ScreenUtil().setWidth(16.0),
+          right: ScreenUtil().setWidth(16.0)),
+      child: Container(
+        width: double.infinity,
+        height: ScreenUtil().setHeight(74.0),
+        decoration: BoxDecoration(
+          color: const Color(UserColors.gray02),
+          borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0)),
+        ),
+        child: Padding(
+          padding:
+              EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(22.0)),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      UserText(
+                          text: result,
+                          color: const Color(UserColors.gray07),
+                          weight: FontWeight.w400,
+                          size: ScreenUtil().setSp(16.0)),
+                          SizedBox(height: ScreenUtil().setHeight(8.0)),
+                      UserText(
+                          text: address,
+                          color: const Color(UserColors.gray06),
+                          weight: FontWeight.w400,
+                          size: ScreenUtil().setSp(12.0)),
+                    ],
+                  ),
+                ],
+              ),
+              const ButtonImage(imagePath: Images.favoriteButtonEnable),
             ],
           ),
         ),
@@ -152,6 +208,20 @@ class _FavoritePageState extends State<FavoritePage> {
         color: const Color(UserColors.gray05),
         weight: FontWeight.w400,
         size: ScreenUtil().setSp(12.0));
+  }
+
+  Widget _buildContent() {
+    if (_searchText.isNotEmpty) {
+      return _buildSearchList("안녕하지요", "경기 화성시 안녕동");
+    } else {
+      return Column(
+        children: [
+          ..._favoriteTexts.map((text) => _favoriteList(text)).toList(),
+          SizedBox(height: ScreenUtil().setHeight(10.0)),
+          _buildSubText(),
+        ],
+      );
+    }
   }
 
   @override
@@ -168,9 +238,7 @@ class _FavoritePageState extends State<FavoritePage> {
               color: Color(UserColors.gray03),
               thickness: 1.0,
             ),
-            ..._favoriteTexts.map((text) => _favoriteList(text)).toList(),
-            SizedBox(height: ScreenUtil().setHeight(10.0)),
-            _buildSubText(),
+            _buildContent(),
           ],
         ),
       ),

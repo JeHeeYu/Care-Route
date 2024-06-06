@@ -48,7 +48,6 @@ class _RouteGuidePageState extends State<RouteGuidePage> {
   }
 
   void _showDestinationDialog() {
-    _searchPlaces("식당");
     setState(() {
       _destinationDialogOpen = true;
     });
