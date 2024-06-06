@@ -20,6 +20,8 @@ class UserText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       text,
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
       style: TextStyle(
         fontFamily: "Pretendard",
         fontSize: size,

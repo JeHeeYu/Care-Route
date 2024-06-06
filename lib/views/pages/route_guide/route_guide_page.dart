@@ -48,6 +48,7 @@ class _RouteGuidePageState extends State<RouteGuidePage> {
   }
 
   void _showDestinationDialog() {
+    _searchPlaces("스타벅스");
     setState(() {
       _destinationDialogOpen = true;
     });

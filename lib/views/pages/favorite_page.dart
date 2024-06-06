@@ -11,6 +11,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../consts/colors.dart';
 import '../../consts/images.dart';
 import '../../consts/strings.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import '../../services/naver_search_service.dart';
 
 class FavoritePage extends StatefulWidget {
   const FavoritePage({super.key});
@@ -24,6 +27,7 @@ class _FavoritePageState extends State<FavoritePage> {
   bool _destinationDialogOpen = false;
   final List<String> _favoriteTexts = ["우리집", "회사", "학교", "마트", "공원"];
   String _searchText = "";
+  List<dynamic> _searchResults = [];
 
   void _showDestinationDialog() {
     setState(() {
@@ -41,6 +45,18 @@ class _FavoritePageState extends State<FavoritePage> {
     });
   }
 
+  Future<void> _searchPlaces(String query) async {
+    final results = await NaverSearchService.searchPlaces(query);
+    setState(() {
+      _searchResults = results;
+    });
+  }
+
+  String _removeHtmlTags(String htmlString) {
+    final RegExp exp = RegExp(r'<[^>]*>', multiLine: true, caseSensitive: true);
+    return htmlString.replaceAll(exp, '');
+  }
+
   Widget _buildSearchInputBox() {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(22.0)),
@@ -53,6 +69,13 @@ class _FavoritePageState extends State<FavoritePage> {
               setState(() {
                 _searchText = text;
               });
+              if (text.isNotEmpty) {
+                _searchPlaces(text);
+              } else {
+                setState(() {
+                  _searchResults = [];
+                });
+              }
             },
             style: const TextStyle(
                 color: Colors.black,
@@ -173,26 +196,30 @@ class _FavoritePageState extends State<FavoritePage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Row(
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      UserText(
-                          text: result,
-                          color: const Color(UserColors.gray07),
-                          weight: FontWeight.w400,
-                          size: ScreenUtil().setSp(16.0)),
+              Expanded(
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          UserText(
+                              text: result,
+                              color: const Color(UserColors.gray07),
+                              weight: FontWeight.w400,
+                              size: ScreenUtil().setSp(16.0)),
                           SizedBox(height: ScreenUtil().setHeight(8.0)),
-                      UserText(
-                          text: address,
-                          color: const Color(UserColors.gray06),
-                          weight: FontWeight.w400,
-                          size: ScreenUtil().setSp(12.0)),
-                    ],
-                  ),
-                ],
+                          UserText(
+                              text: address,
+                              color: const Color(UserColors.gray06),
+                              weight: FontWeight.w400,
+                              size: ScreenUtil().setSp(12.0)),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
               const ButtonImage(imagePath: Images.favoriteButtonEnable),
             ],
@@ -211,8 +238,20 @@ class _FavoritePageState extends State<FavoritePage> {
   }
 
   Widget _buildContent() {
-    if (_searchText.isNotEmpty) {
-      return _buildSearchList("안녕하지요", "경기 화성시 안녕동");
+    if (_searchText.isNotEmpty && _searchResults.isNotEmpty) {
+      return Column(
+        children: _searchResults.map((result) {
+          return Column(
+            children: [
+              _buildSearchList(
+                _removeHtmlTags(result['title']),
+                result['roadAddress'],
+              ),
+              SizedBox(height: ScreenUtil().setHeight(8.0)),
+            ],
+          );
+        }).toList(),
+      );
     } else {
       return Column(
         children: [
