@@ -158,19 +158,21 @@ class _FavoritePageState extends State<FavoritePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Column(
-        children: [
-          SizedBox(height: ScreenUtil().setHeight(40.0)),
-          _buildSearchInputBox(),
-          SizedBox(height: ScreenUtil().setHeight(10.0)),
-          const Divider(
-            color: Color(UserColors.gray03),
-            thickness: 1.0,
-          ),
-          ..._favoriteTexts.map((text) => _favoriteList(text)).toList(),
-          SizedBox(height: ScreenUtil().setHeight(10.0)),
-          _buildSubText(),
-        ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            SizedBox(height: ScreenUtil().setHeight(40.0)),
+            _buildSearchInputBox(),
+            SizedBox(height: ScreenUtil().setHeight(10.0)),
+            const Divider(
+              color: Color(UserColors.gray03),
+              thickness: 1.0,
+            ),
+            ..._favoriteTexts.map((text) => _favoriteList(text)).toList(),
+            SizedBox(height: ScreenUtil().setHeight(10.0)),
+            _buildSubText(),
+          ],
+        ),
       ),
     );
   }
