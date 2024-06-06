@@ -9,6 +9,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../../consts/colors.dart';
 import '../../../consts/strings.dart';
+import '../../../services/naver_search_service.dart';
 import '../favorite_page.dart';
 
 class RouteGuidePage extends StatefulWidget {
@@ -47,6 +48,7 @@ class _RouteGuidePageState extends State<RouteGuidePage> {
   }
 
   void _showDestinationDialog() {
+    _searchPlaces("식당");
     setState(() {
       _destinationDialogOpen = true;
     });
@@ -116,6 +118,10 @@ class _RouteGuidePageState extends State<RouteGuidePage> {
         },
       );
     }
+  }
+
+    Future<void> _searchPlaces(String query) async {
+    final results = await NaverSearchService.searchPlaces(query);
   }
 
   Widget _buildDestinationInputBox() {
