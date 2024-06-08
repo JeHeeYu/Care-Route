@@ -9,9 +9,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
+import 'package:provider/provider.dart';
 
 import '../../consts/images.dart';
 import '../../consts/strings.dart';
+import '../../networks/network_manager.dart';
+import '../../view_models/login_view_model.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -21,64 +24,49 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  Widget _buildLoginButton(BuildContext context, String image) {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width,
-      child: SvgPicture.asset(
-        image,
-        fit: BoxFit.fitWidth,
-      ),
-    );
+  LoginViewModel _loginViewModel = LoginViewModel();
+
+  @override
+  void initState() {
+    super.initState();
+    _loginViewModel = Provider.of<LoginViewModel>(context, listen: false);
   }
 
   void kakaoLogin() async {
     if (await isKakaoTalkInstalled()) {
       try {
         OAuthToken token = await UserApi.instance.loginWithKakaoTalk();
-        print('카카오톡으로 로그인 성공');
-
         User user = await UserApi.instance.me();
         Map<String, dynamic> userData = {
-          "idToken": user.id,
-          "email": user.kakaoAccount?.email,
-          "name": user.kakaoAccount?.profile?.nickname,
-          "sns": "kakao",
+          "idToken": token.idToken,
+          "nickname": user.kakaoAccount?.profile?.nickname,
         };
-        print("User Data : ${userData}");
+        _loginViewModel.login(userData);
       } catch (error) {
-        print('카카오톡으로 로그인 실패 $error');
-
         if (error is PlatformException && error.code == 'CANCELED') {
           return;
         }
 
         try {
           OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
-          print('카카오계정으로 로그인 성공');
-
           User user = await UserApi.instance.me();
           Map<String, dynamic> userData = {
-            "idToken": user.id,
-            "email": user.kakaoAccount?.email,
-            "name": user.kakaoAccount?.profile?.nickname,
-            "sns": "kakao",
+            "idToken": token.idToken,
+            "nickname": user.kakaoAccount?.profile?.nickname,
           };
-        } catch (error) {
-          print('카카오계정으로 로그인 실패 $error');
-        }
+          _loginViewModel.login(userData);
+        } catch (error) {}
       }
     } else {
+      print("Jehee 2");
       try {
         OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
-        print('카카오계정으로 로그인 성공');
-
         User user = await UserApi.instance.me();
         Map<String, dynamic> userData = {
-          "idToken": user.id,
-          "email": user.kakaoAccount?.email,
-          "name": user.kakaoAccount?.profile?.nickname,
-          "sns": "kakao",
+          "idToken": token.idToken,
+          "nickname": user.kakaoAccount?.profile?.nickname,
         };
+        _loginViewModel.login(userData);
       } catch (error) {
         print('카카오계정으로 로그인 실패 $error');
       }

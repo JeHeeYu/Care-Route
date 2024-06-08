@@ -1,3 +1,4 @@
+import 'package:care_route/view_models/login_view_model.dart';
 import 'package:care_route/views/pages/favorite_page.dart';
 import 'package:care_route/views/pages/login_page.dart';
 import 'package:care_route/views/pages/route_guide/route_guide_page.dart';
@@ -7,6 +8,7 @@ import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
+import 'package:provider/provider.dart';
 
 import 'app.dart';
 
@@ -25,14 +27,19 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ScreenUtilInit(
-      designSize: const Size(360, 640),
-      builder: (BuildContext context, child) => MaterialApp(
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => LoginViewModel()),
+      ],
+      child: ScreenUtilInit(
+        designSize: const Size(360, 640),
+        builder: (BuildContext context, child) => MaterialApp(
+          title: 'Flutter Demo',
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+          ),
+          home: const LoginPage(),
         ),
-        home: const App(),
       ),
     );
   }
