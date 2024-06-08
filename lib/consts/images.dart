@@ -3,8 +3,10 @@ class Images {
   static const String guideDisable = "assets/images/guide_disable.svg";
   static const String scheduleEnable = "assets/images/schedule_enable.svg";
   static const String scheduleDisable = "assets/images/schedule_disable.svg";
-  static const String notificationEnable = "assets/images/notification_enable.svg";
-  static const String notificationDisable = "assets/images/notification_disable.svg";
+  static const String notificationEnable =
+      "assets/images/notification_enable.svg";
+  static const String notificationDisable =
+      "assets/images/notification_disable.svg";
   static const String myPageEnable = "assets/images/my_page_enable.svg";
   static const String myPageDisable = "assets/images/my_page_disable.svg";
   static const String googleLogin = "assets/images/google_login.svg";
@@ -17,5 +19,8 @@ class Images {
   static const String ear = "assets/images/ear.svg";
   static const String favoriteWhite = "assets/images/favorite_white.svg";
   static const String defaultMarker = "assets/images/marker_default.png";
-  static const String favoriteButtonEnable = "assets/images/favorite_button_disable.svg";
+  static const String favoriteButtonEnable =
+      "assets/images/favorite_button_disable.svg";
+  static const String nextMonth = "assets/images/next_month.svg";
+  static const String previousMonth = "assets/images/previous_month.svg";
 }
