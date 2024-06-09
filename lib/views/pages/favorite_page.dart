@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import 'package:care_route/view_models/route_view_model.dart';
@@ -84,6 +83,19 @@ class _FavoritePageState extends State<FavoritePage> {
     }
   }
 
+  void _deleteBookMark(int bookmarkId) async {
+    try {
+      int statusCode = await _routeViewModel.deleteBookMark(bookmarkId.toString());
+      if (statusCode == 200) {
+        setState(() {
+          _routeViewModel.getBookMark();
+        });
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
   Widget _buildSearchInputBox() {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(22.0)),
@@ -161,7 +173,7 @@ class _FavoritePageState extends State<FavoritePage> {
     );
   }
 
-  Widget _favoriteList(String text, double latitude, double longitude) {
+  Widget _favoriteList(int bookmarkId, String text, double latitude, double longitude) {
     return Padding(
       padding: EdgeInsets.only(
           top: ScreenUtil().setHeight(8.0),
@@ -195,7 +207,7 @@ class _FavoritePageState extends State<FavoritePage> {
               ButtonIcon(
                   icon: Icons.close,
                   iconColor: Colors.red,
-                  callback: () => {}), //Navigator.of(context).pop()),
+                  callback: () => _deleteBookMark(bookmarkId)),
             ],
           ),
         ),
@@ -339,7 +351,7 @@ class _FavoritePageState extends State<FavoritePage> {
             return Column(
               children: [
                 ...viewModel.getBookMarkData.data!.bookmarks.map((bookmark) {
-                  return _favoriteList(bookmark.title ?? '', bookmark.latitude,
+                  return _favoriteList(bookmark.bookmarkId, bookmark.title ?? '', bookmark.latitude,
                       bookmark.longitude);
                 }).toList(),
                 SizedBox(height: ScreenUtil().setHeight(10.0)),
