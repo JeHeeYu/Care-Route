@@ -14,7 +14,7 @@ import 'package:provider/provider.dart';
 import '../../consts/images.dart';
 import '../../consts/strings.dart';
 import '../../networks/network_manager.dart';
-import '../../view_models/login_view_model.dart';
+import '../../view_models/member_view_model.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -58,7 +58,6 @@ class _LoginPageState extends State<LoginPage> {
         } catch (error) {}
       }
     } else {
-      print("Jehee 2");
       try {
         OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
         User user = await UserApi.instance.me();

@@ -1,4 +1,4 @@
-import 'package:care_route/view_models/login_view_model.dart';
+import 'package:care_route/view_models/member_view_model.dart';
 import 'package:care_route/views/pages/favorite_page.dart';
 import 'package:care_route/views/pages/login_page.dart';
 import 'package:care_route/views/pages/route_guide/route_guide_page.dart';
@@ -39,7 +39,7 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             primarySwatch: Colors.blue,
           ),
-          home: const TypeSelectPage(),
+          home: const LoginPage(),
         ),
       ),
     );
