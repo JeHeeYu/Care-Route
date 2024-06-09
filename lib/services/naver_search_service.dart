@@ -5,6 +5,7 @@ class NaverSearchService {
   static const String _clientId = 'c1Ko6i4xB27VXIDHBuQ1';
   static const String _clientSecret = 'XYJtlANEsn';
   static const String _baseUrl = 'https://openapi.naver.com/v1/search/local.json';
+  static const String _geocodeBaseUrl = 'https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode';
 
   static Future<List<dynamic>> searchPlaces(String query) async {
     List<dynamic> allResults = [];
@@ -35,4 +36,30 @@ class NaverSearchService {
 
     return allResults;
   }
+
+static Future<Map<String, dynamic>> getCoordinates(String address) async {
+  final response = await http.get(
+    Uri.parse('$_geocodeBaseUrl?query=$address'),
+    headers: {
+      'X-NCP-APIGW-API-KEY-ID': 'b8fgmkfu11',
+      'X-NCP-APIGW-API-KEY': 'KqipHAEw5M153cxV3VWCDbcrBzNRZ5JpakFygbJ9',
+    },
+  );
+
+  if (response.statusCode == 200) {
+    final Map<String, dynamic> data = json.decode(response.body);
+    if (data['addresses'] != null && data['addresses'].isNotEmpty) {
+      final Map<String, dynamic> addressInfo = data['addresses'][0];
+      return {
+        'latitude': addressInfo['y'],
+        'longitude': addressInfo['x'],
+      };
+    } else {
+      throw Exception('No coordinates found for the given address');
+    }
+  } else {
+    throw Exception('Failed to load coordinates');
+  }
+}
+
 }

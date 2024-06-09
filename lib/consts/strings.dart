@@ -43,4 +43,7 @@ class Strings {
   static const String typeKey = "type";
   static const String guideKey = "GUIDE";
   static const String targetKey = "TARGET";
+  static const String titleKey = "title";
+  static const String latitudeKey = "latitude";
+  static const String longitudeKey = "longitude";
 }

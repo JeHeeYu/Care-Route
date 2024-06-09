@@ -1,20 +1,18 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
 import 'package:care_route/view_models/route_view_model.dart';
 import 'package:care_route/views/pages/route_guide/destination_dialog.dart';
 import 'package:care_route/views/pages/widgets/button_icon.dart';
 import 'package:care_route/views/pages/widgets/button_image.dart';
 import 'package:care_route/views/pages/widgets/user_text.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:provider/provider.dart';
 
 import '../../consts/colors.dart';
 import '../../consts/images.dart';
 import '../../consts/strings.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 import '../../networks/api_response.dart';
 import '../../services/naver_search_service.dart';
 
@@ -65,6 +63,25 @@ class _FavoritePageState extends State<FavoritePage> {
   String _removeHtmlTags(String htmlString) {
     final RegExp exp = RegExp(r'<[^>]*>', multiLine: true, caseSensitive: true);
     return htmlString.replaceAll(exp, '');
+  }
+
+  void _setBookMark(String title, String address) async {
+    try {
+      Map<String, dynamic> coordinates =
+          await NaverSearchService.getCoordinates(address);
+
+      Map<String, dynamic> data = {
+        Strings.titleKey: title,
+        Strings.latitudeKey: coordinates['latitude'],
+        Strings.longitudeKey: coordinates['longitude']
+      };
+
+      _routeViewModel.setBookMark(data);
+      print(
+          'Latitude: ${coordinates['latitude']}, Longitude: ${coordinates['longitude']}');
+    } catch (e) {
+      print('Error: $e');
+    }
   }
 
   Widget _buildSearchInputBox() {
@@ -234,7 +251,10 @@ class _FavoritePageState extends State<FavoritePage> {
                   ],
                 ),
               ),
-              const ButtonImage(imagePath: Images.favoriteButtonEnable),
+              ButtonImage(
+                imagePath: Images.favoriteButtonDisable,
+                callback: () => _setBookMark(result, address),
+              ),
             ],
           ),
         ),
@@ -302,9 +322,7 @@ class _FavoritePageState extends State<FavoritePage> {
           return Column(
             children: [
               _buildSearchList(
-                _removeHtmlTags(result['title']),
-                result['roadAddress'],
-              ),
+                  _removeHtmlTags(result['title']), result['address']),
               SizedBox(height: ScreenUtil().setHeight(8.0)),
             ],
           );
@@ -313,18 +331,16 @@ class _FavoritePageState extends State<FavoritePage> {
     } else {
       return Consumer<RouteViewModel>(
         builder: (context, viewModel, child) {
-          if (viewModel.bookMarkData.status == Status.loading) {
+          if (viewModel.getBookMarkData.status == Status.loading) {
             return CircularProgressIndicator();
-          } else if (viewModel.bookMarkData.status == Status.error) {
-            return Text('Error: ${viewModel.bookMarkData.message}');
-          } else if (viewModel.bookMarkData.status == Status.complete) {
+          } else if (viewModel.getBookMarkData.status == Status.error) {
+            return Text('Error: ${viewModel.getBookMarkData.message}');
+          } else if (viewModel.getBookMarkData.status == Status.complete) {
             return Column(
               children: [
-                ...viewModel.bookMarkData.data!.bookmarks.map((bookmark) {
-                  return _favoriteList(
-                      'Bookmark ${bookmark.bookmarkId}',
-                      bookmark.latitude,
-                      bookmark.longitude);
+                ...viewModel.getBookMarkData.data!.bookmarks.map((bookmark) {
+                  return _favoriteList('Bookmark ${bookmark.bookmarkId}',
+                      bookmark.latitude, bookmark.longitude);
                 }).toList(),
                 SizedBox(height: ScreenUtil().setHeight(10.0)),
                 _buildSubText(),
