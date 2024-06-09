@@ -37,4 +37,10 @@ class Strings {
   static const String typeGuiderGuide2_2 = "하게 가는지 ";
   static const String typeGuiderGuide2_3 = "할래요.";
   static const String selectComplete = "선택 완료";
+
+  // === API KEY ===
+  static const String idTokenKey = "idToken";
+  static const String typeKey = "type";
+  static const String guideKey = "GUIDE";
+  static const String targetKey = "TARGET";
 }

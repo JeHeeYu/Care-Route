@@ -1,19 +1,17 @@
 import 'package:care_route/consts/colors.dart';
+import 'package:care_route/views/pages/type_select_page.dart';
 import 'package:care_route/views/pages/widgets/button_image.dart';
 import 'package:care_route/views/pages/widgets/user_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:provider/provider.dart';
 
 import '../../consts/images.dart';
 import '../../consts/strings.dart';
-import '../../networks/network_manager.dart';
 import '../../view_models/member_view_model.dart';
 
 class LoginPage extends StatefulWidget {
@@ -24,51 +22,61 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  LoginViewModel _loginViewModel = LoginViewModel();
+  late MemberViewModel _memberViewModel;
+  final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
   @override
   void initState() {
     super.initState();
-    _loginViewModel = Provider.of<LoginViewModel>(context, listen: false);
+    _memberViewModel = Provider.of<MemberViewModel>(context, listen: false);
+  }
+
+  Future<void> handleLogin(
+      Future<OAuthToken> Function() loginMethod) async {
+    try {
+      OAuthToken token = await loginMethod();
+      User user = await UserApi.instance.me();
+      Map<String, dynamic> userData = {
+        "idToken": token.idToken,
+        "nickname": user.kakaoAccount?.profile?.nickname,
+      };
+      final result = await _memberViewModel.login(userData);
+
+      if (result == 200) {
+        _storage.write(key: Strings.idTokenKey, value: token.idToken);
+        _storage.write(key: Strings.typeKey, value: _memberViewModel.loginData.data?.type);
+      }
+
+      if (!mounted) return;
+
+      navigateToNextPage();
+    } catch (error) {
+      if (error is PlatformException && error.code == 'CANCELED') {
+        return;
+      } else {
+        print('로그인 실패 $error');
+      }
+    }
+  }
+
+  void navigateToNextPage() {
+    if (_memberViewModel.loginData.data?.type == Strings.guideKey) {
+      // 가이드 페이지로 이동
+    } else if (_memberViewModel.loginData.data?.type == Strings.targetKey) {
+      // 타겟 페이지로 이동
+    } else if (_memberViewModel.loginData.data?.type == null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const TypeSelectPage()),
+      );
+    }
   }
 
   void kakaoLogin() async {
     if (await isKakaoTalkInstalled()) {
-      try {
-        OAuthToken token = await UserApi.instance.loginWithKakaoTalk();
-        User user = await UserApi.instance.me();
-        Map<String, dynamic> userData = {
-          "idToken": token.idToken,
-          "nickname": user.kakaoAccount?.profile?.nickname,
-        };
-        _loginViewModel.login(userData);
-      } catch (error) {
-        if (error is PlatformException && error.code == 'CANCELED') {
-          return;
-        }
-
-        try {
-          OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
-          User user = await UserApi.instance.me();
-          Map<String, dynamic> userData = {
-            "idToken": token.idToken,
-            "nickname": user.kakaoAccount?.profile?.nickname,
-          };
-          _loginViewModel.login(userData);
-        } catch (error) {}
-      }
+      await handleLogin(UserApi.instance.loginWithKakaoTalk);
     } else {
-      try {
-        OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
-        User user = await UserApi.instance.me();
-        Map<String, dynamic> userData = {
-          "idToken": token.idToken,
-          "nickname": user.kakaoAccount?.profile?.nickname,
-        };
-        _loginViewModel.login(userData);
-      } catch (error) {
-        print('카카오계정으로 로그인 실패 $error');
-      }
+      await handleLogin(UserApi.instance.loginWithKakaoAccount);
     }
   }
 
@@ -90,7 +98,27 @@ class _LoginPageState extends State<LoginPage> {
       };
 
       print("User Data : ${userData}");
-    } else {}
+    } else {
+      print("Google 로그인 실패");
+    }
+  }
+
+  Widget buildRichText(List<String> texts, List<Color> colors) {
+    List<TextSpan> spans = [];
+    for (int i = 0; i < texts.length; i++) {
+      spans.add(TextSpan(
+        text: texts[i],
+        style: TextStyle(
+          fontFamily: "Pretendard",
+          fontSize: ScreenUtil().setSp(20.0),
+          fontWeight: FontWeight.w800,
+          color: colors[i],
+        ),
+      ));
+    }
+    return RichText(
+      text: TextSpan(children: spans),
+    );
   }
 
   @override
@@ -104,96 +132,25 @@ class _LoginPageState extends State<LoginPage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Expanded(
-                child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // 첫 번째 라인
-                RichText(
-                  text: TextSpan(
-                    children: <TextSpan>[
-                      TextSpan(
-                        text: Strings.loginColorGuide1,
-                        style: TextStyle(
-                          fontFamily: "Pretendard",
-                          fontSize: ScreenUtil().setSp(20.0),
-                          fontWeight: FontWeight.w800,
-                          color: const Color(UserColors.pointGreen),
-                        ),
-                      ),
-                      TextSpan(
-                        text: Strings.loginGuide1,
-                        style: TextStyle(
-                          fontFamily: "Pretendard",
-                          fontSize: ScreenUtil().setSp(20.0),
-                          fontWeight: FontWeight.w800,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ],
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  buildRichText(
+                    [Strings.loginColorGuide1, Strings.loginGuide1],
+                    [const Color(UserColors.pointGreen), Colors.black],
                   ),
-                ),
-                // 두 번째 라인
-                RichText(
-                  text: TextSpan(
-                    children: <TextSpan>[
-                      TextSpan(
-                        text: Strings.loginGuide2,
-                        style: TextStyle(
-                          fontFamily: "Pretendard",
-                          fontSize: ScreenUtil().setSp(20.0),
-                          fontWeight: FontWeight.w800,
-                          color: Colors.black,
-                        ),
-                      ),
-                      TextSpan(
-                        text: Strings.loginColorGuide2,
-                        style: TextStyle(
-                          fontFamily: "Pretendard",
-                          fontSize: ScreenUtil().setSp(20.0),
-                          fontWeight: FontWeight.w800,
-                          color: const Color(UserColors.pointGreen),
-                        ),
-                      ),
-                      TextSpan(
-                        text: Strings.loginGuide2_1,
-                        style: TextStyle(
-                          fontFamily: "Pretendard",
-                          fontSize: ScreenUtil().setSp(20.0),
-                          fontWeight: FontWeight.w800,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ],
+                  buildRichText(
+                    [Strings.loginGuide2, Strings.loginColorGuide2, Strings.loginGuide2_1],
+                    [Colors.black, const Color(UserColors.pointGreen), Colors.black],
                   ),
-                ),
-                // 세 번째 라인
-                RichText(
-                  text: TextSpan(
-                    children: <TextSpan>[
-                      TextSpan(
-                        text: Strings.loginColorGuide3,
-                        style: TextStyle(
-                          fontFamily: "Pretendard",
-                          fontSize: ScreenUtil().setSp(20.0),
-                          fontWeight: FontWeight.w800,
-                          color: const Color(UserColors.pointGreen),
-                        ),
-                      ),
-                      TextSpan(
-                        text: Strings.loginGuide3,
-                        style: TextStyle(
-                          fontFamily: "Pretendard",
-                          fontSize: ScreenUtil().setSp(20.0),
-                          fontWeight: FontWeight.w800,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ],
+                  buildRichText(
+                    [Strings.loginColorGuide3, Strings.loginGuide3],
+                    [const Color(UserColors.pointGreen), Colors.black],
                   ),
-                ),
-              ],
-            )),
+                ],
+              ),
+            ),
             UserText(
                 text: Strings.easyLoginGuide,
                 color: const Color(UserColors.gray04),
