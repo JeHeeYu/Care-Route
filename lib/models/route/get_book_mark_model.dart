@@ -24,11 +24,13 @@ class GetBookMarkModel {
 
 class Bookmark {
   final int bookmarkId;
+  final String? title;
   final double latitude;
   final double longitude;
 
   Bookmark({
     required this.bookmarkId,
+    required this.title,
     required this.latitude,
     required this.longitude,
   });
@@ -36,6 +38,7 @@ class Bookmark {
   factory Bookmark.fromJson(Map<String, dynamic> json) {
     return Bookmark(
       bookmarkId: json['bookmarkId'],
+      title: json['title'] ?? '',
       latitude: json['latitude'],
       longitude: json['longitude'],
     );

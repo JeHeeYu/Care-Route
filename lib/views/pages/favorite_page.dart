@@ -339,8 +339,8 @@ class _FavoritePageState extends State<FavoritePage> {
             return Column(
               children: [
                 ...viewModel.getBookMarkData.data!.bookmarks.map((bookmark) {
-                  return _favoriteList('Bookmark ${bookmark.bookmarkId}',
-                      bookmark.latitude, bookmark.longitude);
+                  return _favoriteList(bookmark.title ?? '', bookmark.latitude,
+                      bookmark.longitude);
                 }).toList(),
                 SizedBox(height: ScreenUtil().setHeight(10.0)),
                 _buildSubText(),
