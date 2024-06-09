@@ -15,6 +15,7 @@ import '../../consts/images.dart';
 import '../../consts/strings.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import '../../networks/api_response.dart';
 import '../../services/naver_search_service.dart';
 
 class FavoritePage extends StatefulWidget {
@@ -27,7 +28,6 @@ class FavoritePage extends StatefulWidget {
 class _FavoritePageState extends State<FavoritePage> {
   final TextEditingController _searchController = TextEditingController();
   bool _destinationDialogOpen = false;
-  final List<String> _favoriteTexts = ["우리집", "회사", "학교", "마트", "공원"];
   String _searchText = "";
   List<dynamic> _searchResults = [];
   late RouteViewModel _routeViewModel;
@@ -36,7 +36,6 @@ class _FavoritePageState extends State<FavoritePage> {
   void initState() {
     super.initState();
     _routeViewModel = Provider.of<RouteViewModel>(context, listen: false);
-
     _routeViewModel.getBookMark();
   }
 
@@ -145,7 +144,7 @@ class _FavoritePageState extends State<FavoritePage> {
     );
   }
 
-  Widget _favoriteList(String text) {
+  Widget _favoriteList(String text, double latitude, double longitude) {
     return Padding(
       padding: EdgeInsets.only(
           top: ScreenUtil().setHeight(8.0),
@@ -312,12 +311,29 @@ class _FavoritePageState extends State<FavoritePage> {
         }).toList(),
       );
     } else {
-      return Column(
-        children: [
-          ..._favoriteTexts.map((text) => _favoriteList(text)).toList(),
-          SizedBox(height: ScreenUtil().setHeight(10.0)),
-          _buildSubText(),
-        ],
+      return Consumer<RouteViewModel>(
+        builder: (context, viewModel, child) {
+          if (viewModel.bookMarkData.status == Status.loading) {
+            return CircularProgressIndicator();
+          } else if (viewModel.bookMarkData.status == Status.error) {
+            return Text('Error: ${viewModel.bookMarkData.message}');
+          } else if (viewModel.bookMarkData.status == Status.complete) {
+            return Column(
+              children: [
+                ...viewModel.bookMarkData.data!.bookmarks.map((bookmark) {
+                  return _favoriteList(
+                      'Bookmark ${bookmark.bookmarkId}',
+                      bookmark.latitude,
+                      bookmark.longitude);
+                }).toList(),
+                SizedBox(height: ScreenUtil().setHeight(10.0)),
+                _buildSubText(),
+              ],
+            );
+          } else {
+            return Container();
+          }
+        },
       );
     }
   }
