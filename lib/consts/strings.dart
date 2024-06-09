@@ -18,4 +18,23 @@ class Strings {
   static const String inputDestinationSub = "* 4초 동안 말이 없으면 종료돼요!";
   static const String favoriteHint = "즐겨찾기할 장소를 입력해주세요.";
   static const String favoriteMaxCount = "* 최대 5개까지 등록 가능합니다.";
+  static const String typeSelectGuide = "어떤 방식으로 도와드릴까요?";
+  static const String typeColorGuide1 = "계획";
+  static const String typeTargetGuide1 = "대로 움직이며";
+  static const String typeTargetColorGuide2_1 = "길";
+  static const String typeTargetColorGuide2_2 = "안내";
+  static const String typeTargetGuide2_1 = "선택된 안전한 ";
+  static const String typeTargetGuide2_2 = "을";
+  static const String typeTargetGuide2_3 = "받을래요.";
+  static const String typeGuiderColorGuide1_1 = "일정";
+  static const String typeGuiderColorGuide1_2 = "관리";
+  static const String typeGuiderColorGuide2_1 = "안전";
+  static const String typeGuiderColorGuide2_2 = "확인";
+  static const String typeGuiderGuide1_1 = "대상의 ";
+  static const String typeGuiderGuide1_2 = "을 ";
+  static const String typeGuiderGuide1_3 = "하고,";
+  static const String typeGuiderGuide2_1 = "가족이 ";
+  static const String typeGuiderGuide2_2 = "하게 가는지 ";
+  static const String typeGuiderGuide2_3 = "할래요.";
+  static const String selectComplete = "선택 완료";
 }
