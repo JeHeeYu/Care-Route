@@ -1,3 +1,4 @@
+import 'package:care_route/view_models/route_view_model.dart';
 import 'package:care_route/views/pages/route_guide/destination_dialog.dart';
 import 'package:care_route/views/pages/widgets/button_icon.dart';
 import 'package:care_route/views/pages/widgets/button_image.dart';
@@ -7,6 +8,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 
 import '../../consts/colors.dart';
 import '../../consts/images.dart';
@@ -28,6 +30,15 @@ class _FavoritePageState extends State<FavoritePage> {
   final List<String> _favoriteTexts = ["우리집", "회사", "학교", "마트", "공원"];
   String _searchText = "";
   List<dynamic> _searchResults = [];
+  late RouteViewModel _routeViewModel;
+
+  @override
+  void initState() {
+    super.initState();
+    _routeViewModel = Provider.of<RouteViewModel>(context, listen: false);
+
+    _routeViewModel.getBookMark();
+  }
 
   void _showDestinationDialog() {
     setState(() {

@@ -1,4 +1,5 @@
 import 'package:care_route/view_models/member_view_model.dart';
+import 'package:care_route/view_models/route_view_model.dart';
 import 'package:care_route/views/pages/favorite_page.dart';
 import 'package:care_route/views/pages/login_page.dart';
 import 'package:care_route/views/pages/route_guide/route_guide_page.dart';
@@ -31,6 +32,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => MemberViewModel()),
+        ChangeNotifierProvider(create: (_) => RouteViewModel()),
       ],
       child: ScreenUtilInit(
         designSize: const Size(360, 640),
@@ -39,7 +41,7 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             primarySwatch: Colors.blue,
           ),
-          home: const LoginPage(),
+          home: const App(),
         ),
       ),
     );
