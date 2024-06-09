@@ -1,11 +1,20 @@
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import '../consts/strings.dart';
+
 class NetworkManager {
-  Map<String, String> commonHeaders = {
-    "Content-Type": "application/json",
-    "Accept": "application/json",
-  };
+  final FlutterSecureStorage _storage = const FlutterSecureStorage();
+
+    Future<Map<String, String>> get commonHeaders async {
+    String? idToken = await _storage.read(key: Strings.idTokenKey);
+    return {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": "$idToken"
+    };
+  }
 
   static final NetworkManager _instance = NetworkManager._internal();
 
@@ -21,7 +30,7 @@ class NetworkManager {
 
       final response = await http.post(
         Uri.parse(serverUrl),
-        headers: commonHeaders,
+        headers: await commonHeaders,
         body: jsonData,
       );
 

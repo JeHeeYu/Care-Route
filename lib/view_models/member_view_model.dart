@@ -36,15 +36,17 @@ class MemberViewModel with ChangeNotifier {
     }
   }
 
-  Future<void> fetchTypeData(Map<String, dynamic> data) async {
+  Future<int> type(Map<String, dynamic> data) async {
     try {
-      final response = await NetworkManager.instance.post(ApiUrl.login, data);
+      final response = await NetworkManager.instance.post(ApiUrl.type, data);
       final responseMap = jsonDecode(response) as Map<String, dynamic>;
       final json = TypeModel.fromJson(responseMap);
       
       setTypeData(ApiResponse.complete(json));
+      return json.statusCode;
     } catch (e) {
       setTypeData(ApiResponse.error(e.toString()));
+      return 400;
     }
   }
 }
