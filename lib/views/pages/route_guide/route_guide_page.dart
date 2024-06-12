@@ -7,6 +7,7 @@ import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:speech_to_text/speech_to_text.dart' as stt;
 import '../../../consts/colors.dart';
 import '../../../consts/strings.dart';
 import '../../../services/naver_search_service.dart';
@@ -26,11 +27,15 @@ class _RouteGuidePageState extends State<RouteGuidePage> {
   final TextEditingController _destinationController = TextEditingController();
   bool _destinationDialogOpen = false;
   NMarker? _currentMarker;
+  late stt.SpeechToText _speech;
+  bool _isListening = false;
+  Timer? _timer;
 
   @override
   void initState() {
     super.initState();
     _initializeMap();
+    _speech = stt.SpeechToText();
   }
 
   Future<void> _initializeMap() async {
@@ -48,31 +53,65 @@ class _RouteGuidePageState extends State<RouteGuidePage> {
   }
 
   void _showDestinationDialog() {
-  setState(() {
-    _destinationDialogOpen = true;
-  });
-
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return const DestinationDialog();
-    },
-  ).then((_) {
     setState(() {
-      _destinationDialogOpen = false;
+      _destinationDialogOpen = true;
     });
-  });
 
-  Future.delayed(const Duration(seconds: 4), () {
-    if (_destinationDialogOpen) {
-      Navigator.of(context, rootNavigator: true).pop();
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const DestinationDialog();
+      },
+    ).then((_) {
       setState(() {
         _destinationDialogOpen = false;
       });
-    }
-  });
-}
+      _stopListening();
+    });
 
+    _startListening();
+    _resetTimer();
+  }
+
+  void _startListening() async {
+    bool available = await _speech.initialize(
+      onStatus: (val) => print('onStatus: $val'),
+      onError: (val) => print('onError: $val'),
+    );
+    if (available) {
+      setState(() => _isListening = true);
+      _speech.listen(
+        onResult: (val) => setState(() {
+          _destinationController.text = val.recognizedWords;
+          _resetTimer();
+        }),
+        localeId: 'ko_KR',
+      );
+    }
+  }
+
+  void _stopListening() {
+    _speech.stop();
+    setState(() => _isListening = false);
+    _cancelTimer();
+  }
+
+  void _resetTimer() {
+    _cancelTimer();
+    _timer = Timer(const Duration(seconds: 4), () {
+      if (_destinationDialogOpen) {
+        Navigator.of(context, rootNavigator: true).pop();
+        setState(() {
+          _destinationDialogOpen = false;
+        });
+        _stopListening();
+      }
+    });
+  }
+
+  void _cancelTimer() {
+    _timer?.cancel();
+  }
 
   void _showFavoriteScreen() {
     Navigator.push(
@@ -121,7 +160,7 @@ class _RouteGuidePageState extends State<RouteGuidePage> {
     }
   }
 
-    Future<void> _searchPlaces(String query) async {
+  Future<void> _searchPlaces(String query) async {
     final results = await NaverSearchService.searchPlaces(query);
   }
 

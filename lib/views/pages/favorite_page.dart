@@ -1,7 +1,8 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'dart:convert';
+import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 import 'package:care_route/view_models/route_view_model.dart';
 import 'package:care_route/views/pages/route_guide/destination_dialog.dart';
@@ -28,12 +29,16 @@ class _FavoritePageState extends State<FavoritePage> {
   String _searchText = "";
   List<dynamic> _searchResults = [];
   late RouteViewModel _routeViewModel;
+  late stt.SpeechToText _speech;
+  bool _isListening = false;
+  Timer? _timer;
 
   @override
   void initState() {
     super.initState();
     _routeViewModel = Provider.of<RouteViewModel>(context, listen: false);
     _routeViewModel.getBookMark();
+    _speech = stt.SpeechToText();
   }
 
   void _showDestinationDialog() {
@@ -49,7 +54,51 @@ class _FavoritePageState extends State<FavoritePage> {
       setState(() {
         _destinationDialogOpen = false;
       });
+      _stopListening();
     });
+
+    _startListening();
+    _resetTimer();
+  }
+
+  void _startListening() async {
+    bool available = await _speech.initialize(
+      onStatus: (val) => print('onStatus: $val'),
+      onError: (val) => print('onError: $val'),
+    );
+    if (available) {
+      setState(() => _isListening = true);
+      _speech.listen(
+        onResult: (val) => setState(() {
+          _searchController.text = val.recognizedWords;
+          _resetTimer();
+        }),
+        localeId: 'ko_KR',
+      );
+    }
+  }
+
+  void _stopListening() {
+    _speech.stop();
+    setState(() => _isListening = false);
+    _cancelTimer();
+  }
+
+  void _resetTimer() {
+    _cancelTimer();
+    _timer = Timer(const Duration(seconds: 4), () {
+      if (_destinationDialogOpen) {
+        Navigator.of(context, rootNavigator: true).pop();
+        setState(() {
+          _destinationDialogOpen = false;
+        });
+        _stopListening();
+      }
+    });
+  }
+
+  void _cancelTimer() {
+    _timer?.cancel();
   }
 
   Future<void> _searchPlaces(String query) async {
@@ -163,7 +212,7 @@ class _FavoritePageState extends State<FavoritePage> {
                   imagePath: Images.mic,
                   callback: _destinationDialogOpen
                       ? () {}
-                      : () => _showDestinationDialog(),
+                      : _showDestinationDialog,
                 ),
               ),
             ),
