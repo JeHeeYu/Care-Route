@@ -69,10 +69,14 @@ class _FavoritePageState extends State<FavoritePage> {
     if (available) {
       setState(() => _isListening = true);
       _speech.listen(
-        onResult: (val) => setState(() {
-          _searchController.text = val.recognizedWords;
-          _resetTimer();
-        }),
+        onResult: (val) {
+          setState(() {
+            _searchController.text = val.recognizedWords;
+            _searchText = val.recognizedWords;
+            _resetTimer();
+          });
+          _searchPlaces(val.recognizedWords);
+        },
         localeId: 'ko_KR',
       );
     }
