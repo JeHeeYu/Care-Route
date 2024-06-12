@@ -45,6 +45,17 @@ class _RouteGuidePageState extends State<RouteGuidePage> {
     });
   }
 
+  void _setCameraCurrentLocation() {
+    final cameraUpdate = NCameraUpdate.withParams(
+      target: NLatLng(_currentPosition?.latitude ?? 0.0,
+          _currentPosition?.longitude ?? 0.0),
+      zoom: 16,
+      bearing: 0,
+    );
+
+    _mapController.updateCamera(cameraUpdate);
+  }
+
   Future<Position> getCurrentLocation() async {
     LocationPermission permission = await Geolocator.requestPermission();
     Position position = await Geolocator.getCurrentPosition(
@@ -126,8 +137,14 @@ class _RouteGuidePageState extends State<RouteGuidePage> {
     } else {
       return NaverMap(
         options: NaverMapViewOptions(
+          initialCameraPosition: NCameraPosition(
+              target: NLatLng(_currentPosition?.latitude ?? 0.0,
+                  _currentPosition?.longitude ?? 0.0),
+              zoom: 16,
+              bearing: 0,
+              tilt: 0),
           indoorEnable: true,
-          locationButtonEnable: false,
+          locationButtonEnable: true,
           consumeSymbolTapEvents: false,
           locale: const Locale('ko'),
           logoClickEnable: false,
@@ -137,14 +154,30 @@ class _RouteGuidePageState extends State<RouteGuidePage> {
           if (!_mapControllerCompleter.isCompleted) {
             _mapControllerCompleter.complete(controller);
           }
+
+          NOverlayImage markerImage =
+              const NOverlayImage.fromAssetImage(Images.defaultMarker);
+          final marker = NMarker(
+            id: DateTime.now().millisecondsSinceEpoch.toString(),
+            position: NLatLng(_currentPosition?.latitude ?? 0.0,
+                _currentPosition?.longitude ?? 0.0),
+            icon: markerImage,
+            size:
+                Size(ScreenUtil().setWidth(40.0), ScreenUtil().setHeight(44.0)),
+          );
+
+          _mapController.addOverlay(marker);
+          _currentMarker = marker;
         },
         onMapTapped: (point, latLng) {
-          NOverlayImage markerImage = const NOverlayImage.fromAssetImage(Images.defaultMarker);
+          NOverlayImage markerImage =
+              const NOverlayImage.fromAssetImage(Images.defaultMarker);
           final marker = NMarker(
             id: DateTime.now().millisecondsSinceEpoch.toString(),
             position: latLng,
             icon: markerImage,
-            size: Size(ScreenUtil().setWidth(40.0), ScreenUtil().setHeight(44.0)), 
+            size:
+                Size(ScreenUtil().setWidth(40.0), ScreenUtil().setHeight(44.0)),
           );
 
           if (_currentMarker != null) {
@@ -237,7 +270,8 @@ class _RouteGuidePageState extends State<RouteGuidePage> {
         imagePath: (_destinationDialogOpen == false)
             ? Images.locationEnable
             : Images.locationDisable,
-        callback: _destinationDialogOpen ? () {} : () {},
+        callback:
+            _destinationDialogOpen ? () {} : () => _setCameraCurrentLocation(),
       ),
     );
   }

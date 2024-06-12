@@ -464,6 +464,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.8.0"
+  naver_map_plugin:
+    dependency: "direct main"
+    description:
+      name: naver_map_plugin
+      sha256: fb5443bec21585a82a3bc88f6bb53561672a3178a5cdd2ea772c35c8b80b35a6
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.9.6"
   nested:
     dependency: transitive
     description:
