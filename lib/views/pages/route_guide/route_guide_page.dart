@@ -48,30 +48,31 @@ class _RouteGuidePageState extends State<RouteGuidePage> {
   }
 
   void _showDestinationDialog() {
-    _searchPlaces("스타벅스");
+  setState(() {
+    _destinationDialogOpen = true;
+  });
+
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return const DestinationDialog();
+    },
+  ).then((_) {
     setState(() {
-      _destinationDialogOpen = true;
+      _destinationDialogOpen = false;
     });
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return const DestinationDialog();
-      },
-    ).then((_) {
+  });
+
+  Future.delayed(const Duration(seconds: 4), () {
+    if (_destinationDialogOpen) {
+      Navigator.of(context, rootNavigator: true).pop();
       setState(() {
         _destinationDialogOpen = false;
       });
-    });
+    }
+  });
+}
 
-    Future.delayed(const Duration(seconds: 4), () {
-      if (_destinationDialogOpen) {
-        Navigator.of(context).pop();
-        setState(() {
-          _destinationDialogOpen = false;
-        });
-      }
-    });
-  }
 
   void _showFavoriteScreen() {
     Navigator.push(
