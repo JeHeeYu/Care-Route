@@ -1,7 +1,6 @@
 import 'package:care_route/consts/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
 import '../consts/images.dart';
 import '../consts/strings.dart';
 import '../views/pages/my_page.dart';
@@ -10,21 +9,115 @@ import '../views/pages/route_guide/route_guide_page.dart';
 import '../views/pages/schedule_page.dart';
 
 class BottomNavigation extends StatefulWidget {
-  const BottomNavigation({super.key});
+  final String userType;
+
+  const BottomNavigation({super.key, required this.userType});
 
   @override
   State<BottomNavigation> createState() => _BottomNavigationState();
 }
 
 class _BottomNavigationState extends State<BottomNavigation> {
-  int _selectIndex = 0;
+  late int _selectIndex;
+  late List<Widget> _pages;
+  late List<BottomNavigationBarItem> _bottomNavItems;
 
-  final List<Widget> _pages = <Widget>[
-    const RouteGuidePage(),
-    const SchedulePage(),
-    const NotificationPage(),
-    const MyPage()
-  ];
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.userType == Strings.guideKey) {
+      _selectIndex = 0;
+      _pages = [
+        const SchedulePage(),
+        const RouteGuidePage(),
+        const NotificationPage(),
+        const MyPage()
+      ];
+      _bottomNavItems = [
+        BottomNavigationBarItem(
+          icon: SvgPicture.asset(Images.scheduleDisable),
+          activeIcon: SvgPicture.asset(Images.scheduleEnable),
+          label: Strings.scheduleManage,
+        ),
+        BottomNavigationBarItem(
+          icon: SvgPicture.asset(Images.guideDisable),
+          activeIcon: SvgPicture.asset(Images.guideEnable),
+          label: Strings.routeGuide,
+        ),
+        BottomNavigationBarItem(
+          icon: SvgPicture.asset(Images.notificationDisable),
+          activeIcon: SvgPicture.asset(Images.notificationEnable),
+          label: Strings.notification,
+        ),
+        BottomNavigationBarItem(
+          icon: SvgPicture.asset(Images.myPageDisable),
+          activeIcon: SvgPicture.asset(Images.myPageEnable),
+          label: Strings.myPage,
+        ),
+      ];
+    } else if (widget.userType == Strings.targetKey) {
+      _selectIndex = 0;
+      _pages = [
+        const RouteGuidePage(),
+        const SchedulePage(),
+        const NotificationPage(),
+        const MyPage()
+      ];
+      _bottomNavItems = [
+        BottomNavigationBarItem(
+          icon: SvgPicture.asset(Images.guideDisable),
+          activeIcon: SvgPicture.asset(Images.guideEnable),
+          label: Strings.routeGuide,
+        ),
+        BottomNavigationBarItem(
+          icon: SvgPicture.asset(Images.scheduleDisable),
+          activeIcon: SvgPicture.asset(Images.scheduleEnable),
+          label: Strings.scheduleManage,
+        ),
+        BottomNavigationBarItem(
+          icon: SvgPicture.asset(Images.notificationDisable),
+          activeIcon: SvgPicture.asset(Images.notificationEnable),
+          label: Strings.notification,
+        ),
+        BottomNavigationBarItem(
+          icon: SvgPicture.asset(Images.myPageDisable),
+          activeIcon: SvgPicture.asset(Images.myPageEnable),
+          label: Strings.myPage,
+        ),
+      ];
+    } else {
+      _selectIndex = 0;
+      _pages = [
+        const RouteGuidePage(),
+        const SchedulePage(),
+        const NotificationPage(),
+        const MyPage()
+      ];
+      _bottomNavItems = [
+        BottomNavigationBarItem(
+          icon: SvgPicture.asset(Images.guideDisable),
+          activeIcon: SvgPicture.asset(Images.guideEnable),
+          label: Strings.routeGuide,
+        ),
+        BottomNavigationBarItem(
+          icon: SvgPicture.asset(Images.scheduleDisable),
+          activeIcon: SvgPicture.asset(Images.scheduleEnable),
+          label: Strings.scheduleManage,
+        ),
+        BottomNavigationBarItem(
+          icon: SvgPicture.asset(Images.notificationDisable),
+          activeIcon: SvgPicture.asset(Images.notificationEnable),
+          label: Strings.notification,
+        ),
+        BottomNavigationBarItem(
+          icon: SvgPicture.asset(Images.myPageDisable),
+          activeIcon: SvgPicture.asset(Images.myPageEnable),
+          label: Strings.myPage,
+        ),
+      ];
+    }
+  }
 
   void _onBottomTapped(int index) {
     setState(() {
@@ -49,28 +142,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
           onTap: _onBottomTapped,
           currentIndex: _selectIndex,
           type: BottomNavigationBarType.fixed,
-          items: <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: SvgPicture.asset(Images.guideDisable),
-              activeIcon: SvgPicture.asset(Images.guideEnable),
-              label: Strings.routeGuide,
-            ),
-            BottomNavigationBarItem(
-              icon: SvgPicture.asset(Images.scheduleDisable),
-              activeIcon: SvgPicture.asset(Images.scheduleEnable),
-              label: Strings.scheduleManage,
-            ),
-            BottomNavigationBarItem(
-              icon: SvgPicture.asset(Images.notificationDisable),
-              activeIcon: SvgPicture.asset(Images.notificationEnable),
-              label: Strings.notification,
-            ),
-            BottomNavigationBarItem(
-              icon: SvgPicture.asset(Images.myPageDisable),
-              activeIcon: SvgPicture.asset(Images.myPageEnable),
-              label: Strings.myPage,
-            ),
-          ],
+          items: _bottomNavItems,
           showUnselectedLabels: true,
           selectedItemColor: const Color(UserColors.pointGreen),
           unselectedItemColor: const Color(UserColors.gray04),

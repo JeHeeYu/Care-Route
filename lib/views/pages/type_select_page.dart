@@ -39,7 +39,7 @@ class _TypeSelectPageState extends State<TypeSelectPage> {
       _storage.write(key: Strings.typeKey, value: _selectedType);
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const App()),
+        MaterialPageRoute(builder: (context) => const App(initialPageType: "GUIDE",)),
       );
     }
   }

@@ -10,6 +10,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:provider/provider.dart';
 
+import '../../app.dart';
 import '../../consts/images.dart';
 import '../../consts/strings.dart';
 import '../../view_models/member_view_model.dart';
@@ -31,8 +32,7 @@ class _LoginPageState extends State<LoginPage> {
     _memberViewModel = Provider.of<MemberViewModel>(context, listen: false);
   }
 
-  Future<void> handleLogin(
-      Future<OAuthToken> Function() loginMethod) async {
+  Future<void> handleLogin(Future<OAuthToken> Function() loginMethod) async {
     try {
       OAuthToken token = await loginMethod();
       User user = await UserApi.instance.me();
@@ -44,12 +44,10 @@ class _LoginPageState extends State<LoginPage> {
 
       if (result == 200) {
         _storage.write(key: Strings.idTokenKey, value: token.idToken);
-        _storage.write(key: Strings.typeKey, value: _memberViewModel.loginData.data?.type);
+        _storage.write(
+            key: Strings.typeKey, value: _memberViewModel.loginData.data?.type);
+        navigateToNextPage();
       }
-
-      if (!mounted) return;
-
-      navigateToNextPage();
     } catch (error) {
       if (error is PlatformException && error.code == 'CANCELED') {
         return;
@@ -60,14 +58,19 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void navigateToNextPage() {
-    if (_memberViewModel.loginData.data?.type == Strings.guideKey) {
-      // 가이드 페이지로 이동
-    } else if (_memberViewModel.loginData.data?.type == Strings.targetKey) {
-      // 타겟 페이지로 이동
-    } else if (_memberViewModel.loginData.data?.type == null) {
+    String pageType = _memberViewModel.loginData.data?.type ?? '';
+    if (_memberViewModel.loginData.data?.type == null) {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const TypeSelectPage()),
+      );
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => App(
+                  initialPageType: pageType,
+                )),
       );
     }
   }
@@ -141,8 +144,16 @@ class _LoginPageState extends State<LoginPage> {
                     [const Color(UserColors.pointGreen), Colors.black],
                   ),
                   buildRichText(
-                    [Strings.loginGuide2, Strings.loginColorGuide2, Strings.loginGuide2_1],
-                    [Colors.black, const Color(UserColors.pointGreen), Colors.black],
+                    [
+                      Strings.loginGuide2,
+                      Strings.loginColorGuide2,
+                      Strings.loginGuide2_1
+                    ],
+                    [
+                      Colors.black,
+                      const Color(UserColors.pointGreen),
+                      Colors.black
+                    ],
                   ),
                   buildRichText(
                     [Strings.loginColorGuide3, Strings.loginGuide3],

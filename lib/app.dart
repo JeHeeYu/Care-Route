@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-
 import 'navigations/bottom_navigation.dart';
 
 class App extends StatefulWidget {
-  const App({super.key});
+  final String initialPageType;
+
+  const App({super.key, required this.initialPageType});
 
   @override
   State<App> createState() => _AppState();
@@ -11,6 +12,7 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> {
   DateTime? currentBackPressTime;
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -24,7 +26,7 @@ class _AppState extends State<App> {
           }
           return true;
         },
-        child: const BottomNavigation(),
+        child: BottomNavigation(userType: widget.initialPageType),
       ),
     );
   }
