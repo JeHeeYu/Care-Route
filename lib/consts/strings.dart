@@ -48,6 +48,12 @@ class Strings {
   static const String roundTripAndOneWay = "안내 왕복/편도";
   static const String roundTrip = "왕복";
   static const String oneWay = "편도";
+  static const String changePhoneNumber = "전화번호 변경";
+  static const String targetConnection = "대상 등록";
+  static const String setEasyAddress = "간편 주소 등록";
+  static const String customerCenter = "고객 센터";
+  static const String logout = "로그아웃";
+  static const String withdrawal = "회원탈퇴";
 
   // === API KEY ===
   static const String idTokenKey = "idToken";
