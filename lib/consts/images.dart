@@ -26,4 +26,9 @@ class Images {
   static const String nextMonth = "assets/images/next_month.svg";
   static const String previousMonth = "assets/images/previous_month.svg";
   static const String addSchedule = "assets/images/add_schedule.svg";
+  static const String startLocation = "assets/images/start_location.svg";
+  static const String destination = "assets/images/destination.svg";
+  static const String directionType = "assets/images/direction_type.svg";
+  static const String roundTrip = "assets/images/round_trip.svg";
+  static const String oneWAy = "assets/images/one_way.svg";
 }

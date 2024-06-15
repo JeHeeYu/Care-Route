@@ -23,7 +23,6 @@ class _SchedulePageState extends State<SchedulePage> {
   DateTime _selectedDay = DateTime.now();
 
   void _goAddSchedulePage() {
-    print("Jehee test");
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const AddSchedulePage()),

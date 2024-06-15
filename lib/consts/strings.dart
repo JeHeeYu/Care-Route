@@ -39,6 +39,15 @@ class Strings {
   static const String selectComplete = "선택 완료";
   static const String emptySchedule = "이 날은 아직 일정이 없어요!";
   static const String addSchedule = "일정 추가하기";
+  static const String scheduleTitle = "일정 제목";
+  static const String scheduleTitleHint = "일정 제목을 입력해주세요.";
+  static const String scheduleContents = "일정 제목";
+  static const String scheduleContentsHint = "일정 내용을 입력해주세요.";
+  static const String startLocation = "출발지";
+  static const String destination = "목적지";
+  static const String roundTripAndOneWay = "안내 왕복/편도";
+  static const String roundTrip = "왕복";
+  static const String oneWay = "편도";
 
   // === API KEY ===
   static const String idTokenKey = "idToken";
