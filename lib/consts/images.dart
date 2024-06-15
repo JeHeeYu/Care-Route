@@ -25,4 +25,5 @@ class Images {
       "assets/images/favorite_button_disable.svg";
   static const String nextMonth = "assets/images/next_month.svg";
   static const String previousMonth = "assets/images/previous_month.svg";
+  static const String addSchedule = "assets/images/add_schedule.svg";
 }

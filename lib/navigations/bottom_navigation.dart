@@ -6,7 +6,7 @@ import '../consts/strings.dart';
 import '../views/pages/my_page.dart';
 import '../views/pages/notification_page.dart';
 import '../views/pages/route_guide/route_guide_page.dart';
-import '../views/pages/schedule_page.dart';
+import '../views/pages/schedule/schedule_page.dart';
 
 class BottomNavigation extends StatefulWidget {
   final String userType;

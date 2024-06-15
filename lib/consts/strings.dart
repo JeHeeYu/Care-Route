@@ -37,6 +37,8 @@ class Strings {
   static const String typeGuiderGuide2_2 = "하게 가는지 ";
   static const String typeGuiderGuide2_3 = "할래요.";
   static const String selectComplete = "선택 완료";
+  static const String emptySchedule = "이 날은 아직 일정이 없어요!";
+  static const String addSchedule = "일정 추가하기";
 
   // === API KEY ===
   static const String idTokenKey = "idToken";

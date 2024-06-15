@@ -1,9 +1,15 @@
+import 'package:care_route/consts/colors.dart';
+import 'package:care_route/views/pages/schedule/add_schedule_page.dart';
+import 'package:care_route/views/pages/widgets/button_icon.dart';
 import 'package:care_route/views/pages/widgets/button_image.dart';
+import 'package:care_route/views/pages/widgets/schedule_app_bar.dart';
+import 'package:care_route/views/pages/widgets/user_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-import '../../consts/images.dart';
+import '../../../consts/images.dart';
+import '../../../consts/strings.dart';
 
 class SchedulePage extends StatefulWidget {
   const SchedulePage({super.key});
@@ -15,6 +21,14 @@ class SchedulePage extends StatefulWidget {
 class _SchedulePageState extends State<SchedulePage> {
   DateTime _focusedDay = DateTime.now();
   DateTime _selectedDay = DateTime.now();
+
+  void _goAddSchedulePage() {
+    print("Jehee test");
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const AddSchedulePage()),
+    );
+  }
 
   Widget _buildCalendarHeader() {
     return Row(
@@ -78,7 +92,21 @@ class _SchedulePageState extends State<SchedulePage> {
           return Center(
             child: Text(
               '${date.day}',
-              style: TextStyle(color: Colors.black),
+              style: TextStyle(color: Colors.black, fontSize: ScreenUtil().setSp(16.0)),
+            ),
+          );
+        },
+        selectedBuilder: (context, date, _) {
+          return Container(
+            margin: const EdgeInsets.all(6.0),
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: Colors.green,
+              shape: BoxShape.circle,
+            ),
+            child: Text(
+              '${date.day}',
+              style: TextStyle(color: Colors.white, fontSize: ScreenUtil().setSp(16.0)),
             ),
           );
         },
@@ -100,16 +128,60 @@ class _SchedulePageState extends State<SchedulePage> {
     );
   }
 
+  Widget _buildEmptyScheduleWidget() {
+    return Column(
+      children: [
+        UserText(
+            text: Strings.emptySchedule,
+            color: const Color(UserColors.gray05),
+            weight: FontWeight.w700,
+            size: ScreenUtil().setSp(16.0)),
+        SizedBox(height: ScreenUtil().setHeight(8.0)),
+        UserText(
+            text: Strings.addSchedule,
+            color: const Color(UserColors.gray05),
+            weight: FontWeight.w400,
+            size: ScreenUtil().setSp(12.0)),
+        GestureDetector(
+          onTap: _goAddSchedulePage,
+          child: Container(
+            width: double.infinity,
+            height: ScreenUtil().setHeight(164.0),
+            color: Colors.transparent,
+            child: Stack(
+              alignment: Alignment.topCenter,
+              children: [
+                Positioned(
+                  top: ScreenUtil().setHeight(8.0),
+                  child: Icon(
+                    Icons.add,
+                    size: ScreenUtil().setSp(30.0),
+                    color: const Color(UserColors.gray05),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          SizedBox(height: ScreenUtil().setHeight(66.5)),
-          _buildCalendarHeader(),
-          SizedBox(height: ScreenUtil().setHeight(17.0)),
-          _buildCalendarWidget(),
-        ],
+      appBar: ScheduleAppBar(callback: _goAddSchedulePage),
+      backgroundColor: Colors.white,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            _buildCalendarHeader(),
+            SizedBox(height: ScreenUtil().setHeight(17.0)),
+            _buildCalendarWidget(),
+            SizedBox(height: ScreenUtil().setHeight(35.0)),
+            _buildEmptyScheduleWidget(),
+          ],
+        ),
       ),
     );
   }
