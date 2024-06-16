@@ -54,6 +54,12 @@ class Strings {
   static const String customerCenter = "고객 센터";
   static const String logout = "로그아웃";
   static const String withdrawal = "회원탈퇴";
+  static const String inputPhoneNumberHint = "본인의 전화번호를 입력해주세요.";
+  static const String certificationNumberHint = "인증 번호를 입력해주세요.";
+  static const String certificationNumberGuide = "인증 후에 앱을 시작할 수 있어요.";
+  static const String inputNickNameHint = "닉네임을 적어주세요.(최대 4글자)";
+  static const String sendCertificationNumber = "인증 번호 발송";
+  static const String appStart = "앱 시작하기!";
 
   // === API KEY ===
   static const String idTokenKey = "idToken";
