@@ -1,9 +1,9 @@
 import 'package:care_route/consts/colors.dart';
-import 'package:care_route/views/pages/widgets/button_image.dart';
+import 'package:care_route/views/widgets/button_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../consts/images.dart';
+import '../../consts/images.dart';
 
 class ScheduleAppBar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback callback;

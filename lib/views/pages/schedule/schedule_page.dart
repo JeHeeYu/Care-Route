@@ -1,9 +1,9 @@
 import 'package:care_route/consts/colors.dart';
 import 'package:care_route/views/pages/schedule/add_schedule_page.dart';
-import 'package:care_route/views/pages/widgets/button_icon.dart';
-import 'package:care_route/views/pages/widgets/button_image.dart';
-import 'package:care_route/views/pages/widgets/schedule_app_bar.dart';
-import 'package:care_route/views/pages/widgets/user_text.dart';
+import 'package:care_route/views/widgets/button_icon.dart';
+import 'package:care_route/views/widgets/button_image.dart';
+import 'package:care_route/views/widgets/schedule_app_bar.dart';
+import 'package:care_route/views/widgets/user_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:table_calendar/table_calendar.dart';

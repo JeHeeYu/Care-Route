@@ -4,10 +4,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../consts/colors.dart';
 import '../../../consts/images.dart';
 import '../../../consts/strings.dart';
-import '../widgets/button_icon.dart';
-import '../widgets/button_image.dart';
-import '../widgets/infinity_button.dart';
-import '../widgets/user_text.dart';
+import '../../widgets/button_icon.dart';
+import '../../widgets/button_image.dart';
+import '../../widgets/infinity_button.dart';
+import '../../widgets/user_text.dart';
 
 class AddSchedulePage extends StatefulWidget {
   const AddSchedulePage({super.key});

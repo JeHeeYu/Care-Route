@@ -1,7 +1,7 @@
 import 'package:care_route/consts/colors.dart';
 import 'package:care_route/views/pages/type_select_page.dart';
-import 'package:care_route/views/pages/widgets/button_image.dart';
-import 'package:care_route/views/pages/widgets/user_text.dart';
+import 'package:care_route/views/widgets/button_image.dart';
+import 'package:care_route/views/widgets/user_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

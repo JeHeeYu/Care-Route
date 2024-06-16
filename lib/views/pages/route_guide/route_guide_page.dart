@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:care_route/consts/images.dart';
 import 'package:care_route/views/pages/route_guide/destination_dialog.dart';
-import 'package:care_route/views/pages/widgets/button_image.dart';
+import 'package:care_route/views/widgets/button_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

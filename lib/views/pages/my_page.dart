@@ -1,5 +1,5 @@
-import 'package:care_route/views/pages/widgets/button_icon.dart';
-import 'package:care_route/views/pages/widgets/user_text.dart';
+import 'package:care_route/views/widgets/button_icon.dart';
+import 'package:care_route/views/widgets/user_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
