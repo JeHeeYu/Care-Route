@@ -1,7 +1,7 @@
 import 'package:care_route/consts/colors.dart';
-import 'package:care_route/views/pages/widgets/back_app_bar.dart';
-import 'package:care_route/views/pages/widgets/infinity_button.dart';
-import 'package:care_route/views/pages/widgets/user_text.dart';
+import 'package:care_route/views/widgets/back_app_bar.dart';
+import 'package:care_route/views/widgets/infinity_button.dart';
+import 'package:care_route/views/widgets/user_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
