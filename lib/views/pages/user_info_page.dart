@@ -176,7 +176,6 @@ class _UserInfoPageState extends State<UserInfoPage> {
               textSize: ScreenUtil().setSp(16.0),
               textColor: const Color(UserColors.gray01),
               textWeight: FontWeight.w600,
-              // callback: _getButtonEnableState() ? _sendType : null, // callback 추가 시 이 라인을 사용
             ),
           ),
         ],

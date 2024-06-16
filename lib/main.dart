@@ -1,3 +1,5 @@
+import 'package:care_route/routes/routes.dart';
+import 'package:care_route/routes/routes_name.dart';
 import 'package:care_route/view_models/member_view_model.dart';
 import 'package:care_route/view_models/route_view_model.dart';
 import 'package:care_route/views/pages/favorite_page.dart';
@@ -42,8 +44,8 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             primarySwatch: Colors.blue,
           ),
-          // home: const App(initialPageType: "TARGET"),
-          home: UserInfoPage(),
+          initialRoute: RoutesName.splash,
+          onGenerateRoute: Routes.generateRoute,
         ),
       ),
     );

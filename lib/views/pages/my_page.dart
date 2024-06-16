@@ -105,30 +105,40 @@ class _MyPageState extends State<MyPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(16.0)),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              ClipOval(
-                child: Container(
-                  color: Colors.red,
-                  width: ScreenUtil().setWidth(100.0),
-                  height: ScreenUtil().setHeight(100.0),
-                  child: Container(),
+      body: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                    horizontal: ScreenUtil().setWidth(16.0)),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(height: ScreenUtil().setHeight(60.0)),
+                    ClipOval(
+                      child: Container(
+                        color: Colors.red,
+                        width: ScreenUtil().setWidth(100.0),
+                        height: ScreenUtil().setHeight(100.0),
+                        child: Container(),
+                      ),
+                    ),
+                    _buildNickNameWidget(),
+                    _buildContentsWidget(
+                        Strings.changePhoneNumber, Container()),
+                    _buildContentsWidget(Strings.targetConnection, Container()),
+                    _buildContentsWidget(Strings.setEasyAddress, Container()),
+                    _buildContentsWidget(Strings.customerCenter, Container()),
+                    _buildContentsWidget(Strings.notification, Container()),
+                    SizedBox(height: ScreenUtil().setHeight(6.0)),
+                    _buildLogoutAndWithdrawal(),
+                  ],
                 ),
               ),
-              _buildNickNameWidget(),
-              _buildContentsWidget(Strings.changePhoneNumber, Container()),
-              _buildContentsWidget(Strings.targetConnection, Container()),
-              _buildContentsWidget(Strings.setEasyAddress, Container()),
-              _buildContentsWidget(Strings.customerCenter, Container()),
-              _buildContentsWidget(Strings.notification, Container()),
-              SizedBox(height: ScreenUtil().setHeight(6.0)),
-              _buildLogoutAndWithdrawal(),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
