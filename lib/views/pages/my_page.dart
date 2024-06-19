@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../consts/colors.dart';
 import '../../consts/strings.dart';
+import '../widgets/complete_dialog.dart';
 
 class MyPage extends StatefulWidget {
   const MyPage({Key? key}) : super(key: key);
@@ -18,6 +19,16 @@ class _MyPageState extends State<MyPage> {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => page),
+    );
+  }
+
+  void showCompleteDialog(String text) {
+    showDialog(
+      context: context,
+      barrierColor: Colors.transparent,
+      builder: (BuildContext context) {
+        return CompleteDialog(title: text);
+      },
     );
   }
 
@@ -81,22 +92,28 @@ class _MyPageState extends State<MyPage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        UserText(
-            text: Strings.logout,
-            color: const Color(UserColors.gray05),
-            weight: FontWeight.w400,
-            size: ScreenUtil().setSp(12.0)),
+        GestureDetector(
+          onTap: () => showCompleteDialog(Strings.logoutComplete),
+          child: UserText(
+              text: Strings.logout,
+              color: const Color(UserColors.gray05),
+              weight: FontWeight.w400,
+              size: ScreenUtil().setSp(12.0)),
+        ),
         Container(
           width: ScreenUtil().setWidth(1.0),
           height: ScreenUtil().setHeight(12.0),
           color: const Color(UserColors.gray05),
           margin: EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(20.0)),
         ),
-        UserText(
-            text: Strings.withdrawal,
-            color: const Color(UserColors.gray05),
-            weight: FontWeight.w400,
-            size: ScreenUtil().setSp(12.0)),
+        GestureDetector(
+          onTap: ()=> showCompleteDialog(Strings.withdrawalComplete),
+          child: UserText(
+              text: Strings.withdrawal,
+              color: const Color(UserColors.gray05),
+              weight: FontWeight.w400,
+              size: ScreenUtil().setSp(12.0)),
+        ),
       ],
     );
   }

@@ -73,6 +73,8 @@ class Strings {
   static const String permissionGuide2 = "* 일부 권한 비허용 시 서비스 제공이 불가합니다.";
   static const String allAgreemnet = "전체 동의하기";
   static const String allPermit = "전체 허용하기";
+  static const String logoutComplete = "로그아웃 되었어요!";
+  static const String withdrawalComplete = "회원탈퇴 되었어요!";
 
   // === API KEY ===
   static const String idTokenKey = "idToken";
