@@ -32,18 +32,12 @@ class _LoginPageState extends State<LoginPage> {
     _memberViewModel = Provider.of<MemberViewModel>(context, listen: false);
   }
 
-  Future<void> handleLogin(Future<OAuthToken> Function() loginMethod) async {
+  Future<void> handleLogin(Map<String, dynamic> userData) async {
     try {
-      OAuthToken token = await loginMethod();
-      User user = await UserApi.instance.me();
-      Map<String, dynamic> userData = {
-        "idToken": token.idToken,
-        "nickname": user.kakaoAccount?.profile?.nickname,
-      };
       final result = await _memberViewModel.login(userData);
 
       if (result == 200) {
-        _storage.write(key: Strings.idTokenKey, value: token.idToken);
+        _storage.write(key: Strings.idTokenKey, value: userData['idToken']);
         _storage.write(
             key: Strings.typeKey, value: _memberViewModel.loginData.data?.type);
         navigateToNextPage();
@@ -77,30 +71,42 @@ class _LoginPageState extends State<LoginPage> {
 
   void kakaoLogin() async {
     if (await isKakaoTalkInstalled()) {
-      await handleLogin(UserApi.instance.loginWithKakaoTalk);
+      OAuthToken token = await UserApi.instance.loginWithKakaoTalk();
+      User user = await UserApi.instance.me();
+      Map<String, dynamic> userData = {
+        "idToken": token.idToken,
+        "nickname": user.kakaoAccount?.profile?.nickname,
+      };
+      await handleLogin(userData);
     } else {
-      await handleLogin(UserApi.instance.loginWithKakaoAccount);
+      OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
+      User user = await UserApi.instance.me();
+      Map<String, dynamic> userData = {
+        "idToken": token.idToken,
+        "nickname": user.kakaoAccount?.profile?.nickname,
+      };
+      await handleLogin(userData);
     }
   }
 
   void googleLogin() async {
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-    final GoogleSignInAuthentication? googleAuth =
-        await googleUser?.authentication;
+    final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
 
-    if (googleUser != null) {
-      print('name = ${googleUser.displayName}');
-      print('email = ${googleUser.email}');
-      print('id = ${googleUser.id}');
+    if (googleAuth != null) {
+      print('name = ${googleUser?.displayName}');
+      print('email = ${googleUser?.email}');
+      print('id = ${googleUser?.id}');
+      print('idToken = ${googleAuth.idToken}');
 
       Map<String, dynamic> userData = {
-        "idToken": googleUser.id,
-        "email": googleUser.email,
-        "name": googleUser.displayName,
+        "idToken": googleAuth.idToken,
+        "email": googleUser?.email,
+        "name": googleUser?.displayName,
         "sns": "google",
       };
 
-      print("User Data : ${userData}");
+      await handleLogin(userData);
     } else {
       print("Google 로그인 실패");
     }
