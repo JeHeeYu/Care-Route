@@ -10,11 +10,11 @@ import '../../../routes/routes_name.dart';
 import '../../widgets/infinity_button.dart';
 import '../../widgets/user_text.dart';
 
-class AgreementsPage extends StatelessWidget {
-  const AgreementsPage({super.key});
+class PermissionsPage extends StatelessWidget {
+  const PermissionsPage({super.key});
 
   void _navigateToPermissionPage(BuildContext context) {
-    Navigator.of(context).pushNamed(RoutesName.permissions);
+    Navigator.of(context).pushNamed(RoutesName.userInfo);
   }
 
   Widget _buildContentsWidget(String title) {
@@ -45,6 +45,28 @@ class AgreementsPage extends StatelessWidget {
     );
   }
 
+  Widget _buildExplanationText_1() {
+    return Padding(
+      padding: EdgeInsets.only(bottom: ScreenUtil().setHeight(12.0)),
+      child: UserText(
+        text: Strings.permissionGuide1,
+        color: const Color(UserColors.gray07),
+        weight: FontWeight.w400,
+        size: ScreenUtil().setSp(14.0),
+        softWrap: true,
+        overflow: TextOverflow.visible,
+      ),
+    );
+  }
+
+  Widget _buildExplanationText_2() {
+    return UserText(
+        text: Strings.permissionGuide2,
+        color: const Color(UserColors.gray07),
+        weight: FontWeight.w400,
+        size: ScreenUtil().setSp(14.0));
+  }
+
   Widget _buildGuideText() {
     return Padding(
       padding: EdgeInsets.only(bottom: ScreenUtil().setHeight(28.0)),
@@ -56,14 +78,14 @@ class AgreementsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildAllAgreementButton(BuildContext context) {
+  Widget _buildAllPermitButton(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(bottom: ScreenUtil().setHeight(16.0)),
       child: InfinityButton(
         height: ScreenUtil().setHeight(56.0),
         radius: ScreenUtil().radius(8.0),
         backgroundColor: const Color(UserColors.pointGreen),
-        text: Strings.allAgreemnet,
+        text: Strings.allPermit,
         textSize: ScreenUtil().setSp(16.0),
         textColor: Colors.white,
         textWeight: FontWeight.w600,
@@ -83,16 +105,19 @@ class AgreementsPage extends StatelessWidget {
           children: [
             Expanded(
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildContentsWidget(Strings.termsOfService),
-                  _buildContentsWidget(Strings.locationTermsOfService),
-                  _buildContentsWidget(Strings.privacyAgreement),
-                  _buildContentsWidget(Strings.privacyPolicy),
+                  _buildContentsWidget(Strings.notificationPermit),
+                  _buildContentsWidget(Strings.locationInfoPermit),
+                  _buildContentsWidget(Strings.motionSensorPermit),
+                  _buildContentsWidget(Strings.batteryUsePermit),
+                  _buildExplanationText_1(),
+                  _buildExplanationText_2(),
                 ],
               ),
             ),
             _buildGuideText(),
-            _buildAllAgreementButton(context),
+            _buildAllPermitButton(context),
           ],
         ),
       ),

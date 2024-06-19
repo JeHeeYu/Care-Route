@@ -65,6 +65,14 @@ class Strings {
   static const String privacyAgreement = "개인정보 처리 동의서";
   static const String privacyPolicy = "개인정보 처리 방침";
   static const String agreementPageGuide = "일부 약관 비동의 시 앱사용이 불가합니다.";
+  static const String notificationPermit = "알림 허용";
+  static const String locationInfoPermit = "위치정보 사용 허용";
+  static const String motionSensorPermit = "모션감지 센서 허용";
+  static const String batteryUsePermit = "배터리 사용 최적화 끄기";
+  static const String permissionGuide1 = "* 위치정보 사용 허용 시, '앱 사용중에만 허용'을 선택하여 '항상 허용'으로 변경해주세요.";
+  static const String permissionGuide2 = "* 일부 권한 비허용 시 서비스 제공이 불가합니다.";
+  static const String allAgreemnet = "전체 동의하기";
+  static const String allPermit = "전체 허용하기";
 
   // === API KEY ===
   static const String idTokenKey = "idToken";

@@ -56,7 +56,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
       ),
       maxLines: 1,
       onChanged: (text) {
-        setState(() {}); // 입력 값 변경 시 상태를 갱신하여 버튼 활성화 상태를 업데이트합니다.
+        setState(() {});
       },
     );
   }

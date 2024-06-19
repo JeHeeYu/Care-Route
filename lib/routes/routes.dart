@@ -1,7 +1,9 @@
 import 'package:care_route/routes/page_router.dart';
 import 'package:care_route/routes/routes_name.dart';
 import 'package:care_route/views/pages/agreements/agreements_page.dart';
+import 'package:care_route/views/pages/agreements/permissions_page.dart';
 import 'package:care_route/views/pages/splash_page.dart';
+import 'package:care_route/views/pages/user_info_page.dart';
 import 'package:flutter/material.dart';
 
 import '../app.dart';
@@ -17,9 +19,15 @@ class Routes {
       case RoutesName.splash:
         return PageRouter(
             builder: (BuildContext context) => const SplashPage());
+      case RoutesName.userInfo:
+        return PageRouter(
+            builder: (BuildContext context) => const UserInfoPage());
       case RoutesName.agreements:
         return PageRouter(
             builder: (BuildContext context) => const AgreementsPage());
+      case RoutesName.permissions:
+        return PageRouter(
+            builder: (BuildContext context) => const PermissionsPage());
       default:
         return PageRouter(
             builder: (BuildContext context) =>

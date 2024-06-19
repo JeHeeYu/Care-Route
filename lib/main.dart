@@ -44,7 +44,7 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             primarySwatch: Colors.blue,
           ),
-          initialRoute: RoutesName.agreements,
+          initialRoute: RoutesName.permissions,
           onGenerateRoute: Routes.generateRoute,
         ),
       ),

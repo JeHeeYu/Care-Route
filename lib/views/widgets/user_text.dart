@@ -7,21 +7,25 @@ class UserText extends StatelessWidget {
   final Color color;
   final FontWeight weight;
   final double size;
+  final bool? softWrap;
+  final TextOverflow? overflow;
 
-  const UserText(
-      {Key? key,
-      required this.text,
-      required this.color,
-      required this.weight,
-      required this.size})
-      : super(key: key);
+  const UserText({
+    Key? key,
+    required this.text,
+    required this.color,
+    required this.weight,
+    required this.size,
+    this.softWrap,
+    this.overflow,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Text(
       text,
-      maxLines: 1,
-      overflow: TextOverflow.ellipsis,
+      softWrap: softWrap,
+      overflow: overflow ?? TextOverflow.ellipsis,
       style: TextStyle(
         fontFamily: "Pretendard",
         fontSize: size,
