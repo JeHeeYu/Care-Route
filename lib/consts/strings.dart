@@ -60,6 +60,11 @@ class Strings {
   static const String inputNickNameHint = "닉네임을 적어주세요.(최대 4글자)";
   static const String sendCertificationNumber = "인증 번호 발송";
   static const String appStart = "앱 시작하기!";
+  static const String termsOfService = "서비스 이용 약관";
+  static const String locationTermsOfService = "위치기반 서비스 이용 약관";
+  static const String privacyAgreement = "개인정보 처리 동의서";
+  static const String privacyPolicy = "개인정보 처리 방침";
+  static const String agreementPageGuide = "일부 약관 비동의 시 앱사용이 불가합니다.";
 
   // === API KEY ===
   static const String idTokenKey = "idToken";

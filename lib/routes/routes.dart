@@ -1,5 +1,6 @@
 import 'package:care_route/routes/page_router.dart';
 import 'package:care_route/routes/routes_name.dart';
+import 'package:care_route/views/pages/agreements/agreements_page.dart';
 import 'package:care_route/views/pages/splash_page.dart';
 import 'package:flutter/material.dart';
 
@@ -11,13 +12,18 @@ class Routes {
     switch (settings.name) {
       case RoutesName.app:
         return PageRouter(
-            builder: (BuildContext context) => App(initialPageType: type ?? 'TARGET'));
+            builder: (BuildContext context) =>
+                App(initialPageType: type ?? 'TARGET'));
       case RoutesName.splash:
         return PageRouter(
             builder: (BuildContext context) => const SplashPage());
+      case RoutesName.agreements:
+        return PageRouter(
+            builder: (BuildContext context) => const AgreementsPage());
       default:
         return PageRouter(
-            builder: (BuildContext context) => App(initialPageType: type ?? 'TARGET'));
+            builder: (BuildContext context) =>
+                App(initialPageType: type ?? 'TARGET'));
     }
   }
 }
