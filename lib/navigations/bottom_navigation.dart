@@ -32,7 +32,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
         const SchedulePage(),
         const RouteGuidePage(),
         const NotificationPage(),
-        const MyPage()
+        MyPage(userType: widget.userType),
       ];
       _bottomNavItems = [
         BottomNavigationBarItem(
@@ -62,7 +62,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
         const RouteGuidePage(),
         const SchedulePage(),
         const NotificationPage(),
-        const MyPage()
+        MyPage(userType: widget.userType),
       ];
       _bottomNavItems = [
         BottomNavigationBarItem(
@@ -92,7 +92,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
         const RouteGuidePage(),
         const SchedulePage(),
         const NotificationPage(),
-        const MyPage()
+        MyPage(userType: widget.userType),
       ];
       _bottomNavItems = [
         BottomNavigationBarItem(

@@ -1,5 +1,5 @@
 import 'package:care_route/views/pages/login_page.dart';
-import 'package:care_route/views/pages/my_page/target_list/target_connection_list_page.dart';
+import 'package:care_route/views/pages/my_page/target_list_page.dart';
 import 'package:care_route/views/widgets/button_icon.dart';
 import 'package:care_route/views/widgets/user_text.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +12,9 @@ import '../../../routes/routes_name.dart';
 import '../../widgets/complete_dialog.dart';
 
 class MyPage extends StatefulWidget {
-  const MyPage({Key? key}) : super(key: key);
+  final String userType;
+
+  const MyPage({Key? key, required this.userType}) : super(key: key);
 
   @override
   State<MyPage> createState() => _MyPageState();
@@ -161,7 +163,7 @@ class _MyPageState extends State<MyPage> {
                     _buildContentsWidget(
                         Strings.changePhoneNumber, Container()),
                     _buildContentsWidget(
-                        Strings.targetConnection, const TargetConnectionListPage()),
+                        Strings.targetConnection, TargetListPage(userType: widget.userType,)),
                     _buildContentsWidget(Strings.setEasyAddress, Container()),
                     _buildContentsWidget(Strings.customerCenter, Container()),
                     _buildContentsWidget(Strings.notification, Container()),

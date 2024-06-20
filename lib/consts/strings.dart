@@ -69,7 +69,8 @@ class Strings {
   static const String locationInfoPermit = "위치정보 사용 허용";
   static const String motionSensorPermit = "모션감지 센서 허용";
   static const String batteryUsePermit = "배터리 사용 최적화 끄기";
-  static const String permissionGuide1 = "* 위치정보 사용 허용 시, '앱 사용중에만 허용'을 선택하여 '항상 허용'으로 변경해주세요.";
+  static const String permissionGuide1 =
+      "* 위치정보 사용 허용 시, '앱 사용중에만 허용'을 선택하여 '항상 허용'으로 변경해주세요.";
   static const String permissionGuide2 = "* 일부 권한 비허용 시 서비스 제공이 불가합니다.";
   static const String allAgreemnet = "전체 동의하기";
   static const String allPermit = "전체 허용하기";
@@ -78,7 +79,8 @@ class Strings {
   static const String addTarget = "연결 대상 추가하기";
   static const String targetList = "연결 대상 목록";
   static const String emptyTargetList = "목록에 아무도 없어요!\n대상을 추가해보세요.";
-  static const String targetConnectionGuide = "안내대상은 안내인 한 명만 추가할 수 있어요.";
+  static const String targetListGuide = "안내대상은 안내인 한 명만 추가할 수 있어요.";
+  static const String guideListGuide = "안내인은 안내대상만 추가할 수 있어요.";
 
   // === API KEY ===
   static const String idTokenKey = "idToken";

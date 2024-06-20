@@ -9,18 +9,20 @@ import '../../../../consts/colors.dart';
 import '../../../../consts/strings.dart';
 import '../../../../routes/routes_name.dart';
 import '../../../../view_models/routine_view_model.dart';
-import '../../../widgets/button_icon.dart';
-import '../../../widgets/infinity_button.dart';
+import '../../widgets/button_icon.dart';
+import '../../widgets/infinity_button.dart';
 
-class TargetConnectionListPage extends StatefulWidget {
-  const TargetConnectionListPage({super.key});
+class TargetListPage extends StatefulWidget {
+  final String userType;
+
+  const TargetListPage({Key? key, required this.userType}) : super(key: key);
 
   @override
-  State<TargetConnectionListPage> createState() =>
+  State<TargetListPage> createState() =>
       _TargetConnectionListPageState();
 }
 
-class _TargetConnectionListPageState extends State<TargetConnectionListPage> {
+class _TargetConnectionListPageState extends State<TargetListPage> {
   late RoutineViewModel _routineViewModel;
 
   @override
@@ -126,7 +128,7 @@ class _TargetConnectionListPageState extends State<TargetConnectionListPage> {
     return Padding(
       padding: EdgeInsets.only(bottom: ScreenUtil().setHeight(20.0)),
       child: UserText(
-          text: Strings.targetConnectionGuide,
+          text: (widget.userType == Strings.targetKey) ? Strings.targetListGuide : Strings.guideListGuide,
           color: const Color(UserColors.gray05),
           weight: FontWeight.w400,
           size: ScreenUtil().setSp(12.0)),

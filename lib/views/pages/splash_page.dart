@@ -33,7 +33,7 @@ class _SplashPageState extends State<SplashPage> {
   void _checkLoginStatus() async {
     String? loginInfo = await _storage.read(key: Strings.loginKey);
     String? typeInfo = await _storage.read(key: Strings.typeKey);
-    print("Jehee ${loginInfo} ${typeInfo}");
+    
     if (!mounted) return;
 
     if (loginInfo == 'true' && typeInfo != null) {
