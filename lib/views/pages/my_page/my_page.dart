@@ -1,8 +1,10 @@
+import 'package:care_route/views/pages/login_page.dart';
 import 'package:care_route/views/pages/my_page/target_list_page.dart';
 import 'package:care_route/views/widgets/button_icon.dart';
 import 'package:care_route/views/widgets/user_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../../../consts/colors.dart';
 import '../../../consts/strings.dart';
@@ -17,13 +19,14 @@ class MyPage extends StatefulWidget {
 }
 
 class _MyPageState extends State<MyPage> {
+  final FlutterSecureStorage _storage = const FlutterSecureStorage();
+
   void _showPage(BuildContext context, Widget page) {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => page),
     );
   }
-
 
   void showCompleteDialog(String text) {
     showDialog(
@@ -98,7 +101,11 @@ class _MyPageState extends State<MyPage> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         GestureDetector(
-          onTap: () => showCompleteDialog(Strings.logoutComplete),
+          onTap: () => {
+            showCompleteDialog(Strings.logoutComplete),
+            _storage.deleteAll(),
+            _showPage(context, const LoginPage()),
+          },
           child: UserText(
               text: Strings.logout,
               color: const Color(UserColors.gray05),
@@ -112,7 +119,11 @@ class _MyPageState extends State<MyPage> {
           margin: EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(20.0)),
         ),
         GestureDetector(
-          onTap: () => showCompleteDialog(Strings.withdrawalComplete),
+          onTap: () => {
+            showCompleteDialog(Strings.withdrawalComplete),
+            _storage.deleteAll(),
+            _showPage(context, const LoginPage()),
+          },
           child: UserText(
               text: Strings.withdrawal,
               color: const Color(UserColors.gray05),

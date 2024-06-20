@@ -37,6 +37,7 @@ class _LoginPageState extends State<LoginPage> {
       final result = await _memberViewModel.login(userData);
 
       if (result == 200) {
+        _storage.write(key: Strings.loginKey, value: 'true');
         _storage.write(key: Strings.idTokenKey, value: userData['idToken']);
         _storage.write(
             key: Strings.typeKey, value: _memberViewModel.loginData.data?.type);
@@ -46,6 +47,7 @@ class _LoginPageState extends State<LoginPage> {
       if (error is PlatformException && error.code == 'CANCELED') {
         return;
       } else {
+        _storage.write(key: Strings.loginKey, value: 'false');
         print('로그인 실패 $error');
       }
     }
@@ -91,7 +93,8 @@ class _LoginPageState extends State<LoginPage> {
 
   void googleLogin() async {
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-    final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+    final GoogleSignInAuthentication? googleAuth =
+        await googleUser?.authentication;
 
     if (googleAuth != null) {
       print('name = ${googleUser?.displayName}');

@@ -86,4 +86,5 @@ class Strings {
   static const String titleKey = "title";
   static const String latitudeKey = "latitude";
   static const String longitudeKey = "longitude";
+  static const String loginKey = "login";
 }
