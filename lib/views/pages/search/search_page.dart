@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
@@ -7,6 +8,7 @@ import '../../../consts/colors.dart';
 import '../../../consts/images.dart';
 import '../../../consts/strings.dart';
 import '../../../services/naver_search_service.dart';
+import '../../../services/address_search_service.dart';
 import '../../widgets/button_icon.dart';
 import '../../widgets/button_image.dart';
 import '../../widgets/destination_dialog.dart';
@@ -29,24 +31,32 @@ class _SearchPageState extends State<SearchPage> {
   Timer? _timer;
   String _searchText = "";
 
-
-
   @override
   void initState() {
     super.initState();
-    print("JEhee");
     _speech = stt.SpeechToText();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       FocusScope.of(context).requestFocus(_focusNode);
     });
   }
 
-    Future<void> _searchPlaces(String query) async {
-    final results = await NaverSearchService.searchPlaces(query);
-    setState(() {
-      print("JEhee : ${results}");
-      _searchResults = results;
-    });
+  Future<void> _searchPlaces(String query) async {
+    if (_isAddress(query)) {
+      final results = await AddressSearchService.searchAddress(query);
+      setState(() {
+        _searchResults = results['results']['juso'];
+      });
+    } else {
+      final results = await NaverSearchService.searchPlaces(query);
+      setState(() {
+        _searchResults = results;
+      });
+    }
+  }
+
+  bool _isAddress(String query) {
+    final addressPatterns = RegExp(r'\d|\s|길|로|동|읍|면|리|시|도|구');
+    return addressPatterns.hasMatch(query);
   }
 
   void _showDestinationDialog() {
@@ -134,7 +144,6 @@ class _SearchPageState extends State<SearchPage> {
               });
               if (text.isNotEmpty) {
                 _searchPlaces(text);
-                print("Jehee : ${text}");
               } else {
                 setState(() {
                   _searchResults = [];
@@ -305,7 +314,8 @@ class _SearchPageState extends State<SearchPage> {
           return Column(
             children: [
               _buildSearchList(
-                  _removeHtmlTags(result['title']), result['address']),
+                  _removeHtmlTags(result['title'] ?? result['roadAddr']),
+                  result['address'] ?? result['jibunAddr']),
               SizedBox(height: ScreenUtil().setHeight(8.0)),
             ],
           );
