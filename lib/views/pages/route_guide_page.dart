@@ -1,17 +1,18 @@
 import 'dart:async';
 import 'package:care_route/consts/images.dart';
+import 'package:care_route/views/pages/search/search_page.dart';
 import 'package:care_route/views/widgets/destination_dialog.dart';
 import 'package:care_route/views/widgets/button_image.dart';
+import 'package:care_route/views/widgets/user_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import '../../consts/colors.dart';
 import '../../consts/strings.dart';
-import '../../services/naver_search_service.dart';
 import 'favorite_page.dart';
+
 class RouteGuidePage extends StatefulWidget {
   const RouteGuidePage({super.key});
 
@@ -133,6 +134,13 @@ class _RouteGuidePageState extends State<RouteGuidePage> {
     );
   }
 
+  void _navigateToSearchPage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const SearchPage()),
+    );
+  }
+
   Widget _buildNaverMap() {
     if (_currentPosition == null) {
       return const Center(child: CircularProgressIndicator());
@@ -195,71 +203,56 @@ class _RouteGuidePageState extends State<RouteGuidePage> {
     }
   }
 
-  Future<void> _searchPlaces(String query) async {
-    final results = await NaverSearchService.searchPlaces(query);
-  }
-
   Widget _buildDestinationInputBox() {
     return Positioned(
       top: ScreenUtil().setHeight(40.0),
       left: ScreenUtil().setWidth(16.0),
       right: ScreenUtil().setWidth(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          TextField(
-            controller: _destinationController,
-            style: const TextStyle(
-                color: Colors.black,
-                fontSize: 16.0,
-                fontFamily: "Pretendard",
-                fontWeight: FontWeight.w600),
-            decoration: InputDecoration(
-              hintText: Strings.destinationHint,
-              hintStyle: const TextStyle(
-                  color: Color(UserColors.gray04),
-                  fontSize: 16.0,
-                  fontFamily: "Pretendard",
-                  fontWeight: FontWeight.w600),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0)),
-                borderSide: const BorderSide(
-                  color: Color(UserColors.gray03),
+      child: GestureDetector(
+        onTap: _navigateToSearchPage,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Container(
+              width: double.infinity,
+              height: ScreenUtil().setHeight(48.0),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(
+                  color: const Color(UserColors.gray03),
+                  width: 1.0,
                 ),
-              ),
-              enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0)),
-                borderSide: const BorderSide(
-                  color: Color(UserColors.gray03),
-                ),
               ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0)),
-                borderSide: const BorderSide(
-                  color: Color(UserColors.gray03),
-                ),
-              ),
-              filled: true,
-              fillColor: Colors.white,
-              suffixIcon: Padding(
-                padding: EdgeInsets.all(ScreenUtil().setHeight(12.0)),
-                child: ButtonImage(
-                  imagePath: Images.mic,
-                  callback:
-                      _destinationDialogOpen ? () {} : _showDestinationDialog,
+              child: Padding(
+                padding:  EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(20.0)),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    UserText(
+                        text: Strings.destinationHint,
+                        color: const Color(UserColors.gray04),
+                        weight: FontWeight.w700,
+                        size: ScreenUtil().setSp(16.0)),
+                    ButtonImage(
+                      imagePath: Images.mic,
+                      callback:
+                          _destinationDialogOpen ? () {} : _showDestinationDialog,
+                    ),
+                  ],
                 ),
               ),
             ),
-          ),
-          SizedBox(height: ScreenUtil().setHeight(16.0)),
-          ButtonImage(
-            imagePath: (_destinationDialogOpen == false)
-                ? Images.favoriteEnable
-                : Images.favoriteDisable,
-            callback:
-                _destinationDialogOpen ? () {} : () => _showFavoriteScreen(),
-          ),
-        ],
+            SizedBox(height: ScreenUtil().setHeight(16.0)),
+            ButtonImage(
+              imagePath: (_destinationDialogOpen == false)
+                  ? Images.favoriteEnable
+                  : Images.favoriteDisable,
+              callback:
+                  _destinationDialogOpen ? () {} : () => _showFavoriteScreen(),
+            ),
+          ],
+        ),
       ),
     );
   }

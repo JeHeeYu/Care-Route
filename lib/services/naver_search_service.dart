@@ -25,6 +25,8 @@ class NaverSearchService {
         final Map<String, dynamic> data = json.decode(response.body);
         allResults.addAll(data['items']);
         start += display;
+
+              print("Jehee OItem : ${data}");
         
         if (data['items'].length < display) {
           break;
