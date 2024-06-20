@@ -1,11 +1,13 @@
+import 'package:care_route/views/pages/my_page/target_list_page.dart';
 import 'package:care_route/views/widgets/button_icon.dart';
 import 'package:care_route/views/widgets/user_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../consts/colors.dart';
-import '../../consts/strings.dart';
-import '../widgets/complete_dialog.dart';
+import '../../../consts/colors.dart';
+import '../../../consts/strings.dart';
+import '../../../routes/routes_name.dart';
+import '../../widgets/complete_dialog.dart';
 
 class MyPage extends StatefulWidget {
   const MyPage({Key? key}) : super(key: key);
@@ -21,6 +23,7 @@ class _MyPageState extends State<MyPage> {
       MaterialPageRoute(builder: (context) => page),
     );
   }
+
 
   void showCompleteDialog(String text) {
     showDialog(
@@ -46,7 +49,7 @@ class _MyPageState extends State<MyPage> {
               weight: FontWeight.w700,
               size: ScreenUtil().setSp(16.0)),
           SizedBox(width: ScreenUtil().setWidth(8.0)),
-          ButtonIcon(
+          const ButtonIcon(
             icon: Icons.edit,
             iconColor: const Color(UserColors.gray05),
           )
@@ -58,30 +61,32 @@ class _MyPageState extends State<MyPage> {
   Widget _buildContentsWidget(String title, Widget page) {
     return Padding(
       padding: EdgeInsets.only(bottom: ScreenUtil().setHeight(8.0)),
-      child: Container(
-        width: double.infinity,
-        height: ScreenUtil().setHeight(56.0),
-        decoration: BoxDecoration(
-          color: const Color(UserColors.gray02),
-          borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0)),
-        ),
-        child: Padding(
-          padding:
-              EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(20.0)),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              UserText(
-                  text: title,
-                  color: const Color(UserColors.gray07),
-                  weight: FontWeight.w400,
-                  size: ScreenUtil().setSp(16.0)),
-              ButtonIcon(
-                icon: Icons.arrow_forward_ios,
-                iconColor: const Color(UserColors.pointGreen),
-                callback: () => _showPage(context, page),
-              ),
-            ],
+      child: GestureDetector(
+        onTap: () => _showPage(context, page),
+        child: Container(
+          width: double.infinity,
+          height: ScreenUtil().setHeight(56.0),
+          decoration: BoxDecoration(
+            color: const Color(UserColors.gray02),
+            borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0)),
+          ),
+          child: Padding(
+            padding:
+                EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(20.0)),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                UserText(
+                    text: title,
+                    color: const Color(UserColors.gray07),
+                    weight: FontWeight.w400,
+                    size: ScreenUtil().setSp(16.0)),
+                const ButtonIcon(
+                  icon: Icons.arrow_forward_ios,
+                  iconColor: Color(UserColors.pointGreen),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -107,7 +112,7 @@ class _MyPageState extends State<MyPage> {
           margin: EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(20.0)),
         ),
         GestureDetector(
-          onTap: ()=> showCompleteDialog(Strings.withdrawalComplete),
+          onTap: () => showCompleteDialog(Strings.withdrawalComplete),
           child: UserText(
               text: Strings.withdrawal,
               color: const Color(UserColors.gray05),
@@ -144,7 +149,8 @@ class _MyPageState extends State<MyPage> {
                     _buildNickNameWidget(),
                     _buildContentsWidget(
                         Strings.changePhoneNumber, Container()),
-                    _buildContentsWidget(Strings.targetConnection, Container()),
+                    _buildContentsWidget(
+                        Strings.targetConnection, const TargetListPage()),
                     _buildContentsWidget(Strings.setEasyAddress, Container()),
                     _buildContentsWidget(Strings.customerCenter, Container()),
                     _buildContentsWidget(Strings.notification, Container()),

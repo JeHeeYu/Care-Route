@@ -14,7 +14,7 @@ class AgreementsPage extends StatelessWidget {
   const AgreementsPage({super.key});
 
   void _navigateToPermissionPage(BuildContext context) {
-    Navigator.of(context).pushNamed(RoutesName.permissions);
+    Navigator.of(context).pushNamed(RoutesName.targetList);
   }
 
   Widget _buildContentsWidget(String title) {

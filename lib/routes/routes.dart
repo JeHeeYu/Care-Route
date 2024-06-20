@@ -3,6 +3,7 @@ import 'package:care_route/routes/routes_name.dart';
 import 'package:care_route/views/pages/agreements/agreements_page.dart';
 import 'package:care_route/views/pages/agreements/permissions_page.dart';
 import 'package:care_route/views/pages/login_page.dart';
+import 'package:care_route/views/pages/my_page/target_list_page.dart';
 import 'package:care_route/views/pages/splash_page.dart';
 import 'package:care_route/views/pages/user_info_page.dart';
 import 'package:flutter/material.dart';
@@ -21,8 +22,7 @@ class Routes {
         return PageRouter(
             builder: (BuildContext context) => const SplashPage());
       case RoutesName.login:
-        return PageRouter(
-            builder: (BuildContext context) => const LoginPage());
+        return PageRouter(builder: (BuildContext context) => const LoginPage());
       case RoutesName.userInfo:
         return PageRouter(
             builder: (BuildContext context) => const UserInfoPage());
@@ -32,6 +32,9 @@ class Routes {
       case RoutesName.permissions:
         return PageRouter(
             builder: (BuildContext context) => const PermissionsPage());
+      case RoutesName.targetList:
+        return PageRouter(
+            builder: (BuildContext context) => const TargetListPage());
       default:
         return PageRouter(
             builder: (BuildContext context) =>

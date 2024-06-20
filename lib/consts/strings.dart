@@ -75,6 +75,8 @@ class Strings {
   static const String allPermit = "전체 허용하기";
   static const String logoutComplete = "로그아웃 되었어요!";
   static const String withdrawalComplete = "회원탈퇴 되었어요!";
+  static const String addTarget = "연결 대상 추가하기";
+  static const String targetList = "연결 대상 목록";
 
   // === API KEY ===
   static const String idTokenKey = "idToken";
