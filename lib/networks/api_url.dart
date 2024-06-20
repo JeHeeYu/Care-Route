@@ -4,4 +4,5 @@ class ApiUrl {
   static const String type = "https://readyou.shop/api/members/type";
   static const String bookmark = "https://readyou.shop/api/route/bookmark";
   static const String route = "https://readyou.shop/api/route";
+  static const String targetList = "https://readyou.shop/api/routine/targets";
 }

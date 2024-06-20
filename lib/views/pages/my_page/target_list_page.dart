@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
 import '../../../consts/colors.dart';
 import '../../../consts/strings.dart';
+import '../../../view_models/routine_view_model.dart';
 import '../../widgets/button_icon.dart';
 import '../../widgets/infinity_button.dart';
 
@@ -18,6 +20,15 @@ class TargetListPage extends StatefulWidget {
 }
 
 class _TargetListPageState extends State<TargetListPage> {
+  late RoutineViewModel _routineViewModel;
+
+  @override
+  void initState() {
+    super.initState();
+    _routineViewModel = Provider.of<RoutineViewModel>(context, listen: false);
+    _routineViewModel.getTargetList();
+  }
+
   Widget _buildTargetListText() {
     return Padding(
       padding: EdgeInsets.only(
