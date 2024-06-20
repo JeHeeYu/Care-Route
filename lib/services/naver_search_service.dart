@@ -10,11 +10,11 @@ class NaverSearchService {
   static Future<List<dynamic>> searchPlaces(String query) async {
     List<dynamic> allResults = [];
     int start = 1;
-    int display = 5;
+    int display = 10;
 
     while (allResults.length < 30) {
       final response = await http.get(
-        Uri.parse('$_baseUrl?query=$query&display=$display&start=$start&sort=random'),
+        Uri.parse('$_baseUrl?query=$query&display=$display&start=$start'),
         headers: {
           'X-Naver-Client-Id': _clientId,
           'X-Naver-Client-Secret': _clientSecret,
@@ -26,8 +26,8 @@ class NaverSearchService {
         allResults.addAll(data['items']);
         start += display;
 
-              print("Jehee OItem : ${data}");
-        
+        print("Jehee OItem : ${data}");
+
         if (data['items'].length < display) {
           break;
         }
@@ -36,32 +36,31 @@ class NaverSearchService {
       }
     }
 
-    return allResults;
+    return allResults.take(30).toList();
   }
 
-static Future<Map<String, dynamic>> getCoordinates(String address) async {
-  final response = await http.get(
-    Uri.parse('$_geocodeBaseUrl?query=$address'),
-    headers: {
-      'X-NCP-APIGW-API-KEY-ID': 'b8fgmkfu11',
-      'X-NCP-APIGW-API-KEY': 'KqipHAEw5M153cxV3VWCDbcrBzNRZ5JpakFygbJ9',
-    },
-  );
+  static Future<Map<String, dynamic>> getCoordinates(String address) async {
+    final response = await http.get(
+      Uri.parse('$_geocodeBaseUrl?query=$address'),
+      headers: {
+        'X-NCP-APIGW-API-KEY-ID': 'b8fgmkfu11',
+        'X-NCP-APIGW-API-KEY': 'KqipHAEw5M153cxV3VWCDbcrBzNRZ5JpakFygbJ9',
+      },
+    );
 
-  if (response.statusCode == 200) {
-    final Map<String, dynamic> data = json.decode(response.body);
-    if (data['addresses'] != null && data['addresses'].isNotEmpty) {
-      final Map<String, dynamic> addressInfo = data['addresses'][0];
-      return {
-        'latitude': addressInfo['y'],
-        'longitude': addressInfo['x'],
-      };
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      if (data['addresses'] != null && data['addresses'].isNotEmpty) {
+        final Map<String, dynamic> addressInfo = data['addresses'][0];
+        return {
+          'latitude': addressInfo['y'],
+          'longitude': addressInfo['x'],
+        };
+      } else {
+        throw Exception('No coordinates found for the given address');
+      }
     } else {
-      throw Exception('No coordinates found for the given address');
+      throw Exception('Failed to load coordinates');
     }
-  } else {
-    throw Exception('Failed to load coordinates');
   }
-}
-
 }
