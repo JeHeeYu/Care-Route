@@ -5,7 +5,7 @@ import 'package:care_route/view_models/route_view_model.dart';
 import 'package:care_route/view_models/routine_view_model.dart';
 import 'package:care_route/views/pages/favorite_page.dart';
 import 'package:care_route/views/pages/login_page.dart';
-import 'package:care_route/views/pages/route_guide/route_guide_page.dart';
+import 'package:care_route/views/pages/route_guide_page.dart';
 import 'package:care_route/views/pages/splash_page.dart';
 import 'package:care_route/views/pages/type_select_page.dart';
 import 'package:care_route/views/pages/user_info_page.dart';

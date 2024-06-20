@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 import 'package:care_route/view_models/route_view_model.dart';
-import 'package:care_route/views/pages/route_guide/destination_dialog.dart';
+import 'package:care_route/views/widgets/destination_dialog.dart';
 import 'package:care_route/views/widgets/button_icon.dart';
 import 'package:care_route/views/widgets/button_image.dart';
 import 'package:care_route/views/widgets/user_text.dart';
@@ -48,7 +48,10 @@ class _FavoritePageState extends State<FavoritePage> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return const DestinationDialog();
+        return DestinationDialog(
+          onStartListening: _startListening,
+          onStopListening: _stopListening,
+        );
       },
     ).then((_) {
       setState(() {

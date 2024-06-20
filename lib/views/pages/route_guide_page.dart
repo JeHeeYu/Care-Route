@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:care_route/consts/images.dart';
-import 'package:care_route/views/pages/route_guide/destination_dialog.dart';
+import 'package:care_route/views/widgets/destination_dialog.dart';
 import 'package:care_route/views/widgets/button_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
@@ -8,11 +8,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
-import '../../../consts/colors.dart';
-import '../../../consts/strings.dart';
-import '../../../services/naver_search_service.dart';
-import '../favorite_page.dart';
-
+import '../../consts/colors.dart';
+import '../../consts/strings.dart';
+import '../../services/naver_search_service.dart';
+import 'favorite_page.dart';
 class RouteGuidePage extends StatefulWidget {
   const RouteGuidePage({super.key});
 
@@ -71,7 +70,10 @@ class _RouteGuidePageState extends State<RouteGuidePage> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return const DestinationDialog();
+        return DestinationDialog(
+          onStartListening: _startListening,
+          onStopListening: _stopListening,
+        );
       },
     ).then((_) {
       setState(() {

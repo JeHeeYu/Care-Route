@@ -4,12 +4,19 @@ import 'package:care_route/views/widgets/user_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../consts/images.dart';
-import '../../../consts/strings.dart';
-import '../../widgets/button_icon.dart';
+import '../../consts/images.dart';
+import '../../consts/strings.dart';
+import 'button_icon.dart';
 
 class DestinationDialog extends StatelessWidget {
-  const DestinationDialog({super.key});
+  final VoidCallback onStartListening;
+  final VoidCallback onStopListening;
+
+  const DestinationDialog({
+    super.key,
+    required this.onStartListening,
+    required this.onStopListening,
+  });
 
   Widget _buildTitleFirstText() {
     return RichText(
@@ -46,7 +53,7 @@ class DestinationDialog extends StatelessWidget {
         size: ScreenUtil().setSp(16.0));
   }
 
-    Widget _buildSubText() {
+  Widget _buildSubText() {
     return UserText(
         text: Strings.inputDestinationSub,
         color: const Color(UserColors.gray05),
@@ -71,7 +78,10 @@ class DestinationDialog extends StatelessWidget {
               child: ButtonIcon(
                   icon: Icons.close,
                   iconColor: const Color(UserColors.gray05),
-                  callback: () => Navigator.of(context).pop()),
+                  callback: () {
+                    onStopListening();
+                    Navigator.of(context).pop();
+                  }),
             ),
             Center(
               child: Column(
