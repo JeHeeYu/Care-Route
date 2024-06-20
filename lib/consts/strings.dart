@@ -77,6 +77,8 @@ class Strings {
   static const String withdrawalComplete = "회원탈퇴 되었어요!";
   static const String addTarget = "연결 대상 추가하기";
   static const String targetList = "연결 대상 목록";
+  static const String emptyTargetList = "목록에 아무도 없어요!\n대상을 추가해보세요.";
+  static const String targetConnectionGuide = "안내대상은 안내인 한 명만 추가할 수 있어요.";
 
   // === API KEY ===
   static const String idTokenKey = "idToken";

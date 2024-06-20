@@ -1,5 +1,5 @@
 import 'package:care_route/views/pages/login_page.dart';
-import 'package:care_route/views/pages/my_page/target_list_page.dart';
+import 'package:care_route/views/pages/my_page/target_list/target_connection_list_page.dart';
 import 'package:care_route/views/widgets/button_icon.dart';
 import 'package:care_route/views/widgets/user_text.dart';
 import 'package:flutter/material.dart';
@@ -161,7 +161,7 @@ class _MyPageState extends State<MyPage> {
                     _buildContentsWidget(
                         Strings.changePhoneNumber, Container()),
                     _buildContentsWidget(
-                        Strings.targetConnection, const TargetListPage()),
+                        Strings.targetConnection, const TargetConnectionListPage()),
                     _buildContentsWidget(Strings.setEasyAddress, Container()),
                     _buildContentsWidget(Strings.customerCenter, Container()),
                     _buildContentsWidget(Strings.notification, Container()),
