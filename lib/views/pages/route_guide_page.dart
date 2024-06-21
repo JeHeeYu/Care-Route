@@ -163,6 +163,7 @@ class _RouteGuidePageState extends State<RouteGuidePage> {
           _mapController = controller;
           if (!_mapControllerCompleter.isCompleted) {
             _mapControllerCompleter.complete(controller);
+            _mapController.setLocationTrackingMode(NLocationTrackingMode.follow);
           }
 
           NOverlayImage markerImage =
