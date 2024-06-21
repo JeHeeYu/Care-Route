@@ -302,42 +302,20 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
   }
 
   Widget _buildDateWidget() {
-    return Row(
-      children: [
-        Container(
-          width: MediaQuery.of(context).size.width / 2 -
-              (ScreenUtil().setWidth(20.0)),
-          height: ScreenUtil().setHeight(56.0),
-          decoration: BoxDecoration(
-            color: const Color(UserColors.gray02),
-            borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0)),
-          ),
-          child: Center(
-            child: UserText(
-                text: "2000/12/31",
-                color: const Color(UserColors.gray07),
-                weight: FontWeight.w400,
-                size: ScreenUtil().setSp(16.0)),
-          ),
-        ),
-        SizedBox(width: ScreenUtil().setWidth(8.0)),
-        Container(
-          width: MediaQuery.of(context).size.width / 2 -
-              (ScreenUtil().setWidth(20.0)),
-          height: ScreenUtil().setHeight(56.0),
-          decoration: BoxDecoration(
-            color: const Color(UserColors.gray02),
-            borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0)),
-          ),
-          child: Center(
-            child: UserText(
-                text: "2000/12/31",
-                color: const Color(UserColors.gray07),
-                weight: FontWeight.w400,
-                size: ScreenUtil().setSp(16.0)),
-          ),
-        ),
-      ],
+    return Container(
+      width: double.infinity,
+      height: ScreenUtil().setHeight(56.0),
+      decoration: BoxDecoration(
+        color: const Color(UserColors.gray02),
+        borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0)),
+      ),
+      child: Center(
+        child: UserText(
+            text: "2000/12/31",
+            color: const Color(UserColors.gray07),
+            weight: FontWeight.w400,
+            size: ScreenUtil().setSp(16.0)),
+      ),
     );
   }
 
