@@ -72,9 +72,9 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void kakaoLogin() async {
+    User user = await UserApi.instance.me();
     if (await isKakaoTalkInstalled()) {
       OAuthToken token = await UserApi.instance.loginWithKakaoTalk();
-      User user = await UserApi.instance.me();
       Map<String, dynamic> userData = {
         "idToken": token.idToken,
         "nickname": user.kakaoAccount?.profile?.nickname,
@@ -82,13 +82,14 @@ class _LoginPageState extends State<LoginPage> {
       await handleLogin(userData);
     } else {
       OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
-      User user = await UserApi.instance.me();
       Map<String, dynamic> userData = {
         "idToken": token.idToken,
         "nickname": user.kakaoAccount?.profile?.nickname,
       };
       await handleLogin(userData);
     }
+
+    print("Profile Image : ${user.kakaoAccount?.profile?.profileImageUrl}");
   }
 
   void googleLogin() async {
