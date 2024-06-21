@@ -264,14 +264,13 @@ class _SearchPageState extends State<SearchPage> {
           final latitude = double.parse(coordinates['latitude']);
           final longitude = double.parse(coordinates['longitude']);
           
-          Navigator.push(
+          Navigator.pop(
             context,
-            MaterialPageRoute(builder: (context) => SearchResultPage(
-              result: result,
-              address: address,
-              latitude: latitude,
-              longitude: longitude,
-            )),
+            {
+              'title': result,
+              'latitude': latitude,
+              'longitude': longitude,
+            },
           );
         },
         child: Container(

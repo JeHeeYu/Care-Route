@@ -8,6 +8,7 @@ import '../../widgets/button_icon.dart';
 import '../../widgets/button_image.dart';
 import '../../widgets/infinity_button.dart';
 import '../../widgets/user_text.dart';
+import '../search/search_page.dart';
 
 class AddSchedulePage extends StatefulWidget {
   const AddSchedulePage({super.key});
@@ -22,6 +23,24 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
   List<TextEditingController> _destinationControllers = [
     TextEditingController()
   ];
+  String _startLocation = "";
+
+  void _navigateToSearchPage(String from, [int? index]) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const SearchPage()),
+    );
+
+    if (result != null) {
+      setState(() {
+        if (from == 'startLocation') {
+          _startLocation = result['title'];
+        } else if (from == 'destination' && index != null) {
+          _destinationControllers[index].text = result['title'];
+        }
+      });
+    }
+  }
 
   Widget _buildTextFieldWidget(
       TextEditingController controller, String hintText, FontWeight weight) {
@@ -133,21 +152,28 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
           ],
         ),
         SizedBox(height: ScreenUtil().setHeight(8.0)),
-        Container(
-          width: double.infinity,
-          height: ScreenUtil().setHeight(56.0),
-          decoration: BoxDecoration(
-              color: const Color(UserColors.gray02),
-              borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0))),
-          child: Padding(
-            padding: EdgeInsets.only(left: ScreenUtil().setWidth(20.0)),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: UserText(
-                  text: Strings.scheduleStartDestinationHint,
-                  color: const Color(UserColors.gray05),
-                  weight: FontWeight.w400,
-                  size: ScreenUtil().setSp(16.0)),
+        GestureDetector(
+          onTap: () => _navigateToSearchPage('startLocation'),
+          child: Container(
+            width: double.infinity,
+            height: ScreenUtil().setHeight(56.0),
+            decoration: BoxDecoration(
+                color: const Color(UserColors.gray02),
+                borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0))),
+            child: Padding(
+              padding: EdgeInsets.only(left: ScreenUtil().setWidth(20.0)),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: UserText(
+                    text: (_startLocation.isEmpty)
+                        ? Strings.scheduleStartDestinationHint
+                        : _startLocation,
+                    color: (_startLocation.isEmpty)
+                        ? const Color(UserColors.gray05)
+                        : const Color(UserColors.gray07),
+                    weight: FontWeight.w400,
+                    size: ScreenUtil().setSp(16.0)),
+              ),
             ),
           ),
         ),
@@ -185,38 +211,47 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
           ],
         ),
         SizedBox(height: ScreenUtil().setHeight(8.0)),
-        Container(
-          width: double.infinity,
-          height: ScreenUtil().setHeight(56.0),
-          decoration: BoxDecoration(
-              color: const Color(UserColors.gray02),
-              borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0))),
+        GestureDetector(
+          onTap: () => _navigateToSearchPage('destination', index),
           child: Container(
-            width: MediaQuery.of(context).size.width / 2 -
-                (ScreenUtil().setWidth(20.0)),
+            width: double.infinity,
             height: ScreenUtil().setHeight(56.0),
             decoration: BoxDecoration(
-              color: const Color(UserColors.gray02),
-              borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0)),
-            ),
-            child: Padding(
-              padding: EdgeInsets.only(left: ScreenUtil().setWidth(20.0)),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Row(
-                  children: [
-                    UserText(
-                        text: numberList[index],
-                        color: const Color(UserColors.gray05),
-                        weight: FontWeight.w400,
-                        size: ScreenUtil().setSp(26.0)),
-                    SizedBox(width: ScreenUtil().setWidth(4.0)),
-                    UserText(
-                        text: Strings.scheduleEndDestinationHint,
-                        color: const Color(UserColors.gray05),
-                        weight: FontWeight.w400,
-                        size: ScreenUtil().setSp(16.0)),
-                  ],
+                color: const Color(UserColors.gray02),
+                borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0))),
+            child: Container(
+              width: MediaQuery.of(context).size.width / 2 -
+                  (ScreenUtil().setWidth(20.0)),
+              height: ScreenUtil().setHeight(56.0),
+              decoration: BoxDecoration(
+                color: const Color(UserColors.gray02),
+                borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0)),
+              ),
+              child: Padding(
+                padding: EdgeInsets.only(left: ScreenUtil().setWidth(20.0)),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Row(
+                    children: [
+                      UserText(
+                          text: (_destinationControllers[index].text.isEmpty)
+                              ? numberList[index]
+                              : '',
+                          color: const Color(UserColors.gray05),
+                          weight: FontWeight.w400,
+                          size: ScreenUtil().setSp(26.0)),
+                      SizedBox(width: ScreenUtil().setWidth(4.0)),
+                      UserText(
+                          text: (_destinationControllers[index].text.isEmpty)
+                              ? Strings.scheduleEndDestinationHint
+                              : _destinationControllers[index].text,
+                          color: (_destinationControllers[index].text.isEmpty)
+                              ? const Color(UserColors.gray05)
+                              : const Color(UserColors.gray07),
+                          weight: FontWeight.w400,
+                          size: ScreenUtil().setSp(16.0)),
+                    ],
+                  ),
                 ),
               ),
             ),
