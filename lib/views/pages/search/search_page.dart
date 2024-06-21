@@ -263,7 +263,7 @@ class _SearchPageState extends State<SearchPage> {
           final coordinates = await NaverSearchService.getCoordinates(address);
           final latitude = double.parse(coordinates['latitude']);
           final longitude = double.parse(coordinates['longitude']);
-          
+
           Navigator.pop(
             context,
             {
@@ -317,6 +317,49 @@ class _SearchPageState extends State<SearchPage> {
                 ),
               ],
             ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _recentSearchList(String text, double latitude, double longitude) {
+    return Padding(
+      padding: EdgeInsets.only(
+          top: ScreenUtil().setHeight(8.0),
+          left: ScreenUtil().setWidth(16.0),
+          right: ScreenUtil().setWidth(16.0)),
+      child: Container(
+        width: double.infinity,
+        height: ScreenUtil().setHeight(56.0),
+        decoration: BoxDecoration(
+          color: const Color(UserColors.gray02),
+          borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0)),
+        ),
+        child: Padding(
+          padding:
+              EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(22.0)),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(
+                children: [
+                  const ButtonImage(imagePath: Images.favoriteWhite),
+                  SizedBox(width: ScreenUtil().setWidth(8.0)),
+                  UserText(
+                      text: text,
+                      color: const Color(UserColors.gray07),
+                      weight: FontWeight.w400,
+                      size: ScreenUtil().setSp(16.0)),
+                ],
+              ),
+              ButtonIcon(
+                icon: Icons.close,
+                iconColor: Colors.red,
+                // callback: () => _deleteBookMark(bookmarkId)
+              ),
+            ],
           ),
         ),
       ),

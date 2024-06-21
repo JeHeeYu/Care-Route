@@ -15,21 +15,124 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'app.dart';
 
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+  print("FCM Message: ${message.messageId}");
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
   KakaoSdk.init(nativeAppKey: '2009513e88266b07a15ad4578d2eacee');
   await NaverMapSdk.instance.initialize(
     clientId: 'b8fgmkfu11',
-    //FonAuthFailed: (ex) =>
   );
+
   initializeDateFormatting().then((_) => runApp(const MyApp()));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    super.initState();
+    _setupFCM();
+  }
+
+  Future<void> _setupFCM() async {
+    NotificationSettings settings =
+        await FirebaseMessaging.instance.requestPermission(
+      alert: true,
+      badge: true,
+      provisional: false,
+      sound: true,
+    );
+    // iOS foreground notification 권한
+    await FirebaseMessaging.instance
+        .setForegroundNotificationPresentationOptions(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print("Foreground Message");
+    });
+
+    FirebaseMessaging.instance.getInitialMessage().then((message) {
+      debugPrint('fcm getInitialMessage, message : ${message?.data ?? ''}');
+      if (message != null) {
+        return;
+      }
+    });
+
+    String token = await FirebaseMessaging.instance.getToken() ?? '';
+    debugPrint("fcmToken : $token");
+  }
+
+  Future<void> backgroundHandler(RemoteMessage message) async {
+    debugPrint('fcm backgroundHandler, message');
+
+    debugPrint(message.notification?.title ?? '');
+    debugPrint(message.notification?.body ?? '');
+  }
+
+  Future<void> setFCM() async {
+    //백그라운드 메세지 핸들링(수신처리)
+    FirebaseMessaging.onBackgroundMessage(backgroundHandler);
+  }
+
+  // Future<void> _setupFCM() async {
+  //   FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+  //   NotificationSettings settings = await messaging.requestPermission(
+  //     alert: true,
+  //     announcement: false,
+  //     badge: true,
+  //     carPlay: false,
+  //     criticalAlert: false,
+  //     provisional: false,
+  //     sound: true,
+  //   );
+
+  //   if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+  //     print('User granted permission');
+  //   } else if (settings.authorizationStatus ==
+  //       AuthorizationStatus.provisional) {
+  //     print('User granted provisional permission');
+  //   } else {
+  //     print('User declined or has not accepted permission');
+  //   }
+
+  //   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+  //     print('Got a message whilst in the foreground!');
+  //     print('Message data: ${message.data}');
+
+  //     if (message.notification != null) {
+  //       print('Message also contained a notification: ${message.notification}');
+  //     }
+  //   });
+
+  //   FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+  //     print('Message clicked!');
+  //   });
+
+  //   String? token = await messaging.getToken();
+  //   print("FCM Token: $token");
+  // }
 
   @override
   Widget build(BuildContext context) {
