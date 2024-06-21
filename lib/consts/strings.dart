@@ -81,6 +81,10 @@ class Strings {
   static const String emptyTargetList = "목록에 아무도 없어요!\n대상을 추가해보세요.";
   static const String targetListGuide = "안내대상은 안내인 한 명만 추가할 수 있어요.";
   static const String guideListGuide = "안내인은 안내대상만 추가할 수 있어요.";
+  static const String scheduleStartTimeHint = "출발 시간을 설정해주세요.";
+  static const String scheduleStartDestinationHint = "출발할 장소를 입력해주세요.";
+  static const String scheduleEndDestinationHint = "도착할 장소를 입력해주세요.";
+  static const String setRoute = "안내 경로 설정";
 
   // === API KEY ===
   static const String idTokenKey = "idToken";

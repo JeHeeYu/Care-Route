@@ -19,6 +19,9 @@ class AddSchedulePage extends StatefulWidget {
 class _AddSchedulePageState extends State<AddSchedulePage> {
   TextEditingController _titleController = TextEditingController();
   TextEditingController _contentsController = TextEditingController();
+  List<TextEditingController> _destinationControllers = [
+    TextEditingController()
+  ];
 
   Widget _buildTextFieldWidget(
       TextEditingController controller, String hintText, FontWeight weight) {
@@ -60,11 +63,34 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
         ),
         SizedBox(height: ScreenUtil().setHeight(8.0)),
         Container(
-            decoration: BoxDecoration(
-                color: const Color(UserColors.gray02),
-                borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0))),
-            child: _buildTextFieldWidget(_contentsController,
-                Strings.scheduleTitleHint, FontWeight.w600)),
+          decoration: BoxDecoration(
+              color: const Color(UserColors.gray02),
+              borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0))),
+          child: TextField(
+            controller: _contentsController,
+            decoration: InputDecoration(
+              border: InputBorder.none,
+              hintText: Strings.scheduleTitleHint,
+              hintStyle: TextStyle(
+                fontFamily: "Pretendard",
+                fontWeight: FontWeight.w600,
+                fontSize: ScreenUtil().setSp(16.0),
+                color: const Color(UserColors.gray05),
+              ),
+              contentPadding: EdgeInsets.symmetric(
+                  horizontal: ScreenUtil().setWidth(20.0),
+                  vertical: ScreenUtil().setHeight(18.5)),
+            ),
+            style: TextStyle(
+              fontFamily: "Pretendard",
+              fontWeight: FontWeight.w600,
+              fontSize: ScreenUtil().setSp(16.0),
+              color: Colors.black,
+            ),
+            maxLines: 3,
+            minLines: 1,
+          ),
+        ),
       ],
     );
   }
@@ -108,16 +134,30 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
         ),
         SizedBox(height: ScreenUtil().setHeight(8.0)),
         Container(
-            decoration: BoxDecoration(
-                color: const Color(UserColors.gray02),
-                borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0))),
-            child: _buildTextFieldWidget(_titleController,
-                Strings.scheduleContentsHint, FontWeight.w400)),
+          width: double.infinity,
+          height: ScreenUtil().setHeight(56.0),
+          decoration: BoxDecoration(
+              color: const Color(UserColors.gray02),
+              borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0))),
+          child: Padding(
+            padding: EdgeInsets.only(left: ScreenUtil().setWidth(20.0)),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: UserText(
+                  text: Strings.scheduleStartDestinationHint,
+                  color: const Color(UserColors.gray05),
+                  weight: FontWeight.w400,
+                  size: ScreenUtil().setSp(16.0)),
+            ),
+          ),
+        ),
       ],
     );
   }
 
-  Widget _buildDestination() {
+  Widget _buildDestination(int index) {
+    final numberList = ['❶', '❷', '❸'];
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -136,17 +176,92 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
                 ),
               ],
             ),
-            ButtonIcon(
-                icon: Icons.add, iconColor: const Color(UserColors.pointGreen)),
+            if (index == 0 && _destinationControllers.length < 3)
+              ButtonIcon(
+                icon: Icons.add,
+                iconColor: const Color(UserColors.pointGreen),
+                callback: _addDestination,
+              ),
           ],
         ),
         SizedBox(height: ScreenUtil().setHeight(8.0)),
         Container(
+          width: double.infinity,
+          height: ScreenUtil().setHeight(56.0),
+          decoration: BoxDecoration(
+              color: const Color(UserColors.gray02),
+              borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0))),
+          child: Container(
+            width: MediaQuery.of(context).size.width / 2 -
+                (ScreenUtil().setWidth(20.0)),
+            height: ScreenUtil().setHeight(56.0),
             decoration: BoxDecoration(
-                color: const Color(UserColors.gray02),
+              color: const Color(UserColors.gray02),
+              borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0)),
+            ),
+            child: Padding(
+              padding: EdgeInsets.only(left: ScreenUtil().setWidth(20.0)),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Row(
+                  children: [
+                    UserText(
+                        text: numberList[index],
+                        color: const Color(UserColors.gray05),
+                        weight: FontWeight.w400,
+                        size: ScreenUtil().setSp(26.0)),
+                    SizedBox(width: ScreenUtil().setWidth(4.0)),
+                    UserText(
+                        text: Strings.scheduleEndDestinationHint,
+                        color: const Color(UserColors.gray05),
+                        weight: FontWeight.w400,
+                        size: ScreenUtil().setSp(16.0)),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+        SizedBox(height: ScreenUtil().setHeight(8.0)),
+        _buildDateWidget(),
+        SizedBox(height: ScreenUtil().setHeight(8.0)),
+        Container(
+          width: double.infinity,
+          height: ScreenUtil().setHeight(56.0),
+          decoration: BoxDecoration(
+              color: const Color(UserColors.gray02),
+              borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0))),
+          child: Padding(
+            padding: EdgeInsets.only(left: ScreenUtil().setWidth(20.0)),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: UserText(
+                  text: Strings.scheduleStartTimeHint,
+                  color: const Color(UserColors.gray05),
+                  weight: FontWeight.w400,
+                  size: ScreenUtil().setSp(16.0)),
+            ),
+          ),
+        ),
+        SizedBox(height: ScreenUtil().setHeight(8.0)),
+        Container(
+            width: double.infinity,
+            height: ScreenUtil().setHeight(56.0),
+            decoration: BoxDecoration(
+                border: Border.all(
+                  color: const Color(UserColors.pointGreen),
+                  width: 1.0,
+                ),
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0))),
-            child: _buildTextFieldWidget(_titleController,
-                Strings.scheduleContentsHint, FontWeight.w400)),
+            child: Center(
+              child: UserText(
+                  text: Strings.setRoute,
+                  color: const Color(UserColors.pointGreen),
+                  weight: FontWeight.w700,
+                  size: ScreenUtil().setSp(16.0)),
+            )),
+        SizedBox(height: ScreenUtil().setHeight(8.0)),
       ],
     );
   }
@@ -260,9 +375,31 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
     );
   }
 
+  void _addDestination() {
+    if (_destinationControllers.length < 3) {
+      setState(() {
+        _destinationControllers.add(TextEditingController());
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        actions: [
+          Padding(
+            padding: EdgeInsets.only(right: ScreenUtil().setWidth(17.0)),
+            child: ButtonIcon(
+                icon: Icons.arrow_back_ios,
+                iconColor: const Color(UserColors.gray05),
+                callback: () => Navigator.pop(context)),
+          ),
+        ],
+      ),
+      backgroundColor: Colors.white,
       body: Column(
         children: [
           Expanded(
@@ -279,9 +416,8 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
                     SizedBox(height: ScreenUtil().setHeight(20.0)),
                     _buildStartLocation(),
                     SizedBox(height: ScreenUtil().setHeight(20.0)),
-                    _buildDestination(),
-                    SizedBox(height: ScreenUtil().setHeight(8.0)),
-                    _buildDateWidget(),
+                    ...List.generate(_destinationControllers.length,
+                        (index) => _buildDestination(index)),
                     SizedBox(height: ScreenUtil().setHeight(20.0)),
                     _buildRoundTripAndOneWay(),
                   ],
