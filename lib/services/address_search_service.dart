@@ -9,14 +9,10 @@ class AddressSearchService {
   static Future<Map<String, dynamic>> searchAddress(String keyword) async {
     String requestUrl = '$_apiUrl?confmKey=$_confmKey&currentPage=1&countPerPage=10&keyword=$keyword&resultType=json';
 
-
-    print("Jehee load : ");
-
     try {
       final responseJson = await NetworkManager.instance.get(requestUrl);
       
       final jsonResponse = json.decode(responseJson.substring(responseJson.indexOf('(') + 1, responseJson.lastIndexOf(')')));
-      print("Jehee : ${jsonResponse}");
       return jsonResponse;
     } catch (error) {
       print("에러 발생: $error");

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
@@ -7,12 +6,13 @@ import 'package:speech_to_text/speech_to_text.dart' as stt;
 import '../../../consts/colors.dart';
 import '../../../consts/images.dart';
 import '../../../consts/strings.dart';
-import '../../../services/naver_search_service.dart';
 import '../../../services/address_search_service.dart';
+import '../../../services/naver_search_service.dart';
 import '../../widgets/button_icon.dart';
 import '../../widgets/button_image.dart';
 import '../../widgets/destination_dialog.dart';
 import '../../widgets/user_text.dart';
+import 'search_result_page.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -258,49 +258,66 @@ class _SearchPageState extends State<SearchPage> {
           top: ScreenUtil().setHeight(8.0),
           left: ScreenUtil().setWidth(16.0),
           right: ScreenUtil().setWidth(16.0)),
-      child: Container(
-        width: double.infinity,
-        height: ScreenUtil().setHeight(74.0),
-        decoration: BoxDecoration(
-          color: const Color(UserColors.gray02),
-          borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0)),
-        ),
-        child: Padding(
-          padding:
-              EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(22.0)),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Expanded(
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          RichText(
-                            text: _buildHighlightedText(
-                              result,
-                              _destinationController.text,
-                              const Color(UserColors.gray07),
-                              const Color(UserColors.pointGreen),
+      child: GestureDetector(
+        onTap: () async {
+          final coordinates = await NaverSearchService.getCoordinates(address);
+          final latitude = double.parse(coordinates['latitude']);
+          final longitude = double.parse(coordinates['longitude']);
+          
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => SearchResultPage(
+              result: result,
+              address: address,
+              latitude: latitude,
+              longitude: longitude,
+            )),
+          );
+        },
+        child: Container(
+          width: double.infinity,
+          height: ScreenUtil().setHeight(74.0),
+          decoration: BoxDecoration(
+            color: const Color(UserColors.gray02),
+            borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0)),
+          ),
+          child: Padding(
+            padding:
+                EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(22.0)),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            RichText(
+                              text: _buildHighlightedText(
+                                result,
+                                _destinationController.text,
+                                const Color(UserColors.gray07),
+                                const Color(UserColors.pointGreen),
+                              ),
                             ),
-                          ),
-                          SizedBox(height: ScreenUtil().setHeight(8.0)),
-                          UserText(
-                              text: address,
-                              color: const Color(UserColors.gray06),
-                              weight: FontWeight.w400,
-                              size: ScreenUtil().setSp(12.0)),
-                        ],
+                            SizedBox(height: ScreenUtil().setHeight(8.0)),
+                            UserText(
+                                text: address,
+                                color: const Color(UserColors.gray06),
+                                weight: FontWeight.w400,
+                                size: ScreenUtil().setSp(12.0)),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

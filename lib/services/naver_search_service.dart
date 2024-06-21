@@ -4,8 +4,10 @@ import 'package:http/http.dart' as http;
 class NaverSearchService {
   static const String _clientId = 'c1Ko6i4xB27VXIDHBuQ1';
   static const String _clientSecret = 'XYJtlANEsn';
-  static const String _baseUrl = 'https://openapi.naver.com/v1/search/local.json';
-  static const String _geocodeBaseUrl = 'https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode';
+  static const String _baseUrl =
+      'https://openapi.naver.com/v1/search/local.json';
+  static const String _geocodeBaseUrl =
+      'https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode';
 
   static Future<List<dynamic>> searchPlaces(String query) async {
     List<dynamic> allResults = [];
@@ -25,8 +27,6 @@ class NaverSearchService {
         final Map<String, dynamic> data = json.decode(response.body);
         allResults.addAll(data['items']);
         start += display;
-
-        print("Jehee OItem : ${data}");
 
         if (data['items'].length < display) {
           break;
