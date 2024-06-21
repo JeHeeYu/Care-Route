@@ -8,9 +8,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import '../../consts/colors.dart';
 import '../../consts/strings.dart';
+import '../../view_models/route_view_model.dart';
+import '../widgets/button_icon.dart';
 import 'favorite_page.dart';
 
 class RouteGuidePage extends StatefulWidget {
@@ -30,12 +33,15 @@ class _RouteGuidePageState extends State<RouteGuidePage> {
   late stt.SpeechToText _speech;
   bool _isListening = false;
   Timer? _timer;
+  late RouteViewModel _routeViewModel;
 
   @override
   void initState() {
     super.initState();
     _initializeMap();
     _speech = stt.SpeechToText();
+
+    _routeViewModel = Provider.of<RouteViewModel>(context, listen: false);
   }
 
   Future<void> _initializeMap() async {
@@ -163,7 +169,8 @@ class _RouteGuidePageState extends State<RouteGuidePage> {
           _mapController = controller;
           if (!_mapControllerCompleter.isCompleted) {
             _mapControllerCompleter.complete(controller);
-            _mapController.setLocationTrackingMode(NLocationTrackingMode.follow);
+            _mapController
+                .setLocationTrackingMode(NLocationTrackingMode.follow);
           }
 
           NOverlayImage markerImage =
@@ -204,6 +211,58 @@ class _RouteGuidePageState extends State<RouteGuidePage> {
     }
   }
 
+  Widget _buildFavoriteList() {
+    return SizedBox(
+      height: ScreenUtil().setHeight(48.0),
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: _routeViewModel.getBookMarkData.data?.bookmarks.length ?? 0,
+        itemBuilder: (context, index) {
+          var bookmark = _routeViewModel.getBookMarkData.data!.bookmarks[index];
+          return Padding(
+            padding: EdgeInsets.only(right: ScreenUtil().setWidth(8.0)),
+            child: IntrinsicWidth(
+              child: Container(
+                height: ScreenUtil().setHeight(48.0),
+                decoration: BoxDecoration(
+                  color: const Color(UserColors.gray02),
+                  border: Border.all(
+                    color: const Color(UserColors.gray04),
+                    width: 1.0,
+                  ),
+                  borderRadius: BorderRadius.circular(ScreenUtil().radius(28.0)),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: ScreenUtil().setWidth(20.0)),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ButtonIcon(
+                        icon: Icons.star_border,
+                        iconSize: ScreenUtil().setWidth(25.0),
+                        iconColor: const Color(UserColors.pointGreen),
+                        callback: _destinationDialogOpen
+                            ? () {}
+                            : _showDestinationDialog,
+                      ),
+                      SizedBox(width: ScreenUtil().setWidth(8.0)),
+                      UserText(
+                          text: bookmark.title ?? '',
+                          color: const Color(UserColors.gray07),
+                          weight: FontWeight.w700,
+                          size: ScreenUtil().setSp(16.0)),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
   Widget _buildDestinationInputBox() {
     return Positioned(
       top: ScreenUtil().setHeight(40.0),
@@ -226,7 +285,8 @@ class _RouteGuidePageState extends State<RouteGuidePage> {
                 borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0)),
               ),
               child: Padding(
-                padding:  EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(20.0)),
+                padding: EdgeInsets.symmetric(
+                    horizontal: ScreenUtil().setWidth(20.0)),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -237,20 +297,27 @@ class _RouteGuidePageState extends State<RouteGuidePage> {
                         size: ScreenUtil().setSp(16.0)),
                     ButtonImage(
                       imagePath: Images.mic,
-                      callback:
-                          _destinationDialogOpen ? () {} : _showDestinationDialog,
+                      callback: _destinationDialogOpen
+                          ? () {}
+                          : _showDestinationDialog,
                     ),
                   ],
                 ),
               ),
             ),
             SizedBox(height: ScreenUtil().setHeight(16.0)),
-            ButtonImage(
-              imagePath: (_destinationDialogOpen == false)
-                  ? Images.favoriteEnable
-                  : Images.favoriteDisable,
-              callback:
-                  _destinationDialogOpen ? () {} : () => _showFavoriteScreen(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Expanded(child: _buildFavoriteList()),
+                ButtonImage(
+                  imagePath: (_destinationDialogOpen == false)
+                      ? Images.favoriteEnable
+                      : Images.favoriteDisable,
+                  callback:
+                      _destinationDialogOpen ? () {} : _showFavoriteScreen,
+                ),
+              ],
             ),
           ],
         ),

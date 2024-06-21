@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../../app.dart';
 import '../../consts/strings.dart';
+import '../../view_models/route_view_model.dart';
 import '../../view_models/routine_view_model.dart';
 import 'login_page.dart';
 
@@ -19,13 +20,16 @@ class SplashPage extends StatefulWidget {
 class _SplashPageState extends State<SplashPage> {
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
   late RoutineViewModel _routineViewModel;
+  late RouteViewModel _routeViewModel;
 
   @override
   void initState() {
     super.initState();
 
     _routineViewModel = Provider.of<RoutineViewModel>(context, listen: false);
+    _routeViewModel = Provider.of<RouteViewModel>(context, listen: false);
     _routineViewModel.getTargetList();
+    _routeViewModel.getBookMark();
 
     Future.delayed(const Duration(seconds: 3), _checkLoginStatus);
   }
@@ -33,7 +37,7 @@ class _SplashPageState extends State<SplashPage> {
   void _checkLoginStatus() async {
     String? loginInfo = await _storage.read(key: Strings.loginKey);
     String? typeInfo = await _storage.read(key: Strings.typeKey);
-    
+
     if (!mounted) return;
 
     if (loginInfo == 'true' && typeInfo != null) {

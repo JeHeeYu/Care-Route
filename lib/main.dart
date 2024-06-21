@@ -149,7 +149,7 @@ class _MyAppState extends State<MyApp> {
           theme: ThemeData(
             primarySwatch: Colors.blue,
           ),
-          initialRoute: RoutesName.app,
+          initialRoute: RoutesName.splash,
           onGenerateRoute: Routes.generateRoute,
         ),
       ),

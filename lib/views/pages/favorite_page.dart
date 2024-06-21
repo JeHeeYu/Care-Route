@@ -37,7 +37,6 @@ class _FavoritePageState extends State<FavoritePage> {
   void initState() {
     super.initState();
     _routeViewModel = Provider.of<RouteViewModel>(context, listen: false);
-    _routeViewModel.getBookMark();
     _speech = stt.SpeechToText();
   }
 
@@ -141,7 +140,8 @@ class _FavoritePageState extends State<FavoritePage> {
 
   void _deleteBookMark(int bookmarkId) async {
     try {
-      int statusCode = await _routeViewModel.deleteBookMark(bookmarkId.toString());
+      int statusCode =
+          await _routeViewModel.deleteBookMark(bookmarkId.toString());
       if (statusCode == 200) {
         setState(() {
           _routeViewModel.getBookMark();
@@ -217,9 +217,8 @@ class _FavoritePageState extends State<FavoritePage> {
                 padding: EdgeInsets.all(ScreenUtil().setHeight(12.0)),
                 child: ButtonImage(
                   imagePath: Images.mic,
-                  callback: _destinationDialogOpen
-                      ? () {}
-                      : _showDestinationDialog,
+                  callback:
+                      _destinationDialogOpen ? () {} : _showDestinationDialog,
                 ),
               ),
             ),
@@ -229,7 +228,8 @@ class _FavoritePageState extends State<FavoritePage> {
     );
   }
 
-  Widget _favoriteList(int bookmarkId, String text, double latitude, double longitude) {
+  Widget _favoriteList(
+      int bookmarkId, String text, double latitude, double longitude) {
     return Padding(
       padding: EdgeInsets.only(
           top: ScreenUtil().setHeight(8.0),
@@ -407,7 +407,10 @@ class _FavoritePageState extends State<FavoritePage> {
             return Column(
               children: [
                 ...viewModel.getBookMarkData.data!.bookmarks.map((bookmark) {
-                  return _favoriteList(bookmark.bookmarkId, bookmark.title ?? '', bookmark.latitude,
+                  return _favoriteList(
+                      bookmark.bookmarkId,
+                      bookmark.title ?? '',
+                      bookmark.latitude,
                       bookmark.longitude);
                 }).toList(),
                 SizedBox(height: ScreenUtil().setHeight(10.0)),
