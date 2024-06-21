@@ -85,6 +85,8 @@ class Strings {
   static const String scheduleStartDestinationHint = "출발할 장소를 입력해주세요.";
   static const String scheduleEndDestinationHint = "도착할 장소를 입력해주세요.";
   static const String setRoute = "안내 경로 설정";
+  static const String addComplete = "추가 되었습니다.";
+  static const String deleteComplete = "삭제 되었습니다.";
 
   // === API KEY ===
   static const String idTokenKey = "idToken";

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
-class CompleteDialog extends StatefulWidget {
+class CompleteDialog extends StatelessWidget {
   final String title;
 
   const CompleteDialog({
@@ -12,29 +12,22 @@ class CompleteDialog extends StatefulWidget {
     required this.title,
   }) : super(key: key);
 
-  @override
-  State<CompleteDialog> createState() => _CompleteDialogState();
-}
-
-class _CompleteDialogState extends State<CompleteDialog> {
-  late Timer _timer;
-
-  @override
-  void initState() {
-    super.initState();
-    _timer = Timer(const Duration(seconds: 1), () {
-      Navigator.of(context).pop();
-    });
-  }
-
-  @override
-  void dispose() {
-    _timer.cancel();
-    super.dispose();
+  static void showCompleteDialog(BuildContext context, String text) {
+    showDialog(
+      context: context,
+      barrierColor: Colors.transparent,
+      builder: (BuildContext context) {
+        return CompleteDialog(title: text);
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    Timer(const Duration(seconds: 1), () {
+      Navigator.of(context).pop();
+    });
+
     return Dialog(
       backgroundColor: Colors.transparent,
       alignment: Alignment.topCenter,
@@ -52,7 +45,7 @@ class _CompleteDialogState extends State<CompleteDialog> {
         ),
         child: Center(
           child: Text(
-            widget.title,
+            title,
             style: const TextStyle(
               color: Colors.white,
               fontFamily: "Pretendard",

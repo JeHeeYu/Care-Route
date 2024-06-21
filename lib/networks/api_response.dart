@@ -1,7 +1,7 @@
 enum Status {
   loading,
   complete,
-  error,
+  error, COMPLETE,
 }
 
 class ApiResponse<T> {
