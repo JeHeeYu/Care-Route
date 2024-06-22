@@ -1,3 +1,4 @@
+import 'package:care_route/view_models/mypage_view_model.dart';
 import 'package:care_route/views/pages/login_page.dart';
 import 'package:care_route/views/pages/my_page/target_list_page.dart';
 import 'package:care_route/views/widgets/button_icon.dart';
@@ -9,7 +10,6 @@ import 'package:provider/provider.dart';
 
 import '../../../consts/colors.dart';
 import '../../../consts/strings.dart';
-import '../../../view_models/member_view_model.dart';
 import '../../widgets/complete_dialog.dart';
 
 class MyPage extends StatefulWidget {
@@ -23,12 +23,15 @@ class MyPage extends StatefulWidget {
 
 class _MyPageState extends State<MyPage> {
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
-  late MemberViewModel _memberViewModel;
+  late MypageViewModel _mypageViewModel;
 
   @override
   void initState() {
     super.initState();
-    _memberViewModel = Provider.of<MemberViewModel>(context, listen: false);
+
+    _mypageViewModel = Provider.of<MypageViewModel>(context, listen: false);
+
+    print("Jehee : ${_mypageViewModel.getMypageData.data?.profileImage}");
   }
 
   void _showPage(BuildContext context, Widget page) {
@@ -57,7 +60,7 @@ class _MyPageState extends State<MyPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           UserText(
-              text: "닉네임",
+              text: _mypageViewModel.getMypageData.data?.nickname ?? '',
               color: const Color(UserColors.gray07),
               weight: FontWeight.w700,
               size: ScreenUtil().setSp(16.0)),
@@ -160,7 +163,11 @@ class _MyPageState extends State<MyPage> {
                   children: [
                     SizedBox(height: ScreenUtil().setHeight(60.0)),
                     ClipOval(
-                      child: Image.network(_memberViewModel.loginData.data?.imageUrl ?? '')
+                      child: Image.network(
+                          _mypageViewModel.getMypageData.data?.profileImage ??
+                              '',
+                          width: ScreenUtil().setWidth(100.0),
+                          height: ScreenUtil().setHeight(100.0)),
                     ),
                     _buildNickNameWidget(),
                     _buildContentsWidget(
