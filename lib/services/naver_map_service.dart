@@ -13,14 +13,19 @@ class NaverMapService {
       double lat, double lon, List<Map<String, double>> markers,
       {int level = 17,
       int width = 600,
-      int height = 400,
+      int height = 600,
       String format = 'png'}) async {
     final markerString = markers
-        .map((marker) => 'type:d|size:mid|pos:${marker['longitude']}%20${marker['latitude']}')
-        .join('|');
+        .asMap()
+        .entries
+        .map((entry) =>
+            'type:n|size:small|color:000000|pos:${entry.value['longitude']}%20${entry.value['latitude']}|label:${entry.key + 1}')
+        .join('&markers=');
 
     final url =
         '$_mapBaseUrl?w=$width&h=$height&format=$format&markers=$markerString';
+
+    print('Request URL: $url');
 
     final response = await http.get(
       Uri.parse(url),

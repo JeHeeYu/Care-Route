@@ -261,96 +261,99 @@ class _SearchPageState extends State<SearchPage> {
     return TextSpan(children: spans);
   }
 
-  Widget _buildSearchList(String result, String address) {
-    return Padding(
-      padding: EdgeInsets.only(
-          top: ScreenUtil().setHeight(8.0),
-          left: ScreenUtil().setWidth(16.0),
-          right: ScreenUtil().setWidth(16.0)),
-      child: GestureDetector(
-        onTap: () async {
-          final coordinates = await NaverSearchService.getCoordinates(address);
-          final latitude = double.parse(coordinates['latitude']);
-          final longitude = double.parse(coordinates['longitude']);
-          if (!mounted) return;
+Widget _buildSearchList(String result, String address) {
+  return Padding(
+    padding: EdgeInsets.only(
+        top: ScreenUtil().setHeight(8.0),
+        left: ScreenUtil().setWidth(16.0),
+        right: ScreenUtil().setWidth(16.0)),
+    child: GestureDetector(
+      onTap: () async {
+        final coordinates = await NaverSearchService.getCoordinates(address);
+        final latitude = double.parse(coordinates['latitude']);
+        final longitude = double.parse(coordinates['longitude']);
+        if (!mounted) return;
 
-          if (widget.isRoute == true) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => SearchResultPage(
-                        result: result,
-                        address: address,
-                        latitude: latitude,
-                        longitude: longitude,
-                        markers: _searchResults.map((result) {
-                          return {
-                            'latitude': double.parse(result['latitude']),
-                            'longitude': double.parse(result['longitude']),
-                          };
-                        }).toList(),
-                      )),
-            );
-          } else {
-            Navigator.pop(
-              context,
-              {
-                'title': result,
-                'latitude': latitude,
-                'longitude': longitude,
-              },
-            );
-          }
-        },
-        child: Container(
-          width: double.infinity,
-          height: ScreenUtil().setHeight(74.0),
-          decoration: BoxDecoration(
-            color: const Color(UserColors.gray02),
-            borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0)),
-          ),
-          child: Padding(
-            padding:
-                EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(22.0)),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            RichText(
-                              text: _buildHighlightedText(
-                                result,
-                                _destinationController.text,
-                                const Color(UserColors.gray07),
-                                const Color(UserColors.pointGreen),
-                              ),
+        if (widget.isRoute == true) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => SearchResultPage(
+                      result: result,
+                      address: address,
+                      latitude: latitude,
+                      longitude: longitude,
+                      markers: _searchResults.map((result) {
+                        return {
+                          'title': result['title'] ?? 'No Title',
+                          'address': result['address'] ?? 'No Address',
+                          'latitude': double.parse(result['latitude']),
+                          'longitude': double.parse(result['longitude']),
+                        };
+                      }).toList(),
+                    )),
+          );
+        } else {
+          Navigator.pop(
+            context,
+            {
+              'title': result,
+              'latitude': latitude,
+              'longitude': longitude,
+            },
+          );
+        }
+      },
+      child: Container(
+        width: double.infinity,
+        height: ScreenUtil().setHeight(74.0),
+        decoration: BoxDecoration(
+          color: const Color(UserColors.gray02),
+          borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0)),
+        ),
+        child: Padding(
+          padding:
+              EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(22.0)),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          RichText(
+                            text: _buildHighlightedText(
+                              result,
+                              _destinationController.text,
+                              const Color(UserColors.gray07),
+                              const Color(UserColors.pointGreen),
                             ),
-                            SizedBox(height: ScreenUtil().setHeight(8.0)),
-                            UserText(
-                                text: address,
-                                color: const Color(UserColors.gray06),
-                                weight: FontWeight.w400,
-                                size: ScreenUtil().setSp(12.0)),
-                          ],
-                        ),
+                          ),
+                          SizedBox(height: ScreenUtil().setHeight(8.0)),
+                          UserText(
+                              text: address,
+                              color: const Color(UserColors.gray06),
+                              weight: FontWeight.w400,
+                              size: ScreenUtil().setSp(12.0)),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
+}
+
 
   Widget _recentSearchList(String text, double latitude, double longitude) {
     return Padding(

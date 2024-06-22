@@ -151,7 +151,7 @@ class _MyAppState extends State<MyApp> {
           theme: ThemeData(
             primarySwatch: Colors.blue,
           ),
-          home: const SplashPage(),
+          home: const App(initialPageType: "GUIDE",),
         ),
       ),
     );
