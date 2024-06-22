@@ -6,20 +6,24 @@ class NaverMapService {
   static const String _mapBaseUrl =
       'https://naveropenapi.apigw.ntruss.com/map-static/v2/raster';
 
-  static const String _reverseGeocodeUrl =
-      'https://naveropenapi.apigw.ntruss.com/map-reversegeocode/v2/gc';
+  static const _clientId = 'b8fgmkfu11';
+  static const _clientSecret = 'KqipHAEw5M153cxV3VWCDbcrBzNRZ5JpakFygbJ9';
 
-      static const _clientId = 'b8fgmkfu11';
-      static const _clientSecret = 'KqipHAEw5M153cxV3VWCDbcrBzNRZ5JpakFygbJ9';
-
-  static Future<Uint8List?> getStaticMapImage(double lat, double lon,
+  static Future<Uint8List?> getStaticMapImage(
+      double lat, double lon, List<Map<String, double>> markers,
       {int level = 17,
       int width = 600,
       int height = 400,
       String format = 'png'}) async {
+    final markerString = markers
+        .map((marker) => 'type:d|size:mid|pos:${marker['longitude']}%20${marker['latitude']}')
+        .join('|');
+
+    final url =
+        '$_mapBaseUrl?w=$width&h=$height&format=$format&markers=$markerString';
+
     final response = await http.get(
-      Uri.parse(
-          '$_mapBaseUrl?center=$lon,$lat&level=$level&w=$width&h=$height&format=$format&markers=type:d|size:mid|pos:$lon%20$lat'),
+      Uri.parse(url),
       headers: {
         'X-NCP-APIGW-API-KEY-ID': _clientId,
         'X-NCP-APIGW-API-KEY': _clientSecret,
@@ -34,10 +38,10 @@ class NaverMapService {
     }
   }
 
-  static Future<String?> getAddressFromLatLng(double lat, double lon) async {
+  static Future<Map<String, String>> getCoordinates(String address) async {
     final response = await http.get(
       Uri.parse(
-          '$_reverseGeocodeUrl?coords=$lon,$lat&output=json'),
+          'https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode?query=$address'),
       headers: {
         'X-NCP-APIGW-API-KEY-ID': _clientId,
         'X-NCP-APIGW-API-KEY': _clientSecret,
@@ -45,19 +49,15 @@ class NaverMapService {
     );
 
     if (response.statusCode == 200) {
-      final json = jsonDecode(response.body);
-      print('API Response: $json');
-      if (json['results'] != null && json['results'].isNotEmpty) {
-        final area = json['results'][0]['region'];
-        final String address =
-            '${area['area1']['name']} ${area['area2']['name']} ${area['area3']['name']}';
-        return address;
-      } else {
-        print('No address found in results');
+      final Map<String, dynamic> data = jsonDecode(response.body);
+      if (data['addresses'].isNotEmpty) {
+        final result = data['addresses'][0];
+        return {
+          'latitude': result['y'],
+          'longitude': result['x'],
+        };
       }
-    } else {
-      print('Failed to load address: ${response.statusCode}');
     }
-    return null;
+    throw Exception('Failed to get coordinates');
   }
 }

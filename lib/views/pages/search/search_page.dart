@@ -7,6 +7,7 @@ import '../../../consts/colors.dart';
 import '../../../consts/images.dart';
 import '../../../consts/strings.dart';
 import '../../../services/address_search_service.dart';
+import '../../../services/naver_map_service.dart';
 import '../../../services/naver_search_service.dart';
 import '../../widgets/button_icon.dart';
 import '../../widgets/button_image.dart';
@@ -15,7 +16,9 @@ import '../../widgets/user_text.dart';
 import 'search_result_page.dart';
 
 class SearchPage extends StatefulWidget {
-  const SearchPage({super.key});
+  final bool isRoute;
+
+  const SearchPage({super.key, this.isRoute = false});
 
   @override
   State<SearchPage> createState() => _SearchPageState();
@@ -48,6 +51,12 @@ class _SearchPageState extends State<SearchPage> {
       });
     } else {
       final results = await NaverSearchService.searchPlaces(query);
+      for (var result in results) {
+        final coordinates = await NaverMapService.getCoordinates(
+            result['address'] ?? result['roadAddress']);
+        result['latitude'] = coordinates['latitude'];
+        result['longitude'] = coordinates['longitude'];
+      }
       setState(() {
         _searchResults = results;
       });
@@ -263,15 +272,35 @@ class _SearchPageState extends State<SearchPage> {
           final coordinates = await NaverSearchService.getCoordinates(address);
           final latitude = double.parse(coordinates['latitude']);
           final longitude = double.parse(coordinates['longitude']);
+          if (!mounted) return;
 
-          Navigator.pop(
-            context,
-            {
-              'title': result,
-              'latitude': latitude,
-              'longitude': longitude,
-            },
-          );
+          if (widget.isRoute == true) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => SearchResultPage(
+                        result: result,
+                        address: address,
+                        latitude: latitude,
+                        longitude: longitude,
+                        markers: _searchResults.map((result) {
+                          return {
+                            'latitude': double.parse(result['latitude']),
+                            'longitude': double.parse(result['longitude']),
+                          };
+                        }).toList(),
+                      )),
+            );
+          } else {
+            Navigator.pop(
+              context,
+              {
+                'title': result,
+                'latitude': latitude,
+                'longitude': longitude,
+              },
+            );
+          }
         },
         child: Container(
           width: double.infinity,

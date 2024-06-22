@@ -12,12 +12,14 @@ class SearchResultPage extends StatefulWidget {
   final String address;
   final double latitude;
   final double longitude;
+  final List<Map<String, double>> markers;
 
   const SearchResultPage({
     required this.result,
     required this.address,
     required this.latitude,
     required this.longitude,
+    required this.markers,
     super.key,
   });
 
@@ -38,6 +40,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
     final staticMapImage = await NaverMapService.getStaticMapImage(
       widget.latitude,
       widget.longitude,
+      widget.markers,
     );
     setState(() {
       _staticMapImage = staticMapImage;

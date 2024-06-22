@@ -81,7 +81,6 @@ class _NumberChangePageState extends State<NumberChangePage> {
           borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0))),
       child: _buildTextFieldWidget(
         _currentNumberController,
-        // Jehee
         Strings.inputPhoneNumberHint,
         TextInputType.number,
         [FilteringTextInputFormatter.digitsOnly],
@@ -129,7 +128,6 @@ class _NumberChangePageState extends State<NumberChangePage> {
           borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0))),
       child: _buildTextFieldWidget(
         _afterNumberController,
-        // Jehee
         Strings.changeNumberGuide,
         TextInputType.number,
         [FilteringTextInputFormatter.digitsOnly],

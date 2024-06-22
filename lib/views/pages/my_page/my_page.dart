@@ -36,8 +36,6 @@ class _MyPageState extends State<MyPage> {
     _nicknameController = TextEditingController(
       text: _mypageViewModel.getMypageData.data?.nickname ?? '',
     );
-
-    print("Jehee : ${_mypageViewModel.getMypageData.data?.profileImage}");
   }
 
   @override

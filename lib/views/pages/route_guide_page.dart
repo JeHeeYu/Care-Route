@@ -143,7 +143,7 @@ class _RouteGuidePageState extends State<RouteGuidePage> {
   void _navigateToSearchPage() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const SearchPage()),
+      MaterialPageRoute(builder: (context) => const SearchPage(isRoute: true)),
     );
   }
 
@@ -230,7 +230,8 @@ class _RouteGuidePageState extends State<RouteGuidePage> {
                     color: const Color(UserColors.gray04),
                     width: 1.0,
                   ),
-                  borderRadius: BorderRadius.circular(ScreenUtil().radius(28.0)),
+                  borderRadius:
+                      BorderRadius.circular(ScreenUtil().radius(28.0)),
                 ),
                 child: Padding(
                   padding: EdgeInsets.symmetric(

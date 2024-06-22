@@ -22,10 +22,8 @@ class MypageViewModel with ChangeNotifier {
       final json = MypageModel.fromJson(responseMap);
 
       setMypageData(ApiResponse.complete(json));
-      print("Jehee 1");
       return json.statusCode;
     } catch (e) {
-      print("Jehee 2 ${e}");
       setMypageData(ApiResponse.error(e.toString()));
       return 400;
     }
@@ -38,10 +36,8 @@ class MypageViewModel with ChangeNotifier {
       final json = MypageModel.fromJson(responseMap);
 
       setMypageData(ApiResponse.complete(json));
-      print("Jehee 1");
       return json.statusCode;
     } catch (e) {
-      print("Jehee 2 ${e}");
       setMypageData(ApiResponse.error(e.toString()));
       return 400;
     }
