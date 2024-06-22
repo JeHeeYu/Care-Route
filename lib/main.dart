@@ -1,5 +1,3 @@
-import 'package:care_route/routes/routes.dart';
-import 'package:care_route/routes/routes_name.dart';
 import 'package:care_route/view_models/member_view_model.dart';
 import 'package:care_route/view_models/route_view_model.dart';
 import 'package:care_route/view_models/routine_view_model.dart';
@@ -149,8 +147,7 @@ class _MyAppState extends State<MyApp> {
           theme: ThemeData(
             primarySwatch: Colors.blue,
           ),
-          initialRoute: RoutesName.splash,
-          onGenerateRoute: Routes.generateRoute,
+          home: const SplashPage(),
         ),
       ),
     );

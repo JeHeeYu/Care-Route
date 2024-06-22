@@ -8,7 +8,6 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../../../consts/colors.dart';
 import '../../../consts/strings.dart';
-import '../../../routes/routes_name.dart';
 import '../../widgets/complete_dialog.dart';
 
 class MyPage extends StatefulWidget {

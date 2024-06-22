@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 
 import '../../../../consts/colors.dart';
 import '../../../../consts/strings.dart';
-import '../../../../routes/routes_name.dart';
 import '../../../../view_models/routine_view_model.dart';
 import '../../widgets/button_icon.dart';
 import '../../widgets/infinity_button.dart';

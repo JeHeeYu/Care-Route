@@ -1,3 +1,4 @@
+import 'package:care_route/views/pages/user_info_page.dart';
 import 'package:care_route/views/widgets/back_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -6,7 +7,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../consts/colors.dart';
 import '../../../consts/strings.dart';
-import '../../../routes/routes_name.dart';
 import '../../widgets/infinity_button.dart';
 import '../../widgets/user_text.dart';
 
@@ -14,7 +14,10 @@ class PermissionsPage extends StatelessWidget {
   const PermissionsPage({super.key});
 
   void _navigateToPermissionPage(BuildContext context) {
-    Navigator.of(context).pushNamed(RoutesName.userInfo);
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const UserInfoPage()),
+    );
   }
 
   Widget _buildContentsWidget(String title) {
