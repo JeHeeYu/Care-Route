@@ -135,6 +135,13 @@ class _TargetConnectionListPageState extends State<TargetListPage> {
     );
   }
 
+  bool _isButtonEnabled() {
+    if (widget.userType == "GUIDE") {
+      return true;
+    }
+    return (_routineViewModel.targetList.data?.targetInfos.length ?? 0) < 1;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -175,19 +182,16 @@ class _TargetConnectionListPageState extends State<TargetListPage> {
               height: ScreenUtil().setHeight(56.0),
               radius: ScreenUtil().radius(8.0),
               backgroundColor:
-                  (_routineViewModel.targetList.data?.targetInfos.isNotEmpty ??
-                          false)
-                      ? const Color(UserColors.gray03)
-                      : const Color(UserColors.pointGreen),
+                  _isButtonEnabled()
+                      ? const Color(UserColors.pointGreen)
+                      : const Color(UserColors.gray03),
               text: Strings.addTarget,
               textSize: ScreenUtil().setSp(16.0),
               textColor: const Color(UserColors.gray01),
               textWeight: FontWeight.w600,
-              callback: () =>
-                  (_routineViewModel.targetList.data?.targetInfos.isNotEmpty ??
-                          false)
-                      ? {}
-                      : _navigateToConnectionPage(context),
+              callback: () => _isButtonEnabled()
+                  ? _navigateToConnectionPage(context)
+                  : null,
             ),
           ),
         ],
