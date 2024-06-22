@@ -112,6 +112,8 @@ class Strings {
   static const String changeNumberGuide = "변경할 전화번호를 입력해주세요.";
   static const String start = "출발";
   static const String arrive = "도착";
+  static const String rouingStartGuide = "출발지를 입력해주세요.";
+  static const String rouingArriveGuide = "도착지를 입력해주세요.";
 
   // === API KEY ===
   static const String idTokenKey = "idToken";

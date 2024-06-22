@@ -7,6 +7,7 @@ import 'package:care_route/views/pages/login_page.dart';
 import 'package:care_route/views/pages/my_page/number_change_page.dart';
 import 'package:care_route/views/pages/my_page/target_connection_page.dart';
 import 'package:care_route/views/pages/route_guide_page.dart';
+import 'package:care_route/views/pages/search/routing_page.dart';
 import 'package:care_route/views/pages/splash_page.dart';
 import 'package:care_route/views/pages/type_select_page.dart';
 import 'package:care_route/views/pages/user_info_page.dart';
@@ -151,7 +152,8 @@ class _MyAppState extends State<MyApp> {
           theme: ThemeData(
             primarySwatch: Colors.blue,
           ),
-          home: const App(initialPageType: "GUIDE",),
+          // home: const App(initialPageType: "GUIDE",),
+          home: const RoutingPage()
         ),
       ),
     );
