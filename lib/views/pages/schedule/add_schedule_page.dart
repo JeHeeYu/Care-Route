@@ -1,9 +1,12 @@
+import 'package:care_route/views/pages/schedule/target_list_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
 import '../../../consts/colors.dart';
 import '../../../consts/images.dart';
 import '../../../consts/strings.dart';
+import '../../../view_models/routine_view_model.dart';
 import '../../widgets/button_icon.dart';
 import '../../widgets/button_image.dart';
 import '../../widgets/infinity_button.dart';
@@ -24,6 +27,13 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
     TextEditingController()
   ];
   String _startLocation = "";
+  late RoutineViewModel _routineViewModel;
+
+  @override
+  void initState() {
+    super.initState();
+    _routineViewModel = Provider.of<RoutineViewModel>(context, listen: false);
+  }
 
   void _navigateToSearchPage(String from, [int? index]) async {
     final result = await Navigator.push(
@@ -399,22 +409,11 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        actions: [
-          Padding(
-            padding: EdgeInsets.only(right: ScreenUtil().setWidth(17.0)),
-            child: ButtonIcon(
-                icon: Icons.arrow_back_ios,
-                iconColor: const Color(UserColors.gray05),
-                callback: () => Navigator.pop(context)),
-          ),
-        ],
-      ),
       backgroundColor: Colors.white,
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          const TargetListWidget(isBackKey: true),
           Expanded(
             child: SingleChildScrollView(
               child: Padding(
