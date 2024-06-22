@@ -107,6 +107,9 @@ class Strings {
   static const String guideConnectionGude2 = "하고,\n가족에게 안전한 길을\n";
   static const String guideConnectionGude3 = "하고,";
   static const String guideConnectionGude4 = "해요.";
+  static const String currentNumberGuide = "기존 등록된 전화번호";
+  static const String changeNumber = "변경할 전화번호";
+  static const String changeNumberGuide = "변경할 전화번호를 입력해주세요.";
 
   // === API KEY ===
   static const String idTokenKey = "idToken";
