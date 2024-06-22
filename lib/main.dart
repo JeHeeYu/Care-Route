@@ -1,4 +1,5 @@
 import 'package:care_route/view_models/member_view_model.dart';
+import 'package:care_route/view_models/mypage_view_model.dart';
 import 'package:care_route/view_models/route_view_model.dart';
 import 'package:care_route/view_models/routine_view_model.dart';
 import 'package:care_route/views/pages/favorite_page.dart';
@@ -140,6 +141,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (_) => MemberViewModel()),
         ChangeNotifierProvider(create: (_) => RouteViewModel()),
         ChangeNotifierProvider(create: (_) => RoutineViewModel()),
+        ChangeNotifierProvider(create: (_) => MypageViewModel()),
       ],
       child: ScreenUtilInit(
         designSize: const Size(360, 640),

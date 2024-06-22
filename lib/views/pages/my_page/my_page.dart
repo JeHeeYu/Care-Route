@@ -5,9 +5,11 @@ import 'package:care_route/views/widgets/user_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:provider/provider.dart';
 
 import '../../../consts/colors.dart';
 import '../../../consts/strings.dart';
+import '../../../view_models/member_view_model.dart';
 import '../../widgets/complete_dialog.dart';
 
 class MyPage extends StatefulWidget {
@@ -21,6 +23,13 @@ class MyPage extends StatefulWidget {
 
 class _MyPageState extends State<MyPage> {
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
+  late MemberViewModel _memberViewModel;
+
+  @override
+  void initState() {
+    super.initState();
+    _memberViewModel = Provider.of<MemberViewModel>(context, listen: false);
+  }
 
   void _showPage(BuildContext context, Widget page) {
     Navigator.push(
@@ -151,18 +160,16 @@ class _MyPageState extends State<MyPage> {
                   children: [
                     SizedBox(height: ScreenUtil().setHeight(60.0)),
                     ClipOval(
-                      child: Container(
-                        color: Colors.red,
-                        width: ScreenUtil().setWidth(100.0),
-                        height: ScreenUtil().setHeight(100.0),
-                        child: Container(),
-                      ),
+                      child: Image.network(_memberViewModel.loginData.data?.imageUrl ?? '')
                     ),
                     _buildNickNameWidget(),
                     _buildContentsWidget(
                         Strings.changePhoneNumber, Container()),
                     _buildContentsWidget(
-                        Strings.targetConnection, TargetListPage(userType: widget.userType,)),
+                        Strings.targetConnection,
+                        TargetListPage(
+                          userType: widget.userType,
+                        )),
                     _buildContentsWidget(Strings.setEasyAddress, Container()),
                     _buildContentsWidget(Strings.customerCenter, Container()),
                     _buildContentsWidget(Strings.notification, Container()),

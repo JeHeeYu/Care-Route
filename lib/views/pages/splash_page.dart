@@ -1,3 +1,4 @@
+import 'package:care_route/view_models/mypage_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
@@ -21,6 +22,7 @@ class _SplashPageState extends State<SplashPage> {
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
   late RoutineViewModel _routineViewModel;
   late RouteViewModel _routeViewModel;
+  late MypageViewModel _mypageViewModel;
 
   @override
   void initState() {
@@ -28,8 +30,10 @@ class _SplashPageState extends State<SplashPage> {
 
     _routineViewModel = Provider.of<RoutineViewModel>(context, listen: false);
     _routeViewModel = Provider.of<RouteViewModel>(context, listen: false);
+    _mypageViewModel = Provider.of<MypageViewModel>(context, listen: false);
     _routineViewModel.getTargetList();
     _routeViewModel.getBookMark();
+    _mypageViewModel.getMypage();
 
     Future.delayed(const Duration(seconds: 3), _checkLoginStatus);
   }
