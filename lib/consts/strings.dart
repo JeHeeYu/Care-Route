@@ -87,6 +87,26 @@ class Strings {
   static const String setRoute = "안내 경로 설정";
   static const String addComplete = "추가 되었습니다.";
   static const String deleteComplete = "삭제 되었습니다.";
+  static const String requestConnection = "연결 요청하기";
+  static const String connectionInputGuide = "연결을 원하는 상대방의 전화번호를 적어주세요.";
+  static const String inputPhoneNumber = "전화번호를 입력해주세요.";
+  static const String connectionTypeGuide = "상대방에게 요청할 사용방식을 정해주세요.";
+  static const String guide = "안내인";
+  static const String target = "안내 대상";
+  static const String targetConnectionColorGude1 = "계획";
+  static const String targetConnectionColorGude2 = "길";
+  static const String targetConnectionColorGude3 = "안내";
+  static const String targetConnectionGude1 = "대로 움직이며\n선택된 안전한";
+  static const String targetConnectionGude2 = "을\n";
+  static const String targetConnectionGude3 = "받을래요";
+  static const String guideConnectionColorGude1 = "일정";
+  static const String guideConnectionColorGude2 = "관리";
+  static const String guideConnectionColorGude3 = "제공";
+  static const String guideConnectionColorGude4 = "확인";
+  static const String guideConnectionGude1 = "을";
+  static const String guideConnectionGude2 = "하고,\n가족에게 안전한 길을\n";
+  static const String guideConnectionGude3 = "하고,";
+  static const String guideConnectionGude4 = "해요.";
 
   // === API KEY ===
   static const String idTokenKey = "idToken";

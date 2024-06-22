@@ -3,6 +3,7 @@ import 'package:care_route/view_models/route_view_model.dart';
 import 'package:care_route/view_models/routine_view_model.dart';
 import 'package:care_route/views/pages/favorite_page.dart';
 import 'package:care_route/views/pages/login_page.dart';
+import 'package:care_route/views/pages/my_page/target_connection_page.dart';
 import 'package:care_route/views/pages/route_guide_page.dart';
 import 'package:care_route/views/pages/splash_page.dart';
 import 'package:care_route/views/pages/type_select_page.dart';
@@ -147,7 +148,7 @@ class _MyAppState extends State<MyApp> {
           theme: ThemeData(
             primarySwatch: Colors.blue,
           ),
-          home: const SplashPage(),
+          home: const TargetConnectionPage(),
         ),
       ),
     );
