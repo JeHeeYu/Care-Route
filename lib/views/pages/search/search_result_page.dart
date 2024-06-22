@@ -9,17 +9,19 @@ import '../../../consts/strings.dart';
 import '../../../services/naver_map_service.dart';
 import '../../widgets/button_icon.dart';
 import '../../widgets/button_image.dart';
+import '../../widgets/destination_dialog.dart';
 import '../../widgets/user_text.dart';
+import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 class SearchResultPage extends StatefulWidget {
-  final String result;
+  String result;
   final String address;
   final double latitude;
   final double longitude;
   final List<Map<String, dynamic>> markers;
 
-  const SearchResultPage({
-    required this.result,
+  SearchResultPage({
+    this.result = "",
     required this.address,
     required this.latitude,
     required this.longitude,
@@ -33,11 +35,68 @@ class SearchResultPage extends StatefulWidget {
 
 class _SearchResultPageState extends State<SearchResultPage> {
   Uint8List? _staticMapImage;
+  Timer? _timer;
+  late stt.SpeechToText _speech;
+  bool _isListening = false;
 
   @override
   void initState() {
     super.initState();
     _fetchStaticMap();
+    _speech = stt.SpeechToText();
+  }
+
+  void _showDestinationDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return DestinationDialog(
+          onStartListening: _startListening,
+          onStopListening: _stopListening,
+        );
+      },
+    ).then((_) {
+      setState(() {});
+      _stopListening();
+    });
+
+    _startListening();
+    _resetTimer();
+  }
+
+  void _startListening() async {
+    bool available = await _speech.initialize(
+      onStatus: (val) => print('onStatus: $val'),
+      onError: (val) => print('onError: $val'),
+    );
+    if (available) {
+      setState(() => _isListening = true);
+      _speech.listen(
+        onResult: (val) => setState(() {
+          widget.result = val.recognizedWords;
+          _resetTimer();
+        }),
+        localeId: 'ko_KR',
+      );
+    }
+  }
+
+  void _stopListening() {
+    _speech.stop();
+    setState(() => _isListening = false);
+    _cancelTimer();
+  }
+
+  void _resetTimer() {
+    _cancelTimer();
+    _timer = Timer(const Duration(seconds: 4), () {
+      _stopListening();
+      Navigator.of(context, rootNavigator: true).pop();
+    });
+  }
+
+  void _cancelTimer() {
+    _timer?.cancel();
   }
 
   Future<void> _fetchStaticMap() async {
@@ -65,43 +124,45 @@ class _SearchResultPageState extends State<SearchResultPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          TextField(
-            controller: TextEditingController(text: widget.address),
-            focusNode: FocusNode(),
-            style: const TextStyle(
-              color: Colors.black,
-              fontSize: 16.0,
-              fontFamily: "Pretendard",
-              fontWeight: FontWeight.w600,
+          Container(
+            height: ScreenUtil().setHeight(56.0),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0)),
+              border: Border.all(
+                color: const Color(UserColors.gray03),
+              ),
             ),
-            decoration: InputDecoration(
-              hintText: 'Enter destination',
-              hintStyle: const TextStyle(
-                color: Color(UserColors.gray04),
-                fontSize: 16.0,
-                fontFamily: "Pretendard",
-                fontWeight: FontWeight.w600,
+            child: Padding(
+              padding:
+                  EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(12.0)),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      ButtonIcon(
+                          icon: Icons.arrow_back_ios,
+                          iconColor: const Color(UserColors.gray05),
+                          callback: () => Navigator.of(context).pop()),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          widget.result,
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 16.0,
+                            fontFamily: "Pretendard",
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  ButtonImage(
+                      imagePath: Images.mic, callback: _showDestinationDialog),
+                ],
               ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0)),
-                borderSide: const BorderSide(
-                  color: Color(UserColors.gray03),
-                ),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0)),
-                borderSide: const BorderSide(
-                  color: Color(UserColors.gray03),
-                ),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0)),
-                borderSide: const BorderSide(
-                  color: Color(UserColors.gray03),
-                ),
-              ),
-              filled: true,
-              fillColor: Colors.white,
             ),
           ),
           SizedBox(height: ScreenUtil().setHeight(16.0)),
@@ -278,7 +339,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
           DraggableScrollableSheet(
             initialChildSize: 0.3,
             minChildSize: 0.3,
-            maxChildSize: 0.9,
+            maxChildSize: 0.80,
             builder: (BuildContext context, ScrollController scrollController) {
               return Container(
                 decoration: const BoxDecoration(
