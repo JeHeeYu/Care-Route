@@ -69,6 +69,33 @@ class NetworkManager {
     }
   }
 
+  Future<dynamic> put(String serverUrl, Map<String, dynamic> data) async {
+    try {
+      dynamic responseJson;
+      String jsonData = jsonEncode(data);
+
+      final response = await http.put(
+        Uri.parse(serverUrl),
+        headers: await commonHeaders,
+        body: jsonData,
+      );
+
+      responseJson = utf8.decode(response.bodyBytes);
+
+      if (response.statusCode == 200) {
+        print("PUT 성공: ${responseJson}");
+      } else {
+        print(
+            "PUT 실패: ${response.statusCode},   ${responseJson} ${response.body}");
+      }
+
+      return responseJson;
+    } catch (error) {
+      print("에러 발생: $error");
+      return "";
+    }
+  }
+
   Future<dynamic> bookMarkDelete(String serverUrl, String postId) async {
     dynamic responseJson;
 

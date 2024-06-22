@@ -6,4 +6,5 @@ class ApiUrl {
   static const String route = "https://readyou.shop/api/route";
   static const String targetList = "https://readyou.shop/api/routine/targets";
   static const String mypage = "https://readyou.shop/api/mypage";
+  static const String nickname = "https://readyou.shop/api/mypage/nickname";
 }

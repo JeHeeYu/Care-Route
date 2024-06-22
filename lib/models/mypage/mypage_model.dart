@@ -2,7 +2,7 @@ class MypageModel {
   final int statusCode;
   final String message;
   final int memberId;
-  final String? nickname;
+  String? nickname;
   final String? role;
   final String? address;
   final String? profileImage;

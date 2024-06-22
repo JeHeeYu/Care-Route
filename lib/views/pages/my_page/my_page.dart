@@ -24,31 +24,44 @@ class MyPage extends StatefulWidget {
 class _MyPageState extends State<MyPage> {
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
   late MypageViewModel _mypageViewModel;
+  late TextEditingController _nicknameController;
+  bool _isEditingNickname = false;
 
   @override
   void initState() {
     super.initState();
 
     _mypageViewModel = Provider.of<MypageViewModel>(context, listen: false);
+    _nicknameController = TextEditingController(
+      text: _mypageViewModel.getMypageData.data?.nickname ?? '',
+    );
 
     print("Jehee : ${_mypageViewModel.getMypageData.data?.profileImage}");
   }
 
-  void _showPage(BuildContext context, Widget page) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => page),
-    );
+  @override
+  void dispose() {
+    _nicknameController.dispose();
+    super.dispose();
   }
 
-  void showCompleteDialog(String text) {
-    showDialog(
-      context: context,
-      barrierColor: Colors.transparent,
-      builder: (BuildContext context) {
-        return CompleteDialog(title: text);
-      },
-    );
+  void _toggleEditing() {
+    setState(() {
+      _isEditingNickname = !_isEditingNickname;
+      if (!_isEditingNickname) {
+        _updateNickname();
+      }
+    });
+
+    Map<String, String> data = { Strings.nicknameKey: _nicknameController.text};
+
+    _mypageViewModel.updateNickname(data);
+  }
+
+  void _updateNickname() {
+    setState(() {
+      _mypageViewModel.getMypageData.data?.nickname = _nicknameController.text;
+    });
   }
 
   Widget _buildNickNameWidget() {
@@ -59,16 +72,37 @@ class _MyPageState extends State<MyPage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          UserText(
-              text: _mypageViewModel.getMypageData.data?.nickname ?? '',
-              color: const Color(UserColors.gray07),
-              weight: FontWeight.w700,
-              size: ScreenUtil().setSp(16.0)),
+          _isEditingNickname
+              ? SizedBox(
+                  width: _nicknameController.text.length * 20.0,
+                  child: TextField(
+                    controller: _nicknameController,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      isDense: true,
+                    ),
+                    style: TextStyle(
+                      fontFamily: "Pretendard",
+                      fontWeight: FontWeight.w700,
+                      fontSize: ScreenUtil().setSp(16.0),
+                      color: const Color(UserColors.gray07),
+                    ),
+                    onSubmitted: (value) {
+                      _toggleEditing();
+                    },
+                  ),
+                )
+              : UserText(
+                  text: _mypageViewModel.getMypageData.data?.nickname ?? '',
+                  color: const Color(UserColors.gray07),
+                  weight: FontWeight.w700,
+                  size: ScreenUtil().setSp(16.0)),
           SizedBox(width: ScreenUtil().setWidth(8.0)),
-          const ButtonIcon(
+          ButtonIcon(
             icon: Icons.edit,
-            iconColor: const Color(UserColors.gray05),
-          )
+            iconColor: Color(UserColors.gray05),
+            callback: () => _toggleEditing(),
+          ),
         ],
       ),
     );
@@ -78,7 +112,10 @@ class _MyPageState extends State<MyPage> {
     return Padding(
       padding: EdgeInsets.only(bottom: ScreenUtil().setHeight(8.0)),
       child: GestureDetector(
-        onTap: () => _showPage(context, page),
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => page),
+        ),
         child: Container(
           width: double.infinity,
           height: ScreenUtil().setHeight(56.0),
@@ -114,10 +151,13 @@ class _MyPageState extends State<MyPage> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         GestureDetector(
-          onTap: () => {
-            showCompleteDialog(Strings.logoutComplete),
-            _storage.deleteAll(),
-            _showPage(context, const LoginPage()),
+          onTap: () {
+            CompleteDialog.showCompleteDialog(context, Strings.logoutComplete);
+            _storage.deleteAll();
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const LoginPage()),
+            );
           },
           child: UserText(
               text: Strings.logout,
@@ -132,10 +172,14 @@ class _MyPageState extends State<MyPage> {
           margin: EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(20.0)),
         ),
         GestureDetector(
-          onTap: () => {
-            showCompleteDialog(Strings.withdrawalComplete),
-            _storage.deleteAll(),
-            _showPage(context, const LoginPage()),
+          onTap: () {
+            CompleteDialog.showCompleteDialog(
+                context, Strings.withdrawalComplete);
+            _storage.deleteAll();
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const LoginPage()),
+            );
           },
           child: UserText(
               text: Strings.withdrawal,

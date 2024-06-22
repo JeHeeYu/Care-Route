@@ -117,4 +117,5 @@ class Strings {
   static const String latitudeKey = "latitude";
   static const String longitudeKey = "longitude";
   static const String loginKey = "login";
+  static const String nicknameKey = 'nickname';
 }
