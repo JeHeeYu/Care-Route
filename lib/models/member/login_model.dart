@@ -2,13 +2,19 @@ class LoginModel {
   final int statusCode;
   final String message;
   final int? memberId;
-  final String? type;
+  final String nickname;
+  final String type;
+  final String? phoneNumber;
+  final String? imageUrl;
 
   LoginModel({
     required this.statusCode,
     required this.message,
     this.memberId,
-    this.type,
+    required this.nickname,
+    required this.type,
+    this.phoneNumber,
+    this.imageUrl,
   });
 
   factory LoginModel.fromJson(Map<String, dynamic> json) {
@@ -16,7 +22,10 @@ class LoginModel {
       statusCode: json['statusCode'] ?? 0,
       message: json['message'] ?? '',
       memberId: json['memberId'],
-      type: json['type'],
+      nickname: json['nickname'] ?? '',
+      type: json['type'] ?? '',
+      phoneNumber: json['phoneNumber'],
+      imageUrl: json['imageUrl'],
     );
   }
 }
