@@ -1,5 +1,6 @@
 import 'package:care_route/view_models/mypage_view_model.dart';
 import 'package:care_route/views/pages/login_page.dart';
+import 'package:care_route/views/pages/my_page/number_change_page.dart';
 import 'package:care_route/views/pages/my_page/target_list_page.dart';
 import 'package:care_route/views/widgets/button_icon.dart';
 import 'package:care_route/views/widgets/user_text.dart';
@@ -215,7 +216,7 @@ class _MyPageState extends State<MyPage> {
                     ),
                     _buildNickNameWidget(),
                     _buildContentsWidget(
-                        Strings.changePhoneNumber, Container()),
+                        Strings.changePhoneNumber, const NumberChangePage()),
                     _buildContentsWidget(
                         Strings.targetConnection,
                         TargetListPage(
