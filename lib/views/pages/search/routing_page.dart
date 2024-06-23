@@ -1,14 +1,13 @@
 import 'package:care_route/views/pages/search/search_page.dart';
-import 'package:care_route/views/widgets/user_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import '../../../consts/colors.dart';
 import '../../../consts/images.dart';
 import '../../../consts/strings.dart';
-import '../../../services/odsay_route_service.dart';
 import '../../widgets/button_icon.dart';
 import '../../widgets/button_image.dart';
+import '../../../services/tmap_search_service.dart';
+import '../../widgets/user_text.dart';
 
 class RoutingPage extends StatefulWidget {
   final String? startTitle;
@@ -42,6 +41,9 @@ class _RoutingPageState extends State<RoutingPage> {
   bool _isLoading = false;
   String _errorMessage = '';
   Map<String, dynamic>? _routeData;
+  bool _isFinish = false;
+
+  int _selectedRouteTypeIndex = -1;
 
   @override
   void initState() {
@@ -52,6 +54,7 @@ class _RoutingPageState extends State<RoutingPage> {
     _startY = widget.startY;
     _endX = widget.endX;
     _endY = widget.endY;
+    _fetchRouteIfReady();
   }
 
   void _navigateToSearchPage(String from) async {
@@ -89,7 +92,7 @@ class _RoutingPageState extends State<RoutingPage> {
     });
 
     try {
-      final data = await OdsayRouteService.fetchRoute(
+      final data = await TMapSearchService.fetchRoute(
         _startX!,
         _startY!,
         _endX!,
@@ -98,13 +101,21 @@ class _RoutingPageState extends State<RoutingPage> {
       setState(() {
         _routeData = data;
         _isLoading = false;
+        _isFinish = true;
       });
     } catch (e) {
       setState(() {
         _errorMessage = e.toString();
         _isLoading = false;
+        _isFinish = false;
       });
     }
+  }
+
+  void _onRouteTypeTap(int index) {
+    setState(() {
+      _selectedRouteTypeIndex = index;
+    });
   }
 
   Widget _buildDestinationInputBox() {
@@ -204,6 +215,52 @@ class _RoutingPageState extends State<RoutingPage> {
     );
   }
 
+  Widget _buildRouteTypeWidget() {
+    return Container(
+      height: ScreenUtil().setHeight(80.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0)),
+        border: Border.all(
+          color: const Color(UserColors.gray03),
+        ),
+      ),
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(16.0)),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            _routeType(Icons.access_time, 0),
+            _routeType(Icons.directions_bus, 1),
+            _routeType(Icons.directions_bike, 2),
+            _routeType(Icons.directions_walk, 3),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _routeType(IconData icon, int index) {
+    final isSelected = _selectedRouteTypeIndex == index;
+    return GestureDetector(
+      onTap: () => _onRouteTypeTap(index),
+      child: Container(
+        width: ScreenUtil().setWidth(78.0),
+        height: ScreenUtil().setHeight(48.0),
+        decoration: BoxDecoration(
+          color: const Color(UserColors.gray02),  // 기본 색상 유지
+          borderRadius: BorderRadius.circular(ScreenUtil().radius(28.0)),
+          border: Border.all(
+            color: isSelected ? const Color(UserColors.pointGreen) : const Color(UserColors.gray04),
+          ),
+        ),
+        child: Center(
+          child: Icon(icon, color: isSelected ? const Color(UserColors.pointGreen) : const Color(UserColors.gray04), size: ScreenUtil().setWidth(30.0)),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -212,6 +269,13 @@ class _RoutingPageState extends State<RoutingPage> {
         children: [
           SizedBox(height: ScreenUtil().setHeight(40.0)),
           _buildDestinationInputBox(),
+          SizedBox(height: ScreenUtil().setHeight(6.0)),
+          const Divider(
+            color: Color(UserColors.gray03),
+            thickness: 1.0,
+          ),
+          SizedBox(height: ScreenUtil().setHeight(16.0)),
+          (_isFinish == true) ? _buildRouteTypeWidget() : Container(),
           if (_isLoading) CircularProgressIndicator(),
           if (_routeData != null) ...[
             Text('Route Data:'),
