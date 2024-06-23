@@ -117,7 +117,21 @@ class _FavoritePageState extends State<FavoritePage> {
 
   String _removeHtmlTags(String htmlString) {
     final RegExp exp = RegExp(r'<[^>]*>', multiLine: true, caseSensitive: true);
-    return htmlString.replaceAll(exp, '');
+    String result = htmlString.replaceAll(exp, '');
+
+    final Map<String, String> htmlEntities = {
+      '&amp;': '&',
+      '&lt;': '<',
+      '&gt;': '>',
+      '&quot;': '"',
+      '&apos;': '\'',
+    };
+
+    htmlEntities.forEach((key, value) {
+      result = result.replaceAll(key, value);
+    });
+
+    return result;
   }
 
   void _setBookMark(String title, String address) async {
@@ -278,91 +292,96 @@ class _FavoritePageState extends State<FavoritePage> {
     );
   }
 
-Widget _buildSearchList(String result, String address) {
-  return Padding(
-    padding: EdgeInsets.only(
-        top: ScreenUtil().setHeight(8.0),
-        left: ScreenUtil().setWidth(16.0),
-        right: ScreenUtil().setWidth(16.0)),
-    child: Container(
-      width: double.infinity,
-      height: ScreenUtil().setHeight(74.0),
-      decoration: BoxDecoration(
-        color: const Color(UserColors.gray02),
-        borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0)),
-      ),
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(22.0)),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        RichText(
-                          text: _buildHighlightedText(
-                            result,
-                            _searchController.text,
-                            const Color(UserColors.gray07),
-                            const Color(UserColors.pointGreen),
+  Widget _buildSearchList(String result, String address) {
+    return Padding(
+      padding: EdgeInsets.only(
+          top: ScreenUtil().setHeight(8.0),
+          left: ScreenUtil().setWidth(16.0),
+          right: ScreenUtil().setWidth(16.0)),
+      child: Container(
+        width: double.infinity,
+        height: ScreenUtil().setHeight(74.0),
+        decoration: BoxDecoration(
+          color: const Color(UserColors.gray02),
+          borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0)),
+        ),
+        child: Padding(
+          padding:
+              EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(22.0)),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          RichText(
+                            text: _buildHighlightedText(
+                              result,
+                              _searchController.text,
+                              const Color(UserColors.gray07),
+                              const Color(UserColors.pointGreen),
+                            ),
                           ),
-                        ),
-                        SizedBox(height: ScreenUtil().setHeight(8.0)),
-                        UserText(
-                            text: address,
-                            color: const Color(UserColors.gray06),
-                            weight: FontWeight.w400,
-                            size: ScreenUtil().setSp(12.0)),
-                      ],
+                          SizedBox(height: ScreenUtil().setHeight(8.0)),
+                          UserText(
+                              text: address,
+                              color: const Color(UserColors.gray06),
+                              weight: FontWeight.w400,
+                              size: ScreenUtil().setSp(12.0)),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            FutureBuilder<bool>(
-              future: _isAlreadyBookmarkedWithGPS(address),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  bool isBookmarked = snapshot.data!;
-                  return ButtonImage(
-                    // Check if already bookmarked to decide image
-                    imagePath: isBookmarked ? Images.favoriteButtonEnable : Images.favoriteButtonDisable,
-                    callback: () => _setBookMark(result, address),
-                  );
-                } else {
-                  return CircularProgressIndicator(); // Placeholder or loading indicator
-                }
-              },
-            ),
-          ],
+              FutureBuilder<bool>(
+                future: _isAlreadyBookmarkedWithGPS(address),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    bool isBookmarked = snapshot.data!;
+                    return ButtonImage(
+                      // Check if already bookmarked to decide image
+                      imagePath: isBookmarked
+                          ? Images.favoriteButtonEnable
+                          : Images.favoriteButtonDisable,
+                      callback: () => _setBookMark(result, address),
+                    );
+                  } else {
+                    return CircularProgressIndicator(); // Placeholder or loading indicator
+                  }
+                },
+              ),
+            ],
+          ),
         ),
       ),
-    ),
-  );
-}
-
-Future<bool> _isAlreadyBookmarkedWithGPS(String address) async {
-  try {
-    // Get GPS coordinates for the address
-    Map<String, dynamic> coordinates = await NaverSearchService.getCoordinates(address);
-
-    // Check if these coordinates are already bookmarked
-    bool isBookmarked = _routeViewModel.getBookMarkData.data!.bookmarks
-        .any((bookmark) => bookmark.latitude == coordinates['latitude'] && bookmark.longitude == coordinates['longitude']);
-
-    return isBookmarked;
-  } catch (e) {
-    print('Error checking bookmark status: $e');
-    return false;
+    );
   }
-}
 
+  Future<bool> _isAlreadyBookmarkedWithGPS(String address) async {
+    try {
+      // Get GPS coordinates for the address
+      Map<String, dynamic> coordinates =
+          await NaverSearchService.getCoordinates(address);
+
+      // Check if these coordinates are already bookmarked
+      bool isBookmarked = _routeViewModel.getBookMarkData.data!.bookmarks.any(
+          (bookmark) =>
+              bookmark.latitude == coordinates['latitude'] &&
+              bookmark.longitude == coordinates['longitude']);
+
+      return isBookmarked;
+    } catch (e) {
+      print('Error checking bookmark status: $e');
+      return false;
+    }
+  }
 
   TextSpan _buildHighlightedText(String fullText, String searchText,
       Color defaultColor, Color highlightColor) {

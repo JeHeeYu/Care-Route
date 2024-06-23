@@ -121,7 +121,21 @@ class _SearchResultPageState extends State<SearchResultPage> {
 
   String _removeHtmlTags(String htmlString) {
     final RegExp exp = RegExp(r'<[^>]*>', multiLine: true, caseSensitive: true);
-    return htmlString.replaceAll(exp, '');
+    String result = htmlString.replaceAll(exp, '');
+
+    final Map<String, String> htmlEntities = {
+      '&amp;': '&',
+      '&lt;': '<',
+      '&gt;': '>',
+      '&quot;': '"',
+      '&apos;': '\'',
+    };
+
+    htmlEntities.forEach((key, value) {
+      result = result.replaceAll(key, value);
+    });
+
+    return result;
   }
 
   Widget _buildDestinationInputBox() {
