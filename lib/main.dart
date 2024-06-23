@@ -153,7 +153,7 @@ class _MyAppState extends State<MyApp> {
             primarySwatch: Colors.blue,
           ),
           // home: const App(initialPageType: "GUIDE",),
-          home: const RoutingPage()
+          home: const SplashPage()
         ),
       ),
     );

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:typed_data';
+import 'package:care_route/views/pages/search/routing_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -171,7 +172,8 @@ class _SearchResultPageState extends State<SearchResultPage> {
     );
   }
 
-  Widget _buildSearchList(int index, String title, String address) {
+  Widget _buildSearchList(int index, String title, String address,
+      double latitude, double longitude) {
     final numberList = [
       '⓪',
       '①',
@@ -262,7 +264,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   ButtonImage(imagePath: Images.favoriteButtonDisable),
-                  _buildStartandArriveWidget(),
+                  _buildStartandArriveWidget(title, latitude, longitude),
                 ],
               ),
             ],
@@ -272,46 +274,67 @@ class _SearchResultPageState extends State<SearchResultPage> {
     );
   }
 
-  Widget _buildStartandArriveWidget() {
+  Widget _buildStartandArriveWidget(
+      String title, double latitude, double longitude) {
     return Row(
       children: [
-        Container(
-          width: ScreenUtil().setWidth(68.0),
-          height: ScreenUtil().setHeight(48.0),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(ScreenUtil().radius(28.0)),
-            border: Border.all(
-              color: const Color(UserColors.gray05),
-              width: 1.0,
-            ),
-          ),
-          child: Center(
-            child: UserText(
-                text: Strings.start,
+        GestureDetector(
+          onTap: () {
+            final result = Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => RoutingPage(
+                      startTitle: title, startX: latitude, startY: longitude)),
+            );
+          },
+          child: Container(
+            width: ScreenUtil().setWidth(68.0),
+            height: ScreenUtil().setHeight(48.0),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(ScreenUtil().radius(28.0)),
+              border: Border.all(
                 color: const Color(UserColors.gray05),
-                weight: FontWeight.w700,
-                size: ScreenUtil().setSp(16.0)),
+                width: 1.0,
+              ),
+            ),
+            child: Center(
+              child: UserText(
+                  text: Strings.start,
+                  color: const Color(UserColors.gray05),
+                  weight: FontWeight.w700,
+                  size: ScreenUtil().setSp(16.0)),
+            ),
           ),
         ),
         SizedBox(width: ScreenUtil().setWidth(8.0)),
-        Container(
-          width: ScreenUtil().setWidth(68.0),
-          height: ScreenUtil().setHeight(48.0),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(ScreenUtil().radius(28.0)),
-            border: Border.all(
-              color: const Color(UserColors.pointGreen),
-              width: 1.0,
-            ),
-          ),
-          child: Center(
-            child: UserText(
-                text: Strings.arrive,
+        GestureDetector(
+          onTap: () {
+            final result = Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => RoutingPage(
+                      endTitle: title, endX: latitude, endY: longitude)),
+            );
+          },
+          child: Container(
+            width: ScreenUtil().setWidth(68.0),
+            height: ScreenUtil().setHeight(48.0),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(ScreenUtil().radius(28.0)),
+              border: Border.all(
                 color: const Color(UserColors.pointGreen),
-                weight: FontWeight.w700,
-                size: ScreenUtil().setSp(16.0)),
+                width: 1.0,
+              ),
+            ),
+            child: Center(
+              child: UserText(
+                  text: Strings.arrive,
+                  color: const Color(UserColors.pointGreen),
+                  weight: FontWeight.w700,
+                  size: ScreenUtil().setSp(16.0)),
+            ),
           ),
         ),
       ],
@@ -366,6 +389,8 @@ class _SearchResultPageState extends State<SearchResultPage> {
                         index,
                         marker['title'] ?? '',
                         marker['address'] ?? '',
+                        marker['latitude'] ?? 0.0,
+                        marker['127.0218798'] ?? 0.0,
                       );
                     }).toList(),
                   ),

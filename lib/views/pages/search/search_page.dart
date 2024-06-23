@@ -39,16 +39,20 @@ class _SearchPageState extends State<SearchPage> {
     super.initState();
     _speech = stt.SpeechToText();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      FocusScope.of(context).requestFocus(_focusNode);
+      if (mounted) {
+        FocusScope.of(context).requestFocus(_focusNode);
+      }
     });
   }
 
   Future<void> _searchPlaces(String query) async {
     if (_isAddress(query)) {
       final results = await AddressSearchService.searchAddress(query);
-      setState(() {
-        _searchResults = results['results']['juso'];
-      });
+      if (mounted) {
+        setState(() {
+          _searchResults = results['results']['juso'];
+        });
+      }
     } else {
       final results = await NaverSearchService.searchPlaces(query);
       for (var result in results) {
@@ -57,9 +61,11 @@ class _SearchPageState extends State<SearchPage> {
         result['latitude'] = coordinates['latitude'];
         result['longitude'] = coordinates['longitude'];
       }
-      setState(() {
-        _searchResults = results;
-      });
+      if (mounted) {
+        setState(() {
+          _searchResults = results;
+        });
+      }
     }
   }
 
@@ -81,9 +87,11 @@ class _SearchPageState extends State<SearchPage> {
         );
       },
     ).then((_) {
-      setState(() {
-        _destinationDialogOpen = false;
-      });
+      if (mounted) {
+        setState(() {
+          _destinationDialogOpen = false;
+        });
+      }
       _stopListening();
     });
 
@@ -97,14 +105,20 @@ class _SearchPageState extends State<SearchPage> {
       onError: (val) => print('onError: $val'),
     );
     if (available) {
-      setState(() => _isListening = true);
+      if (mounted) {
+        setState(() => _isListening = true);
+      }
       _speech.listen(
-        onResult: (val) => setState(() {
-          _destinationController.text = val.recognizedWords;
-          _searchText = val.recognizedWords;
-          _resetTimer();
-          _searchPlaces(val.recognizedWords);
-        }),
+        onResult: (val) {
+          if (mounted) {
+            setState(() {
+              _destinationController.text = val.recognizedWords;
+              _searchText = val.recognizedWords;
+              _resetTimer();
+              _searchPlaces(val.recognizedWords);
+            });
+          }
+        },
         localeId: 'ko_KR',
       );
     }
@@ -112,7 +126,9 @@ class _SearchPageState extends State<SearchPage> {
 
   void _stopListening() {
     _speech.stop();
-    setState(() => _isListening = false);
+    if (mounted) {
+      setState(() => _isListening = false);
+    }
     _cancelTimer();
   }
 
@@ -121,9 +137,11 @@ class _SearchPageState extends State<SearchPage> {
     _timer = Timer(const Duration(seconds: 4), () {
       if (_destinationDialogOpen) {
         Navigator.of(context, rootNavigator: true).pop();
-        setState(() {
-          _destinationDialogOpen = false;
-        });
+        if (mounted) {
+          setState(() {
+            _destinationDialogOpen = false;
+          });
+        }
         _stopListening();
       }
     });
@@ -422,6 +440,15 @@ Widget _buildSearchList(String result, String address) {
         ),
       );
     }
+  }
+
+  @override
+  void dispose() {
+    _cancelTimer();
+    _speech.stop();
+    _focusNode.dispose();
+    _destinationController.dispose();
+    super.dispose();
   }
 
   @override

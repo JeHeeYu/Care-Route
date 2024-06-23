@@ -12,9 +12,9 @@ class NaverSearchService {
   static Future<List<dynamic>> searchPlaces(String query) async {
     List<dynamic> allResults = [];
     int start = 1;
-    int display = 10;
+    int display = 5;
 
-    while (allResults.length < 30) {
+    while (allResults.length < 6) {
       final response = await http.get(
         Uri.parse('$_baseUrl?query=$query&display=$display&start=$start'),
         headers: {
