@@ -41,7 +41,7 @@ class RouteViewModel with ChangeNotifier {
       return json.statusCode;
     } catch (e) {
       setGetBookMarkData(ApiResponse.error(e.toString()));
-      return 400;
+      throw Exception("");
     }
   }
 

@@ -25,7 +25,7 @@ class RoutineViewModel with ChangeNotifier {
       return json.statusCode;
     } catch (e) {
       setTargetList(ApiResponse.error(e.toString()));
-      return 400;
+      throw Exception("");
     }
   }
 }

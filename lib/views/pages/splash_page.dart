@@ -1,7 +1,5 @@
 import 'package:care_route/view_models/mypage_view_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 
@@ -31,11 +29,23 @@ class _SplashPageState extends State<SplashPage> {
     _routineViewModel = Provider.of<RoutineViewModel>(context, listen: false);
     _routeViewModel = Provider.of<RouteViewModel>(context, listen: false);
     _mypageViewModel = Provider.of<MypageViewModel>(context, listen: false);
-    _routineViewModel.getTargetList();
-    _routeViewModel.getBookMark();
-    _mypageViewModel.getMypage();
 
-    Future.delayed(const Duration(seconds: 3), _checkLoginStatus);
+    _initialize();
+  }
+
+  Future<void> _initialize() async {
+    try {
+      await _routineViewModel.getTargetList();
+      await _routeViewModel.getBookMark();
+      await _mypageViewModel.getMypage();
+
+      Future.delayed(const Duration(seconds: 3), _checkLoginStatus);
+    } catch (e) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginPage()),
+      );
+    }
   }
 
   void _checkLoginStatus() async {

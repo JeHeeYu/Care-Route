@@ -25,7 +25,7 @@ class MypageViewModel with ChangeNotifier {
       return json.statusCode;
     } catch (e) {
       setMypageData(ApiResponse.error(e.toString()));
-      return 400;
+      throw Exception("");
     }
   }
 
