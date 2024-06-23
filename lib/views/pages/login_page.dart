@@ -57,13 +57,13 @@ class _LoginPageState extends State<LoginPage> {
 
   void navigateToNextPage() {
     String pageType = _memberViewModel.loginData.data?.type ?? '';
-    print("jehee : ${pageType}");
     if (_memberViewModel.loginData.data?.type == null || pageType.isEmpty) {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const TypeSelectPage()),
       );
     } else {
+      _storage.write(key: Strings.accountInfoKey, value: 'true');
       Navigator.push(
         context,
         MaterialPageRoute(
