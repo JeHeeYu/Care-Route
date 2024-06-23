@@ -1,5 +1,6 @@
 import 'package:care_route/view_models/member_view_model.dart';
 import 'package:care_route/views/widgets/back_app_bar.dart';
+import 'package:care_route/views/widgets/complete_dialog.dart';
 import 'package:care_route/views/widgets/user_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -37,6 +38,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
     };
 
     _memberViewModel.auth(data);
+
+    CompleteDialog.showCompleteDialog(context, Strings.sendAuthComplete, shouldPop: true);
   }
 
   bool _getButtonEnableState() {

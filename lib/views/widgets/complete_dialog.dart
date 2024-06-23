@@ -1,32 +1,36 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 
 class CompleteDialog extends StatelessWidget {
   final String title;
+  final bool shouldPop;
 
   const CompleteDialog({
     Key? key,
     required this.title,
+    this.shouldPop = true, // 조건부로 pop을 제어하는 플래그
   }) : super(key: key);
 
-  static void showCompleteDialog(BuildContext context, String text) {
+  static void showCompleteDialog(BuildContext context, String text, {bool shouldPop = true}) {
     showDialog(
       context: context,
       barrierColor: Colors.transparent,
       builder: (BuildContext context) {
-        return CompleteDialog(title: text);
+        return CompleteDialog(title: text, shouldPop: shouldPop);
       },
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    Timer(const Duration(seconds: 1), () {
-      Navigator.of(context).pop();
-    });
+    if (shouldPop) {
+      Timer(const Duration(seconds: 1), () {
+        if (Navigator.of(context).canPop()) {
+          Navigator.of(context).pop();
+        }
+      });
+    }
 
     return Dialog(
       backgroundColor: Colors.transparent,
