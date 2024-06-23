@@ -10,4 +10,5 @@ class ApiUrl {
   static const String mypage = "https://readyou.shop/api/mypage";
   static const String nickname = "https://readyou.shop/api/mypage/nickname";
   static const String scheduleList = "https://readyou.shop/api/routine";
+  static const String scheduleRegist = "https://readyou.shop/api/routine";
 }

@@ -29,6 +29,8 @@ class Images {
   static const String startLocation = "assets/images/start_location.svg";
   static const String destination = "assets/images/destination.svg";
   static const String directionType = "assets/images/direction_type.svg";
-  static const String roundTrip = "assets/images/round_trip.svg";
-  static const String oneWAy = "assets/images/one_way.svg";
+  static const String roundTripEnable = "assets/images/round_trip_enable.svg";
+  static const String roundTripDisable = "assets/images/round_trip_disable.svg";
+  static const String oneWAyEnable = "assets/images/one_way_enable.svg";
+  static const String oneWAyDisable = "assets/images/one_way_disable.svg";
 }

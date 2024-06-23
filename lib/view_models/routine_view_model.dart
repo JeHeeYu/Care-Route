@@ -17,7 +17,7 @@ class RoutineViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-    void setScheduleList(ApiResponse<ScheduleListModel> response) {
+  void setScheduleList(ApiResponse<ScheduleListModel> response) {
     scheduleList = response;
     notifyListeners();
   }
@@ -39,6 +39,20 @@ class RoutineViewModel with ChangeNotifier {
   Future<int> getScheduleList() async {
     try {
       final response = await NetworkManager.instance.get(ApiUrl.scheduleList);
+      final responseMap = jsonDecode(response) as Map<String, dynamic>;
+      final json = ScheduleListModel.fromJson(responseMap);
+
+      setScheduleList(ApiResponse.complete(json));
+      return json.statusCode;
+    } catch (e) {
+      setScheduleList(ApiResponse.error(e.toString()));
+      throw Exception("");
+    }
+  }
+
+  Future<int> registSchedule(Map<String, dynamic> data) async {
+    try {
+      final response = await NetworkManager.instance.post(ApiUrl.scheduleRegist, data);
       final responseMap = jsonDecode(response) as Map<String, dynamic>;
       final json = ScheduleListModel.fromJson(responseMap);
 

@@ -7,6 +7,7 @@ import 'package:care_route/views/widgets/schedule_app_bar.dart';
 import 'package:care_route/views/widgets/user_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../../../consts/images.dart';
@@ -31,22 +32,30 @@ class _SchedulePageState extends State<SchedulePage> {
   @override
   void initState() {
     super.initState();
-
     _routineViewModel = Provider.of<RoutineViewModel>(context, listen: false);
     _routineViewModel.getScheduleList();
   }
 
-void _goAddSchedulePage() {
+  void _goAddSchedulePage() {
     final selectedMemberId = _targetListKey.currentState?.selectedMemberId;
 
     if (selectedMemberId != null) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const AddSchedulePage()),
+        MaterialPageRoute(
+          builder: (context) => AddSchedulePage(
+            selectedDate: _dateTimeToString(_selectedDay),
+            memberId: selectedMemberId,
+          ),
+        ),
       );
     } else {
       CompleteDialog.showCompleteDialog(context, Strings.pleaseSelectTarget);
     }
+  }
+
+  String _dateTimeToString(DateTime time) {
+    return DateFormat('yyyy-MM-dd').format(time);
   }
 
   Widget _buildCalendarHeader() {

@@ -122,6 +122,8 @@ class Strings {
   static const String role = "역할";
   static const String connectionTimeGuide = "연결까지 1~5분정도 소요될 수 있어요.";
   static const String connectionQuestionGuide = "요청한 대상과 앱을 연결할까요?";
+  static const String connection = "연결하기";
+  static const String destinationSet = "목적지가 설정되었습니다.";
 
   // === API KEY ===
   static const String idTokenKey = "idToken";
@@ -136,4 +138,14 @@ class Strings {
   static const String phoneNumberKey = "phoneNumber";
   static const String authCodeKey = "authCode";
   static const String accountInfoKey = "account";
+  static const String targetId = "targetId";
+  static const String contentKey = "content";
+  static const String startDateKey = "startDate";
+  static const String endDateKey = "endDate";
+  static const String startLatitudeKey = "startLatitude";
+  static const String startLogitude = "startLogitude";
+  static const String destinationsKey = "destinations";
+  static const String destinationLatitude = "destinationLatitude";
+  static const String destinationLongitude = "destinationLongitude";
+  static const String isRoundTripKey = "isRoundTrip";
 }

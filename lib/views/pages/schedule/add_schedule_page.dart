@@ -1,4 +1,5 @@
 import 'package:care_route/views/pages/schedule/target_list_widget.dart';
+import 'package:care_route/views/widgets/complete_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -14,7 +15,14 @@ import '../../widgets/user_text.dart';
 import '../search/search_page.dart';
 
 class AddSchedulePage extends StatefulWidget {
-  const AddSchedulePage({super.key});
+  final String selectedDate;
+  final int memberId;
+
+  const AddSchedulePage({
+    super.key,
+    required this.selectedDate,
+    required this.memberId,
+  });
 
   @override
   State<AddSchedulePage> createState() => _AddSchedulePageState();
@@ -30,6 +38,10 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
   late RoutineViewModel _routineViewModel;
   final GlobalKey<TargetListWidgetState> _targetListKey =
       GlobalKey<TargetListWidgetState>();
+  String _isRoundTrip = "Y";
+  double _startLatitude = 0.0;
+  double _startLongitude = 0.0;
+  List<Map<String, dynamic>> destinations = [];
 
   @override
   void initState() {
@@ -47,11 +59,47 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
       setState(() {
         if (from == 'startLocation') {
           _startLocation = result['title'];
+          _startLatitude = result['latitude'];
+          _startLongitude = result['longitude'];
         } else if (from == 'destination' && index != null) {
           _destinationControllers[index].text = result['title'];
+          if (index < destinations.length) {
+            destinations[index]['name'] = result['title'];
+            destinations[index]['destinationLatitude'] = result['latitude'];
+            destinations[index]['destinationLongitude'] = result['longitude'];
+          } else {
+            destinations.add({
+              'name': result['title'],
+              'destinationLatitude': result['latitude'],
+              'destinationLongitude': result['longitude'],
+              "time": "20:03:02"
+
+            });
+          }
         }
       });
     }
+  }
+
+  void _registSchedule() {
+    Map<String, dynamic> data = {
+      Strings.targetId: widget.memberId,
+      Strings.titleKey: _titleController.text,
+      Strings.contentKey: _contentsController.text,
+      Strings.startDateKey: widget.selectedDate,
+      Strings.endDateKey: widget.selectedDate,
+      Strings.startLatitudeKey: _startLatitude,
+      Strings.startLogitude: _startLongitude,
+      Strings.isRoundTripKey: _isRoundTrip,
+      'destinations': destinations,
+    };
+
+    _routineViewModel.registSchedule(data).then((statusCode) {
+      if (statusCode == 200) {
+      } else {
+      }
+    }).catchError((error) {
+    });
   }
 
   Widget _buildTextFieldWidget(
@@ -195,7 +243,6 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
 
   Widget _buildDestination(int index) {
     final numberList = [
-      '⓿',
       '❶',
       '❷',
       '❸',
@@ -313,23 +360,26 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
           ),
         ),
         SizedBox(height: ScreenUtil().setHeight(8.0)),
-        Container(
-            width: double.infinity,
-            height: ScreenUtil().setHeight(56.0),
-            decoration: BoxDecoration(
-                border: Border.all(
-                  color: const Color(UserColors.pointGreen),
-                  width: 1.0,
-                ),
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0))),
-            child: Center(
-              child: UserText(
-                  text: Strings.setRoute,
-                  color: const Color(UserColors.pointGreen),
-                  weight: FontWeight.w700,
-                  size: ScreenUtil().setSp(16.0)),
-            )),
+        GestureDetector(
+          onTap: ()=> CompleteDialog.showCompleteDialog(context, Strings.destinationSet),
+          child: Container(
+              width: double.infinity,
+              height: ScreenUtil().setHeight(56.0),
+              decoration: BoxDecoration(
+                  border: Border.all(
+                    color: const Color(UserColors.pointGreen),
+                    width: 1.0,
+                  ),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0))),
+              child: Center(
+                child: UserText(
+                    text: Strings.setRoute,
+                    color: const Color(UserColors.pointGreen),
+                    weight: FontWeight.w700,
+                    size: ScreenUtil().setSp(16.0)),
+              )),
+        ),
         SizedBox(height: ScreenUtil().setHeight(8.0)),
       ],
     );
@@ -371,48 +421,76 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
         SizedBox(height: ScreenUtil().setHeight(8.0)),
         Row(
           children: [
-            Container(
-              width: MediaQuery.of(context).size.width / 2 -
-                  (ScreenUtil().setWidth(20.0)),
-              height: ScreenUtil().setHeight(56.0),
-              decoration: BoxDecoration(
-                color: const Color(UserColors.gray02),
-                borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0)),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const ButtonImage(imagePath: Images.roundTrip),
-                  SizedBox(width: ScreenUtil().setWidth(8.0)),
-                  UserText(
-                      text: Strings.roundTrip,
-                      color: const Color(UserColors.gray07),
-                      weight: FontWeight.w700,
-                      size: ScreenUtil().setSp(16.0)),
-                ],
-              ),
-            ),
-            SizedBox(width: ScreenUtil().setWidth(8.0)),
-            Container(
-              width: MediaQuery.of(context).size.width / 2 -
-                  (ScreenUtil().setWidth(20.0)),
-              height: ScreenUtil().setHeight(56.0),
-              decoration: BoxDecoration(
-                color: const Color(UserColors.gray02),
-                borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0)),
-              ),
-              child: Center(
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  _isRoundTrip = 'Y';
+                });
+              },
+              child: Container(
+                width: MediaQuery.of(context).size.width / 2 -
+                    (ScreenUtil().setWidth(20.0)),
+                height: ScreenUtil().setHeight(56.0),
+                decoration: BoxDecoration(
+                  color: (_isRoundTrip == 'Y')
+                      ? const Color(UserColors.gray02)
+                      : const Color(UserColors.gray03),
+                  borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0)),
+                ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    ButtonImage(
+                        imagePath: (_isRoundTrip == 'Y')
+                            ? Images.roundTripEnable
+                            : Images.roundTripDisable),
+                    SizedBox(width: ScreenUtil().setWidth(8.0)),
                     UserText(
-                        text: Strings.oneWay,
-                        color: const Color(UserColors.gray07),
+                        text: Strings.roundTrip,
+                        color: (_isRoundTrip == 'Y')
+                            ? const Color(UserColors.gray07)
+                            : const Color(UserColors.gray05),
                         weight: FontWeight.w700,
                         size: ScreenUtil().setSp(16.0)),
-                    SizedBox(width: ScreenUtil().setWidth(8.0)),
-                    const ButtonImage(imagePath: Images.oneWAy),
                   ],
+                ),
+              ),
+            ),
+            SizedBox(width: ScreenUtil().setWidth(8.0)),
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  _isRoundTrip = 'N';
+                });
+              },
+              child: Container(
+                width: MediaQuery.of(context).size.width / 2 -
+                    (ScreenUtil().setWidth(20.0)),
+                height: ScreenUtil().setHeight(56.0),
+                decoration: BoxDecoration(
+                  color: (_isRoundTrip == 'N')
+                      ? const Color(UserColors.gray02)
+                      : const Color(UserColors.gray03),
+                  borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0)),
+                ),
+                child: Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      UserText(
+                          text: Strings.oneWay,
+                          color: (_isRoundTrip == 'N')
+                              ? const Color(UserColors.gray07)
+                              : const Color(UserColors.gray05),
+                          weight: FontWeight.w700,
+                          size: ScreenUtil().setSp(16.0)),
+                      SizedBox(width: ScreenUtil().setWidth(8.0)),
+                      ButtonImage(
+                          imagePath: (_isRoundTrip == 'N')
+                              ? Images.oneWAyEnable
+                              : Images.oneWAyDisable),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -474,7 +552,7 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
               textSize: ScreenUtil().setSp(16.0),
               textColor: Colors.white,
               textWeight: FontWeight.w600,
-              // callback: () => _sendType(),
+              callback: () => _registSchedule(),
             ),
           ),
         ],
