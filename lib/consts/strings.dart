@@ -114,6 +114,9 @@ class Strings {
   static const String arrive = "도착";
   static const String rouingStartGuide = "출발지를 입력해주세요.";
   static const String rouingArriveGuide = "도착지를 입력해주세요.";
+  static const String sendAuthComplete = "발송이 완료되었습니다.";
+  static const String invalidAuthCode = "인증이 불가능한 번호입니다.";
+  static const String authCodeFail = "인증번호가 다릅니다.";
 
   // === API KEY ===
   static const String idTokenKey = "idToken";
@@ -126,4 +129,5 @@ class Strings {
   static const String loginKey = "login";
   static const String nicknameKey = 'nickname';
   static const String phoneNumberKey = "phoneNumber";
+  static const String authCodeKey = "authCode";
 }

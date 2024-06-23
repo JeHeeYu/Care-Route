@@ -9,7 +9,7 @@ class CompleteDialog extends StatelessWidget {
   const CompleteDialog({
     Key? key,
     required this.title,
-    this.shouldPop = true, // 조건부로 pop을 제어하는 플래그
+    this.shouldPop = true,
   }) : super(key: key);
 
   static void showCompleteDialog(BuildContext context, String text, {bool shouldPop = true}) {

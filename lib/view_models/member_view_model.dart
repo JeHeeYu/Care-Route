@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:care_route/models/member/%08account_model.dart';
 import 'package:care_route/models/member/auth_model.dart';
 import 'package:care_route/models/member/type_model.dart';
 import 'package:care_route/networks/api_url.dart';
@@ -13,6 +14,7 @@ class MemberViewModel with ChangeNotifier {
   ApiResponse<LoginModel> loginData = ApiResponse.loading();
   ApiResponse<TypeModel> typeData = ApiResponse.loading();
   ApiResponse<AuthModel> authData = ApiResponse.loading();
+  ApiResponse<AccountModel> accountModel = ApiResponse.loading();
 
   void setLoginData(ApiResponse<LoginModel> response) {
     loginData = response;
@@ -26,6 +28,11 @@ class MemberViewModel with ChangeNotifier {
 
   void setAuthData(ApiResponse<AuthModel> response) {
     authData = response;
+    notifyListeners();
+  }
+
+  void setAccountData(ApiResponse<AccountModel> response) {
+    accountModel = response;
     notifyListeners();
   }
 
@@ -67,6 +74,20 @@ class MemberViewModel with ChangeNotifier {
       return json.statusCode;
     } catch (e) {
       setAuthData(ApiResponse.error(e.toString()));
+      return 400;
+    }
+  }
+
+  Future<int> account(Map<String, dynamic> data) async {
+    try {
+      final response = await NetworkManager.instance.post(ApiUrl.account, data);
+      final responseMap = jsonDecode(response) as Map<String, dynamic>;
+      final json = AccountModel.fromJson(responseMap);
+
+      setAccountData(ApiResponse.complete(json));
+      return json.statusCode;
+    } catch (e) {
+      setAccountData(ApiResponse.error(e.toString()));
       return 400;
     }
   }

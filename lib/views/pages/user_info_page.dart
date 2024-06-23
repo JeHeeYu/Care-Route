@@ -33,13 +33,40 @@ class _UserInfoPageState extends State<UserInfoPage> {
   }
 
   void _sendAuth() {
+    if (_phoneNumberController.text.length < 10 ||
+        _phoneNumberController.text.length > 11) {
+      CompleteDialog.showCompleteDialog(context, Strings.invalidAuthCode,
+          shouldPop: true);
+
+          return;
+    }
+
     Map<String, dynamic> data = {
       Strings.phoneNumberKey: _phoneNumberController.text
     };
 
     _memberViewModel.auth(data);
 
-    CompleteDialog.showCompleteDialog(context, Strings.sendAuthComplete, shouldPop: true);
+    CompleteDialog.showCompleteDialog(context, Strings.sendAuthComplete,
+        shouldPop: false);
+  }
+
+  void _sendAccount() {
+    Map<String, dynamic> data = {
+      Strings.phoneNumberKey: _phoneNumberController.text,
+      Strings.nicknameKey: _nickNameController.text,
+      Strings.authCodeKey: _certificationNumberController.text,
+    };
+
+    final result = _memberViewModel.account(data);
+
+    print("Jehee : ${result}");
+
+    if (result == 200) {
+    } else {
+      CompleteDialog.showCompleteDialog(context, Strings.authCodeFail,
+          shouldPop: true);
+    }
   }
 
   bool _getButtonEnableState() {
@@ -201,6 +228,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
               textSize: ScreenUtil().setSp(16.0),
               textColor: const Color(UserColors.gray01),
               textWeight: FontWeight.w600,
+              callback: () => _sendAccount(),
             ),
           ),
         ],

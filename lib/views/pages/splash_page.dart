@@ -1,4 +1,5 @@
 import 'package:care_route/view_models/mypage_view_model.dart';
+import 'package:care_route/views/pages/user_info_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
@@ -56,9 +57,13 @@ class _SplashPageState extends State<SplashPage> {
     if (!mounted) return;
 
     if (loginInfo == 'true' && typeInfo != null) {
+      // Navigator.pushReplacement(
+      //   context,
+      //   MaterialPageRoute(builder: (context) => App(initialPageType: typeInfo)),
+      // );
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => App(initialPageType: typeInfo)),
+        MaterialPageRoute(builder: (context) => const UserInfoPage()),
       );
     } else {
       Navigator.pushReplacement(
