@@ -36,6 +36,8 @@ class _LoginPageState extends State<LoginPage> {
     try {
       final result = await _memberViewModel.login(userData);
 
+      print("Jehee : ${result}");
+
       if (result == 200) {
         _storage.write(key: Strings.loginKey, value: 'true');
         _storage.write(key: Strings.idTokenKey, value: userData['idToken']);
@@ -55,7 +57,8 @@ class _LoginPageState extends State<LoginPage> {
 
   void navigateToNextPage() {
     String pageType = _memberViewModel.loginData.data?.type ?? '';
-    if (_memberViewModel.loginData.data?.type == null) {
+    print("jehee : ${pageType}");
+    if (_memberViewModel.loginData.data?.type == null || pageType.isEmpty) {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const TypeSelectPage()),

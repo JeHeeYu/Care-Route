@@ -1,4 +1,6 @@
 import 'package:care_route/consts/colors.dart';
+import 'package:care_route/views/pages/agreements/agreements_page.dart';
+import 'package:care_route/views/pages/login_page.dart';
 import 'package:care_route/views/widgets/back_app_bar.dart';
 import 'package:care_route/views/widgets/infinity_button.dart';
 import 'package:care_route/views/widgets/user_text.dart';
@@ -39,7 +41,12 @@ class _TypeSelectPageState extends State<TypeSelectPage> {
       _storage.write(key: Strings.typeKey, value: _selectedType);
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const App(initialPageType: "GUIDE",)),
+        MaterialPageRoute(builder: (context) => const AgreementsPage()),
+      );
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginPage()),
       );
     }
   }

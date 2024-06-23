@@ -53,17 +53,14 @@ class _SplashPageState extends State<SplashPage> {
   void _checkLoginStatus() async {
     String? loginInfo = await _storage.read(key: Strings.loginKey);
     String? typeInfo = await _storage.read(key: Strings.typeKey);
+    String? accountInfo = await _storage.read(key: Strings.accountInfoKey);
 
     if (!mounted) return;
 
-    if (loginInfo == 'true' && typeInfo != null) {
-      // Navigator.pushReplacement(
-      //   context,
-      //   MaterialPageRoute(builder: (context) => App(initialPageType: typeInfo)),
-      // );
+    if (loginInfo == 'true' && typeInfo != null && accountInfo != null) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const UserInfoPage()),
+        MaterialPageRoute(builder: (context) => App(initialPageType: typeInfo)),
       );
     } else {
       Navigator.pushReplacement(

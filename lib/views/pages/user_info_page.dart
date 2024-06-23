@@ -5,6 +5,7 @@ import 'package:care_route/views/widgets/user_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 
 import '../../app.dart';
@@ -26,6 +27,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
   final TextEditingController _nickNameController = TextEditingController();
 
   late MemberViewModel _memberViewModel;
+  final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
   @override
   void initState() {
@@ -65,6 +67,8 @@ class _UserInfoPageState extends State<UserInfoPage> {
 
     if (result == 200) {
       String type = _memberViewModel.loginData.data?.type ?? 'TARGET';
+      
+      _storage.write(key: Strings.accountInfoKey, value: 'true');
 
       Navigator.push(
         context,
