@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
+import '../../app.dart';
 import '../../consts/colors.dart';
 import '../../consts/strings.dart';
 import '../widgets/infinity_button.dart';
@@ -38,7 +39,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
       CompleteDialog.showCompleteDialog(context, Strings.invalidAuthCode,
           shouldPop: true);
 
-          return;
+      return;
     }
 
     Map<String, dynamic> data = {
@@ -48,21 +49,27 @@ class _UserInfoPageState extends State<UserInfoPage> {
     _memberViewModel.auth(data);
 
     CompleteDialog.showCompleteDialog(context, Strings.sendAuthComplete,
-        shouldPop: false);
+        shouldPop: true);
   }
 
-  void _sendAccount() {
+  void _sendAccount() async {
     Map<String, dynamic> data = {
       Strings.phoneNumberKey: _phoneNumberController.text,
       Strings.nicknameKey: _nickNameController.text,
       Strings.authCodeKey: _certificationNumberController.text,
     };
 
-    final result = _memberViewModel.account(data);
+    final result = await _memberViewModel.account(data);
 
-    print("Jehee : ${result}");
+    if(!mounted) return;
 
     if (result == 200) {
+      String type = _memberViewModel.loginData.data?.type ?? 'TARGET';
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => App(initialPageType: type)),
+      );
     } else {
       CompleteDialog.showCompleteDialog(context, Strings.authCodeFail,
           shouldPop: true);

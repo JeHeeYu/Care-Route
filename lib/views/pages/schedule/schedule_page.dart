@@ -1,15 +1,15 @@
 import 'package:care_route/consts/colors.dart';
 import 'package:care_route/views/pages/schedule/add_schedule_page.dart';
-import 'package:care_route/views/widgets/button_icon.dart';
 import 'package:care_route/views/widgets/button_image.dart';
 import 'package:care_route/views/widgets/schedule_app_bar.dart';
 import 'package:care_route/views/widgets/user_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
-
 import '../../../consts/images.dart';
 import '../../../consts/strings.dart';
+import '../../../view_models/routine_view_model.dart';
 
 class SchedulePage extends StatefulWidget {
   const SchedulePage({super.key});
@@ -21,6 +21,15 @@ class SchedulePage extends StatefulWidget {
 class _SchedulePageState extends State<SchedulePage> {
   DateTime _focusedDay = DateTime.now();
   DateTime _selectedDay = DateTime.now();
+  late RoutineViewModel _routineViewModel;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _routineViewModel = Provider.of<RoutineViewModel>(context, listen: false);
+    _routineViewModel.getScheduleList();
+  }
 
   void _goAddSchedulePage() {
     Navigator.push(
@@ -67,62 +76,92 @@ class _SchedulePageState extends State<SchedulePage> {
   }
 
   Widget _buildCalendarWidget() {
-    return TableCalendar(
-      calendarBuilders: CalendarBuilders(
-        dowBuilder: (context, day) {
-          if (day.weekday == DateTime.sunday) {
-            return const Center(
-              child: Text(
-                '일',
-                style: TextStyle(color: Colors.red),
-              ),
-            );
-          }
-          if (day.weekday == DateTime.saturday) {
-            return const Center(
-              child: Text(
-                '토',
-                style: TextStyle(color: Colors.blue),
-              ),
-            );
-          }
-        },
-        todayBuilder: (context, date, _) {
-          return Center(
-            child: Text(
-              '${date.day}',
-              style: TextStyle(color: Colors.black, fontSize: ScreenUtil().setSp(16.0)),
-            ),
-          );
-        },
-        selectedBuilder: (context, date, _) {
-          return Container(
-            margin: const EdgeInsets.all(6.0),
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: Colors.green,
-              shape: BoxShape.circle,
-            ),
-            child: Text(
-              '${date.day}',
-              style: TextStyle(color: Colors.white, fontSize: ScreenUtil().setSp(16.0)),
-            ),
-          );
-        },
-      ),
-      focusedDay: _focusedDay,
-      firstDay: DateTime(1900),
-      lastDay: DateTime(3000),
-      locale: 'ko-KR',
-      headerVisible: false,
-      selectedDayPredicate: (day) {
-        return isSameDay(_selectedDay, day);
-      },
-      onDaySelected: (selectedDay, focusedDay) {
-        setState(() {
-          _selectedDay = selectedDay;
-          _focusedDay = focusedDay;
-        });
+    return Consumer<RoutineViewModel>(
+      builder: (context, viewModel, child) {
+        return TableCalendar(
+          calendarBuilders: CalendarBuilders(
+            dowBuilder: (context, day) {
+              if (day.weekday == DateTime.sunday) {
+                return const Center(
+                  child: Text(
+                    '일',
+                    style: TextStyle(color: Colors.red),
+                  ),
+                );
+              }
+              if (day.weekday == DateTime.saturday) {
+                return const Center(
+                  child: Text(
+                    '토',
+                    style: TextStyle(color: Colors.blue),
+                  ),
+                );
+              }
+            },
+            todayBuilder: (context, date, _) {
+              return Center(
+                child: Text(
+                  '${date.day}',
+                  style: TextStyle(
+                      color: Colors.black, fontSize: ScreenUtil().setSp(16.0)),
+                ),
+              );
+            },
+            selectedBuilder: (context, date, _) {
+              return Container(
+                margin: const EdgeInsets.all(6.0),
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: Colors.green,
+                  shape: BoxShape.circle,
+                ),
+                child: Text(
+                  '${date.day}',
+                  style: TextStyle(
+                      color: Colors.white, fontSize: ScreenUtil().setSp(16.0)),
+                ),
+              );
+            },
+            markerBuilder: (context, date, events) {
+              final routines = viewModel.scheduleList.data?.routines ?? [];
+              final hasRoutine = routines.any((routine) =>
+                  DateTime.parse(routine.startDate).isBefore(date) &&
+                  DateTime.parse(routine.endDate).isAfter(date));
+
+              if (hasRoutine) {
+                return Container(
+                  margin: const EdgeInsets.all(6.0),
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: Colors.grey,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Text(
+                    '${date.day}',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: ScreenUtil().setSp(16.0)),
+                  ),
+                );
+              }
+              return null;
+            },
+          ),
+          focusedDay: _focusedDay,
+          firstDay: DateTime(1900),
+          lastDay: DateTime(3000),
+          locale: 'ko-KR',
+          headerVisible: false,
+          selectedDayPredicate: (day) {
+            return isSameDay(_selectedDay, day);
+          },
+          onDaySelected: (selectedDay, focusedDay) {
+            setState(() {
+              _selectedDay = selectedDay;
+              _focusedDay = focusedDay;
+            });
+          },
+        );
       },
     );
   }
