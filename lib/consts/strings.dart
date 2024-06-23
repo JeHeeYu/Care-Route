@@ -125,4 +125,5 @@ class Strings {
   static const String longitudeKey = "longitude";
   static const String loginKey = "login";
   static const String nicknameKey = 'nickname';
+  static const String phoneNumberKey = "phoneNumber";
 }

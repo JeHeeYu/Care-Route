@@ -1,8 +1,10 @@
+import 'package:care_route/view_models/member_view_model.dart';
 import 'package:care_route/views/widgets/back_app_bar.dart';
 import 'package:care_route/views/widgets/user_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
 import '../../consts/colors.dart';
 import '../../consts/strings.dart';
@@ -17,8 +19,25 @@ class UserInfoPage extends StatefulWidget {
 
 class _UserInfoPageState extends State<UserInfoPage> {
   final TextEditingController _phoneNumberController = TextEditingController();
-  final TextEditingController _certificationNumberController = TextEditingController();
+  final TextEditingController _certificationNumberController =
+      TextEditingController();
   final TextEditingController _nickNameController = TextEditingController();
+
+  late MemberViewModel _memberViewModel;
+
+  @override
+  void initState() {
+    super.initState();
+    _memberViewModel = Provider.of<MemberViewModel>(context, listen: false);
+  }
+
+  void _sendAuth() {
+    Map<String, dynamic> data = {
+      Strings.phoneNumberKey: _phoneNumberController.text
+    };
+
+    _memberViewModel.auth(data);
+  }
 
   bool _getButtonEnableState() {
     return _phoneNumberController.text.isNotEmpty &&
@@ -76,23 +95,26 @@ class _UserInfoPageState extends State<UserInfoPage> {
   }
 
   Widget _buildSendCertificationNumber() {
-    return Container(
-      width: double.infinity,
-      height: ScreenUtil().setHeight(56.0),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(
-          color: const Color(UserColors.pointGreen),
-          width: 1.0,
+    return GestureDetector(
+      onTap: () => _sendAuth(),
+      child: Container(
+        width: double.infinity,
+        height: ScreenUtil().setHeight(56.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(
+            color: const Color(UserColors.pointGreen),
+            width: 1.0,
+          ),
+          borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0)),
         ),
-        borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0)),
-      ),
-      child: Center(
-        child: UserText(
-          text: Strings.sendCertificationNumber,
-          color: const Color(UserColors.pointGreen),
-          weight: FontWeight.w700,
-          size: ScreenUtil().setSp(16.0),
+        child: Center(
+          child: UserText(
+            text: Strings.sendCertificationNumber,
+            color: const Color(UserColors.pointGreen),
+            weight: FontWeight.w700,
+            size: ScreenUtil().setSp(16.0),
+          ),
         ),
       ),
     );
