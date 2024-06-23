@@ -36,6 +36,7 @@ class _SplashPageState extends State<SplashPage> {
   Future<void> _initialize() async {
     try {
       await _routineViewModel.getTargetList();
+      await _routineViewModel.getScheduleList();
       await _routeViewModel.getBookMark();
       await _mypageViewModel.getMypage();
 
