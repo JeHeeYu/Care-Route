@@ -194,7 +194,29 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
   }
 
   Widget _buildDestination(int index) {
-    final numberList = ['❶', '❷', '❸'];
+    final numberList = [
+      '⓿',
+      '❶',
+      '❷',
+      '❸',
+      '❹',
+      '❺',
+      '❻',
+      '❼',
+      '❽',
+      '❾',
+      '❿',
+      '⓫',
+      '⓬',
+      '⓭',
+      '⓮',
+      '⓯',
+      '⓰',
+      '⓱',
+      '⓲',
+      '⓳',
+      '⓴'
+    ];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

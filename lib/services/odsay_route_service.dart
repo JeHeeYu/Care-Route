@@ -17,6 +17,8 @@ class OdsayRouteService {
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
 
+      print("Jehee data ${data}");
+
       // print 로그 추가
       // print("subwayBusCount: ${data['result']['subwayBusCount']}");
       print("pathType: ${data['result']['path'][0]['pathType']}");

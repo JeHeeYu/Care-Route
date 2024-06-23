@@ -175,27 +175,27 @@ class _SearchResultPageState extends State<SearchResultPage> {
   Widget _buildSearchList(int index, String title, String address,
       double latitude, double longitude) {
     final numberList = [
-      '⓪',
-      '①',
-      '②',
-      '③',
-      '④',
-      '⑤',
-      '⑥',
-      '⑦',
-      '⑧',
-      '⑨',
-      '⑩',
-      '⑪',
-      '⑫',
-      '⑬',
-      '⑭',
-      '⑮',
-      '⑯',
-      '⑰',
-      '⑱',
-      '⑲',
-      '⑳',
+      '⓿',
+      '❶',
+      '❷',
+      '❸',
+      '❹',
+      '❺',
+      '❻',
+      '❼',
+      '❽',
+      '❾',
+      '❿',
+      '⓫',
+      '⓬',
+      '⓭',
+      '⓮',
+      '⓯',
+      '⓰',
+      '⓱',
+      '⓲',
+      '⓳',
+      '⓴'
     ];
 
     final extendedNumberList = List<String>.from(numberList);
@@ -280,6 +280,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
       children: [
         GestureDetector(
           onTap: () {
+            print("Jehee Start ${longitude}");
             final result = Navigator.push(
               context,
               MaterialPageRoute(
@@ -310,6 +311,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
         SizedBox(width: ScreenUtil().setWidth(8.0)),
         GestureDetector(
           onTap: () {
+            print("Jehee end ${longitude}");
             final result = Navigator.push(
               context,
               MaterialPageRoute(
