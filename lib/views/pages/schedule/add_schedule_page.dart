@@ -28,6 +28,8 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
   ];
   String _startLocation = "";
   late RoutineViewModel _routineViewModel;
+  final GlobalKey<TargetListWidgetState> _targetListKey =
+      GlobalKey<TargetListWidgetState>();
 
   @override
   void initState() {
@@ -413,7 +415,10 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const TargetListWidget(isBackKey: true),
+          TargetListWidget(
+            isBackKey: true,
+            key: _targetListKey,
+          ),
           Expanded(
             child: SingleChildScrollView(
               child: Padding(

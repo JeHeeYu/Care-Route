@@ -29,7 +29,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
     if (widget.userType == Strings.guideKey) {
       _selectIndex = 0;
       _pages = [
-        const SchedulePage(),
+        SchedulePage(userType: widget.userType),
         const RouteGuidePage(),
         const NotificationPage(),
         MyPage(userType: widget.userType),
@@ -60,7 +60,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
       _selectIndex = 0;
       _pages = [
         const RouteGuidePage(),
-        const SchedulePage(),
+        SchedulePage(userType: widget.userType),
         const NotificationPage(),
         MyPage(userType: widget.userType),
       ];
@@ -90,7 +90,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
       _selectIndex = 0;
       _pages = [
         const RouteGuidePage(),
-        const SchedulePage(),
+        SchedulePage(userType: widget.userType),
         const NotificationPage(),
         MyPage(userType: widget.userType),
       ];

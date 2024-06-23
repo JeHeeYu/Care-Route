@@ -1,6 +1,8 @@
 import 'package:care_route/consts/colors.dart';
 import 'package:care_route/views/pages/schedule/add_schedule_page.dart';
+import 'package:care_route/views/pages/schedule/target_list_widget.dart';
 import 'package:care_route/views/widgets/button_image.dart';
+import 'package:care_route/views/widgets/complete_dialog.dart';
 import 'package:care_route/views/widgets/schedule_app_bar.dart';
 import 'package:care_route/views/widgets/user_text.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +14,9 @@ import '../../../consts/strings.dart';
 import '../../../view_models/routine_view_model.dart';
 
 class SchedulePage extends StatefulWidget {
-  const SchedulePage({super.key});
+  final String userType;
+
+  const SchedulePage({Key? key, required this.userType}) : super(key: key);
 
   @override
   State<SchedulePage> createState() => _SchedulePageState();
@@ -22,6 +26,7 @@ class _SchedulePageState extends State<SchedulePage> {
   DateTime _focusedDay = DateTime.now();
   DateTime _selectedDay = DateTime.now();
   late RoutineViewModel _routineViewModel;
+  final GlobalKey<TargetListWidgetState> _targetListKey = GlobalKey<TargetListWidgetState>();
 
   @override
   void initState() {
@@ -31,11 +36,17 @@ class _SchedulePageState extends State<SchedulePage> {
     _routineViewModel.getScheduleList();
   }
 
-  void _goAddSchedulePage() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const AddSchedulePage()),
-    );
+void _goAddSchedulePage() {
+    final selectedMemberId = _targetListKey.currentState?.selectedMemberId;
+
+    if (selectedMemberId != null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const AddSchedulePage()),
+      );
+    } else {
+      CompleteDialog.showCompleteDialog(context, Strings.pleaseSelectTarget);
+    }
   }
 
   Widget _buildCalendarHeader() {
@@ -125,8 +136,7 @@ class _SchedulePageState extends State<SchedulePage> {
             markerBuilder: (context, date, events) {
               final routines = viewModel.scheduleList.data?.routines ?? [];
               final hasRoutine = routines.any((routine) =>
-                  DateTime.parse(routine.startDate).isBefore(date) &&
-                  DateTime.parse(routine.endDate).isAfter(date));
+                  isSameDay(DateTime.parse(routine.startDate), date));
 
               if (hasRoutine) {
                 return Container(
@@ -163,6 +173,79 @@ class _SchedulePageState extends State<SchedulePage> {
           },
         );
       },
+    );
+  }
+
+  Widget _buildScheduleList() {
+    final routines = _routineViewModel.scheduleList.data?.routines ?? [];
+    final selectedRoutines = routines
+        .where((routine) =>
+            isSameDay(DateTime.parse(routine.startDate), _selectedDay))
+        .toList();
+
+    if (selectedRoutines.isEmpty) {
+      return _buildEmptyScheduleWidget();
+    } else {
+      return ListView.builder(
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        itemCount: selectedRoutines.length,
+        itemBuilder: (context, index) {
+          final routine = selectedRoutines[index];
+          return _buildScheduleWidget(
+            routine.title,
+            routine.content,
+            routine.destinations.first.name,
+            routine.startDate,
+          );
+        },
+      );
+    }
+  }
+
+  Widget _buildScheduleWidget(
+      String title, String content, String destination, String startTime) {
+    return Container(
+      width: double.infinity,
+      height: ScreenUtil().setHeight(123.0),
+      padding: EdgeInsets.symmetric(
+          horizontal: ScreenUtil().setWidth(20.0),
+          vertical: ScreenUtil().setHeight(10.0)),
+      margin: EdgeInsets.symmetric(
+          vertical: ScreenUtil().setHeight(5.0),
+          horizontal: ScreenUtil().setWidth(16.0)),
+      decoration: BoxDecoration(
+        color: const Color(UserColors.gray02),
+        borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          UserText(
+              text: title,
+              color: const Color(UserColors.gray07),
+              weight: FontWeight.w700,
+              size: ScreenUtil().setSp(16.0)),
+          SizedBox(height: ScreenUtil().setHeight(4.0)),
+          UserText(
+              text: content,
+              color: const Color(UserColors.gray07),
+              weight: FontWeight.w400,
+              size: ScreenUtil().setSp(16.0)),
+          SizedBox(height: ScreenUtil().setHeight(4.0)),
+          UserText(
+              text: destination,
+              color: const Color(UserColors.gray05),
+              weight: FontWeight.w700,
+              size: ScreenUtil().setSp(16.0)),
+          SizedBox(height: ScreenUtil().setHeight(12.0)),
+          UserText(
+              text: startTime,
+              color: const Color(UserColors.gray04),
+              weight: FontWeight.w400,
+              size: ScreenUtil().setSp(12.0)),
+        ],
+      ),
     );
   }
 
@@ -216,8 +299,10 @@ class _SchedulePageState extends State<SchedulePage> {
             _buildCalendarHeader(),
             SizedBox(height: ScreenUtil().setHeight(17.0)),
             _buildCalendarWidget(),
-            SizedBox(height: ScreenUtil().setHeight(35.0)),
-            _buildEmptyScheduleWidget(),
+            (widget.userType == Strings.guideKey)
+                ? TargetListWidget(key: _targetListKey)
+                : Container(),
+            _buildScheduleList(),
           ],
         ),
       ),

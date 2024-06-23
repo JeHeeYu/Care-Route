@@ -36,8 +36,6 @@ class _LoginPageState extends State<LoginPage> {
     try {
       final result = await _memberViewModel.login(userData);
 
-      print("Jehee : ${result}");
-
       if (result == 200) {
         _storage.write(key: Strings.loginKey, value: 'true');
         _storage.write(key: Strings.idTokenKey, value: userData['idToken']);

@@ -1,159 +1,84 @@
-import 'package:care_route/view_models/member_view_model.dart';
-import 'package:care_route/view_models/mypage_view_model.dart';
-import 'package:care_route/view_models/route_view_model.dart';
-import 'package:care_route/view_models/routine_view_model.dart';
-import 'package:care_route/views/pages/favorite_page.dart';
-import 'package:care_route/views/pages/login_page.dart';
-import 'package:care_route/views/pages/my_page/number_change_page.dart';
-import 'package:care_route/views/pages/my_page/target_connection_page.dart';
-import 'package:care_route/views/pages/route_guide_page.dart';
-import 'package:care_route/views/pages/search/routing_page.dart';
-import 'package:care_route/views/pages/splash_page.dart';
-import 'package:care_route/views/pages/type_select_page.dart';
-import 'package:care_route/views/pages/user_info_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_naver_map/flutter_naver_map.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:intl/date_symbol_data_local.dart';
-import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
-import 'package:provider/provider.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
-import 'app.dart';
+void main() => runApp(MyApp());
 
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp();
-  print("FCM Message: ${message.messageId}");
-}
-
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-
-  KakaoSdk.init(nativeAppKey: '2009513e88266b07a15ad4578d2eacee');
-  await NaverMapSdk.instance.initialize(
-    clientId: 'b8fgmkfu11',
-  );
-
-  initializeDateFormatting().then((_) => runApp(const MyApp()));
-}
-
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
-
+class MyApp extends StatelessWidget {
   @override
-  _MyAppState createState() => _MyAppState();
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: TMapExample(),
+    );
+  }
 }
 
-class _MyAppState extends State<MyApp> {
+class TMapExample extends StatefulWidget {
+  @override
+  _TMapExampleState createState() => _TMapExampleState();
+}
+
+class _TMapExampleState extends State<TMapExample> {
+  String _result = '';
+
+  final String _apiKey = 'w8qRXuuGFx3XB1ELc5Y278RPC3TkSnMO5G9ovdtN';
+  final String _startX = '126.9779692'; // 서울 시청 경도
+  final String _startY = '37.566535';   // 서울 시청 위도
+  final String _endX = '126.978275';    // 목적지 경도
+  final String _endY = '37.565834';     // 목적지 위도
+
   @override
   void initState() {
     super.initState();
-    _setupFCM();
+    _fetchTMapData();
   }
 
-  Future<void> _setupFCM() async {
-    NotificationSettings settings =
-        await FirebaseMessaging.instance.requestPermission(
-      alert: true,
-      badge: true,
-      provisional: false,
-      sound: true,
+  Future<void> _fetchTMapData() async {
+    final url = Uri.parse('https://apis.openapi.sk.com/tmap/routes/pedestrian?version=1&callback=function');
+
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'appKey': _apiKey,
+      },
+      body: json.encode({
+        'startX': _startX,
+        'startY': _startY,
+        'endX': _endX,
+        'endY': _endY,
+        'reqCoordType': 'WGS84GEO',
+        'resCoordType': 'EPSG3857',
+        'startName': 'Seoul City Hall',
+        'endName': 'Destination',
+      }),
     );
-    // iOS foreground notification 권한
-    await FirebaseMessaging.instance
-        .setForegroundNotificationPresentationOptions(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
 
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print("Foreground Message");
-    });
-
-    FirebaseMessaging.instance.getInitialMessage().then((message) {
-      debugPrint('fcm getInitialMessage, message : ${message?.data ?? ''}');
-      if (message != null) {
-        return;
-      }
-    });
-
-    String token = await FirebaseMessaging.instance.getToken() ?? '';
-    debugPrint("fcmToken : $token");
+    if (response.statusCode == 200) {
+      setState(() {
+        _result = response.body;
+      });
+      print(_result);  // 로그에 출력
+    } else {
+      setState(() {
+        _result = 'Failed to fetch data: ${response.statusCode}';
+      });
+      print(_result);  // 오류 로그에 출력
+    }
   }
-
-  Future<void> backgroundHandler(RemoteMessage message) async {
-    debugPrint('fcm backgroundHandler, message');
-
-    debugPrint(message.notification?.title ?? '');
-    debugPrint(message.notification?.body ?? '');
-  }
-
-  Future<void> setFCM() async {
-    //백그라운드 메세지 핸들링(수신처리)
-    FirebaseMessaging.onBackgroundMessage(backgroundHandler);
-  }
-
-  // Future<void> _setupFCM() async {
-  //   FirebaseMessaging messaging = FirebaseMessaging.instance;
-
-  //   NotificationSettings settings = await messaging.requestPermission(
-  //     alert: true,
-  //     announcement: false,
-  //     badge: true,
-  //     carPlay: false,
-  //     criticalAlert: false,
-  //     provisional: false,
-  //     sound: true,
-  //   );
-
-  //   if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-  //     print('User granted permission');
-  //   } else if (settings.authorizationStatus ==
-  //       AuthorizationStatus.provisional) {
-  //     print('User granted provisional permission');
-  //   } else {
-  //     print('User declined or has not accepted permission');
-  //   }
-
-  //   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-  //     print('Got a message whilst in the foreground!');
-  //     print('Message data: ${message.data}');
-
-  //     if (message.notification != null) {
-  //       print('Message also contained a notification: ${message.notification}');
-  //     }
-  //   });
-
-  //   FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-  //     print('Message clicked!');
-  //   });
-
-  //   String? token = await messaging.getToken();
-  //   print("FCM Token: $token");
-  // }
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => MemberViewModel()),
-        ChangeNotifierProvider(create: (_) => RouteViewModel()),
-        ChangeNotifierProvider(create: (_) => RoutineViewModel()),
-        ChangeNotifierProvider(create: (_) => MypageViewModel()),
-      ],
-      child: ScreenUtilInit(
-        designSize: const Size(360, 640),
-        builder: (BuildContext context, child) => MaterialApp(
-          title: 'Flutter Demo',
-          theme: ThemeData(
-            primarySwatch: Colors.blue,
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('TMap Pedestrian Route Example'),
+      ),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: SingleChildScrollView(
+            child: Text(_result),
           ),
-          // home: const App(initialPageType: "GUIDE",),
-          home: const SplashPage()  
         ),
       ),
     );

@@ -9,18 +9,22 @@ import '../../widgets/user_text.dart';
 
 class TargetListWidget extends StatefulWidget {
   final bool isBackKey;
+  final GlobalKey<TargetListWidgetState> key;
 
   const TargetListWidget({
-    Key? key,
+    required this.key,
     this.isBackKey = true,
   }) : super(key: key);
 
   @override
-  State<TargetListWidget> createState() => _TargetListWidgetState();
+  TargetListWidgetState createState() => TargetListWidgetState();
 }
 
-class _TargetListWidgetState extends State<TargetListWidget> {
+class TargetListWidgetState extends State<TargetListWidget> {
   late RoutineViewModel _routineViewModel;
+  int? _selectedMemberId;
+
+  int? get selectedMemberId => _selectedMemberId;
 
   @override
   void initState() {
@@ -44,25 +48,41 @@ class _TargetListWidgetState extends State<TargetListWidget> {
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: targetInfos.map<Widget>((info) {
-                  return Padding(
-                    padding: EdgeInsets.only(right: ScreenUtil().setWidth(8.0)),
-                    child: Column(
-                      children: [
-                        SizedBox(height: ScreenUtil().setHeight(20.0)),
-                        Image.network(
-                          info.profileImage ?? '',
-                          width: ScreenUtil().setWidth(50.0),
-                          height: ScreenUtil().setHeight(50.0),
-                          fit: BoxFit.cover,
-                        ),
-                        SizedBox(height: ScreenUtil().setHeight(4.0)),
-                        UserText(
-                          text: info.nickname,
-                          color: const Color(UserColors.gray07),
-                          weight: FontWeight.w700,
-                          size: ScreenUtil().setSp(12.0),
-                        ),
-                      ],
+                  final isSelected = info.memberId == _selectedMemberId;
+                  return GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _selectedMemberId = info.memberId;
+                        print('Selected memberId: ${info.memberId}');
+                      });
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.only(right: ScreenUtil().setWidth(8.0)),
+                      child: Column(
+                        children: [
+                          SizedBox(height: ScreenUtil().setHeight(20.0)),
+                          ColorFiltered(
+                            colorFilter: isSelected
+                                ? ColorFilter.mode(
+                                    Colors.transparent, BlendMode.color)
+                                : ColorFilter.mode(
+                                    Colors.grey, BlendMode.saturation),
+                            child: Image.network(
+                              info.profileImage ?? '',
+                              width: ScreenUtil().setWidth(50.0),
+                              height: ScreenUtil().setHeight(50.0),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          SizedBox(height: ScreenUtil().setHeight(4.0)),
+                          UserText(
+                            text: info.nickname,
+                            color: isSelected ? const Color(UserColors.gray07) : Colors.grey,
+                            weight: FontWeight.w700,
+                            size: ScreenUtil().setSp(12.0),
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 }).toList(),
