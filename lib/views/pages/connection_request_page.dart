@@ -120,7 +120,7 @@ class ConnectionRequestPage extends StatelessWidget {
         height: ScreenUtil().setHeight(56.0),
         radius: ScreenUtil().radius(8.0),
         backgroundColor: const Color(UserColors.pointGreen),
-        text: Strings.allAgreemnet,
+        text: Strings.connection,
         textSize: ScreenUtil().setSp(16.0),
         textColor: Colors.white,
         textWeight: FontWeight.w600,
