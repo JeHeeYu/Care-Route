@@ -303,8 +303,8 @@ Widget _buildSearchList(String result, String address) {
                       longitude: longitude,
                       markers: _searchResults.map((result) {
                         return {
-                          'title': result['title'] ?? 'No Title',
-                          'address': result['address'] ?? 'No Address',
+                          'title': result['title'] ?? '',
+                          'address': result['address'] ?? '',
                           'latitude': double.parse(result['latitude']),
                           'longitude': double.parse(result['longitude']),
                         };

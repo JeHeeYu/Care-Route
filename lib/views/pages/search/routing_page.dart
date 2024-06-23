@@ -436,7 +436,6 @@ class _RoutingPageState extends State<RoutingPage> {
 
   Widget _buildRouteResultWidget(
       int routeIndex, List<int> times, List<String> labels, int payment) {
-    print("Jehee payment : ");
     final numberList = [
       '⓿',
       '❶',

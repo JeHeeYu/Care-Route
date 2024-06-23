@@ -119,6 +119,11 @@ class _SearchResultPageState extends State<SearchResultPage> {
     });
   }
 
+  String _removeHtmlTags(String htmlString) {
+    final RegExp exp = RegExp(r'<[^>]*>', multiLine: true, caseSensitive: true);
+    return htmlString.replaceAll(exp, '');
+  }
+
   Widget _buildDestinationInputBox() {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(22.0)),
@@ -197,6 +202,8 @@ class _SearchResultPageState extends State<SearchResultPage> {
       '⓳',
       '⓴'
     ];
+
+    title = _removeHtmlTags(title);
 
     final extendedNumberList = List<String>.from(numberList);
     while (extendedNumberList.length < title.length + 10) {
@@ -280,7 +287,6 @@ class _SearchResultPageState extends State<SearchResultPage> {
       children: [
         GestureDetector(
           onTap: () {
-            print("Jehee Start ${longitude}");
             final result = Navigator.push(
               context,
               MaterialPageRoute(
@@ -311,7 +317,6 @@ class _SearchResultPageState extends State<SearchResultPage> {
         SizedBox(width: ScreenUtil().setWidth(8.0)),
         GestureDetector(
           onTap: () {
-            print("Jehee end ${longitude}");
             final result = Navigator.push(
               context,
               MaterialPageRoute(
@@ -392,7 +397,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
                         marker['title'] ?? '',
                         marker['address'] ?? '',
                         marker['latitude'] ?? 0.0,
-                        marker['127.0218798'] ?? 0.0,
+                        marker['longitude'] ?? 0.0,
                       );
                     }).toList(),
                   ),
