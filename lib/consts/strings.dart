@@ -118,6 +118,10 @@ class Strings {
   static const String invalidAuthCode = "인증이 불가능한 번호입니다.";
   static const String authCodeFail = "인증번호가 다릅니다.";
   static const String pleaseSelectTarget = "대상을 선택해주세요.";
+  static const String connectionGuide = "해당 대상에게 연결 요청이 왔어요!";
+  static const String role = "역할";
+  static const String connectionTimeGuide = "연결까지 1~5분정도 소요될 수 있어요.";
+  static const String connectionQuestionGuide = "요청한 대상과 앱을 연결할까요?";
 
   // === API KEY ===
   static const String idTokenKey = "idToken";
