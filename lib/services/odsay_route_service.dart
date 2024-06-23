@@ -15,7 +15,22 @@ class OdsayRouteService {
     });
 
     if (response.statusCode == 200) {
-      return json.decode(response.body);
+      final data = json.decode(response.body);
+
+      // print 로그 추가
+      // print("subwayBusCount: ${data['result']['subwayBusCount']}");
+      print("pathType: ${data['result']['path'][0]['pathType']}");
+      print("totalTime: ${data['result']['path'][0]['info']['totalTime']}");
+      print("trafficType: ${data['result']['path'][0]['subPath'][0]['trafficType']}");
+      
+      // Check if the first subPath is a bus
+      if (data['result']['path'][0]['subPath'][0]['trafficType'] == 2) {
+        print("busNo: ${data['result']['path'][0]['subPath'][0]['lane'][0]['busNo']}");
+        print("type: ${data['result']['path'][0]['subPath'][0]['lane'][0]['type']}");
+        print("busID: ${data['result']['path'][0]['subPath'][0]['lane'][0]['busID']}");
+      }
+
+      return data;
     } else {
       throw Exception('Failed to load route');
     }
