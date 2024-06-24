@@ -124,6 +124,7 @@ class Strings {
   static const String connectionQuestionGuide = "요청한 대상과 앱을 연결할까요?";
   static const String connection = "연결하기";
   static const String destinationSet = "목적지가 설정되었습니다.";
+  static const String addScheduleComplete = "일정이 생성되었습니다.";
 
   // === API KEY ===
   static const String idTokenKey = "idToken";

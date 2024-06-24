@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:care_route/models/routine/target_list_model.dart';
 import 'package:flutter/cupertino.dart';
 
+import '../models/routine/add_schedule_model.dart';
 import '../models/routine/schedule_list_model.dart';
 import '../networks/api_response.dart';
 import '../networks/api_url.dart';
@@ -11,6 +12,7 @@ import '../networks/network_manager.dart';
 class RoutineViewModel with ChangeNotifier {
   ApiResponse<TargetListModel> targetList = ApiResponse.loading();
   ApiResponse<ScheduleListModel> scheduleList = ApiResponse.loading();
+  ApiResponse<AddScheduleModel> addScheduleData = ApiResponse.loading();
 
   void setTargetList(ApiResponse<TargetListModel> response) {
     targetList = response;
@@ -19,6 +21,11 @@ class RoutineViewModel with ChangeNotifier {
 
   void setScheduleList(ApiResponse<ScheduleListModel> response) {
     scheduleList = response;
+    notifyListeners();
+  }
+
+    void addScheduleList(ApiResponse<AddScheduleModel> response) {
+    addScheduleData = response;
     notifyListeners();
   }
 
@@ -54,12 +61,15 @@ class RoutineViewModel with ChangeNotifier {
     try {
       final response = await NetworkManager.instance.post(ApiUrl.scheduleRegist, data);
       final responseMap = jsonDecode(response) as Map<String, dynamic>;
-      final json = ScheduleListModel.fromJson(responseMap);
+      final json = AddScheduleModel.fromJson(responseMap);
 
-      setScheduleList(ApiResponse.complete(json));
+      print("jehee 1");
+
+      addScheduleList(ApiResponse.complete(json));
       return json.statusCode;
     } catch (e) {
-      setScheduleList(ApiResponse.error(e.toString()));
+      print("Jehee2  : ${e}");
+      addScheduleList(ApiResponse.error(e.toString()));
       throw Exception("");
     }
   }

@@ -73,7 +73,6 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
               'destinationLatitude': result['latitude'],
               'destinationLongitude': result['longitude'],
               "time": "20:03:02"
-
             });
           }
         }
@@ -96,10 +95,11 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
 
     _routineViewModel.registSchedule(data).then((statusCode) {
       if (statusCode == 200) {
-      } else {
-      }
-    }).catchError((error) {
-    });
+        print("jehee Test");
+        CompleteDialog.showCompleteDialog(context, Strings.addScheduleComplete);
+        Navigator.of(context).pop();
+      } else {}
+    }).catchError((error) {});
   }
 
   Widget _buildTextFieldWidget(
@@ -225,14 +225,17 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: UserText(
-                    text: (_startLocation.isEmpty)
-                        ? Strings.scheduleStartDestinationHint
-                        : _startLocation,
-                    color: (_startLocation.isEmpty)
-                        ? const Color(UserColors.gray05)
-                        : const Color(UserColors.gray07),
-                    weight: FontWeight.w400,
-                    size: ScreenUtil().setSp(16.0)),
+                  text: (_startLocation.isEmpty)
+                      ? Strings.scheduleStartDestinationHint
+                      : _startLocation,
+                  color: (_startLocation.isEmpty)
+                      ? const Color(UserColors.gray05)
+                      : const Color(UserColors.gray07),
+                  weight: FontWeight.w400,
+                  size: ScreenUtil().setSp(16.0),
+                  softWrap: true,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             ),
           ),
@@ -322,7 +325,8 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
                           weight: FontWeight.w400,
                           size: ScreenUtil().setSp(26.0)),
                       SizedBox(width: ScreenUtil().setWidth(4.0)),
-                      UserText(
+                      Expanded(
+                        child: UserText(
                           text: (_destinationControllers[index].text.isEmpty)
                               ? Strings.scheduleEndDestinationHint
                               : _destinationControllers[index].text,
@@ -330,7 +334,11 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
                               ? const Color(UserColors.gray05)
                               : const Color(UserColors.gray07),
                           weight: FontWeight.w400,
-                          size: ScreenUtil().setSp(16.0)),
+                          size: ScreenUtil().setSp(16.0),
+                          softWrap: true,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -361,7 +369,8 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
         ),
         SizedBox(height: ScreenUtil().setHeight(8.0)),
         GestureDetector(
-          onTap: ()=> CompleteDialog.showCompleteDialog(context, Strings.destinationSet),
+          onTap: () => CompleteDialog.showCompleteDialog(
+              context, Strings.destinationSet),
           child: Container(
               width: double.infinity,
               height: ScreenUtil().setHeight(56.0),
@@ -371,7 +380,8 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
                     width: 1.0,
                   ),
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0))),
+                  borderRadius:
+                      BorderRadius.circular(ScreenUtil().radius(8.0))),
               child: Center(
                 child: UserText(
                     text: Strings.setRoute,

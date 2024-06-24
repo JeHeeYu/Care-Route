@@ -17,7 +17,7 @@ class UserText extends StatelessWidget {
     required this.weight,
     required this.size,
     this.softWrap,
-    this.overflow,
+    this.overflow = TextOverflow.ellipsis,
   }) : super(key: key);
 
   @override
