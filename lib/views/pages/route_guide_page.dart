@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:care_route/consts/images.dart';
+import 'package:care_route/views/pages/route_start_page.dart';
 import 'package:care_route/views/pages/search/search_page.dart';
 import 'package:care_route/views/widgets/destination_dialog.dart';
 import 'package:care_route/views/widgets/button_image.dart';
@@ -13,6 +14,8 @@ import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import '../../consts/colors.dart';
 import '../../consts/strings.dart';
+import '../../models/routine/schedule_list_model.dart';
+import '../../services/naver_search_service.dart';
 import '../../view_models/route_view_model.dart';
 import '../../view_models/routine_view_model.dart';
 import '../widgets/button_icon.dart';
@@ -39,6 +42,7 @@ class _RouteGuidePageState extends State<RouteGuidePage> {
   late RouteViewModel _routeViewModel;
   late RoutineViewModel _routineViewModel;
   bool _isStart = true;
+  List<Destination> _todayDestinations = [];
 
   @override
   void initState() {
@@ -66,6 +70,9 @@ class _RouteGuidePageState extends State<RouteGuidePage> {
       if (_routineViewModel.scheduleList.data?.routines[i].startDate == today) {
         setState(() {
           _isStart = true;
+          _todayDestinations =
+              _routineViewModel.scheduleList.data?.routines[i].destinations ??
+                  [];
         });
         return;
       }
@@ -169,6 +176,29 @@ class _RouteGuidePageState extends State<RouteGuidePage> {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const SearchPage(isRoute: true)),
+    );
+  }
+
+  void _navigateToStartPage() {
+    print("Jehee : ${_todayDestinations[0].name}");
+    NaverSearchService.getAddressFromCoordinates(
+      _currentPosition?.latitude ?? 0.0,
+      _currentPosition?.longitude ?? 0.0,
+    ).then((address) {
+      print("Jehee 123 : $address");
+    }).catchError((error) {
+      print("Jehee Error getting address: $error");
+    });
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => RouteStartPage(
+          mapController: _mapController,
+          destinations: _todayDestinations,
+          currentPosition: _currentPosition,
+        ),
+      ),
     );
   }
 
@@ -438,7 +468,7 @@ class _RouteGuidePageState extends State<RouteGuidePage> {
                 textSize: ScreenUtil().setSp(16.0),
                 textColor: Colors.white,
                 textWeight: FontWeight.w600,
-                // callback: () => _isStartFalse(),
+                callback: () => _navigateToStartPage(),
               ),
             ],
           ),

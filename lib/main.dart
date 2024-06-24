@@ -39,11 +39,6 @@ void main() async {
     clientId: 'b8fgmkfu11',
   );
 
-  WebSocketManager webSocketManager = WebSocketManager();
-  webSocketManager.connect('wss://readyou.shop/ws');
-    String memberId = "2";
-  
-
   initializeDateFormatting().then((_) => runApp(const MyApp()));
 }
 

@@ -33,4 +33,5 @@ class Images {
   static const String roundTripDisable = "assets/images/round_trip_disable.svg";
   static const String oneWAyEnable = "assets/images/one_way_enable.svg";
   static const String oneWAyDisable = "assets/images/one_way_disable.svg";
+  static const String locationIcon = "assets/images/location_icon.svg";
 }

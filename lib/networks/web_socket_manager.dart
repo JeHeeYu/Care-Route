@@ -1,9 +1,10 @@
-import 'package:web_socket_channel/web_socket_channel.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'dart:convert';
 
 class WebSocketManager {
   static final WebSocketManager _instance = WebSocketManager._internal();
-  WebSocketChannel? _channel;
+  IO.Socket? _socket;
+  String _url = 'http://readyou.shop:4000'; // 서버 주소와 포트를 설정합니다.
 
   factory WebSocketManager() {
     return _instance;
@@ -11,45 +12,59 @@ class WebSocketManager {
 
   WebSocketManager._internal();
 
-  void connect(String url) {
-    if (_channel != null) {
-      print('WebSocket is already connected');
+  void setUrl(String url) {
+    _url = url;
+  }
+
+  void connect(String userId) {
+    if (_socket != null) {
+      print('Socket.IO is already connected');
       return;
-    } else {
-      print("WebSocket Connected!");
     }
 
     try {
-      _channel = WebSocketChannel.connect(Uri.parse(url));
-      _channel?.stream.listen(
-        (message) {
-          print('Received message: $message');
-        },
-        onDone: () {
-          print('WebSocket connection closed');
-          _channel = null;
-        },
-        onError: (error) {
-          print('WebSocket error: $error');
-          _channel = null;
-        },
-      );
+      _socket = IO.io(_url, <String, dynamic>{
+        'transports': ['websocket'],
+        'autoConnect': false, // autoConnect를 false로 설정하고 수동으로 connect를 호출합니다.
+      });
+
+      _socket!.on('connect', (_) {
+        print('Socket.IO Connected!');
+        // 서버에 사용자 ID를 등록합니다.
+        _socket!.emit('register', userId);
+      });
+
+      _socket!.on('disconnect', (_) {
+        print('Socket.IO Disconnected');
+        _socket = null;
+      });
+
+      _socket!.on('error', (error) {
+        print('Socket.IO error: $error');
+        _socket = null;
+      });
+
+      _socket!.on('receive_message', (data) {
+        print('Received message: ${data['message']}');
+      });
+
+      _socket!.connect(); // 소켓 연결을 수동으로 시작합니다.
     } catch (e) {
-      print('WebSocket connection error: $e');
+      print('Socket.IO connection error: $e');
     }
   }
 
-  void sendMessage(String path, String message) {
-    if (_channel != null) {
-      var formattedMessage = jsonEncode({'path': path, 'message': message});
-      _channel?.sink.add(formattedMessage);
+  void sendMessage(String to, String message) {
+    if (_socket != null) {
+      var messageData = {'to': to, 'message': message};
+      _socket!.emit('send_message', messageData);
     } else {
-      print('WebSocket is not connected');
+      print('Socket.IO is not connected');
     }
   }
 
   void close() {
-    _channel?.sink.close();
-    _channel = null;
+    _socket?.disconnect();
+    _socket = null;
   }
 }

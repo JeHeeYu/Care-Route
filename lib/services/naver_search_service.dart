@@ -8,6 +8,8 @@ class NaverSearchService {
       'https://openapi.naver.com/v1/search/local.json';
   static const String _geocodeBaseUrl =
       'https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode';
+  static const String _reverseGeocodeBaseUrl =
+      'https://naveropenapi.apigw.ntruss.com/map-reversegeocode/v2/gc';
 
   static Future<List<dynamic>> searchPlaces(String query) async {
     List<dynamic> allResults = [];
@@ -62,5 +64,74 @@ class NaverSearchService {
     } else {
       throw Exception('Failed to load coordinates');
     }
+  }
+
+  static Future<String> getAddressFromCoordinates(
+      double latitude, double longitude) async {
+        // latitude = 37.566295;
+        // longitude = 126.977945;
+    final response = await http.get(
+      Uri.parse(
+          '$_reverseGeocodeBaseUrl?coords=$longitude,$latitude&orders=roadaddr&output=json'),
+      headers: {
+        'X-NCP-APIGW-API-KEY-ID': 'b8fgmkfu11',
+        'X-NCP-APIGW-API-KEY': 'KqipHAEw5M153cxV3VWCDbcrBzNRZ5JpakFygbJ9',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      print("Jehee Log 1 : ${response.statusCode}");
+      final Map<String, dynamic> data = json.decode(response.body);
+      if (data['results'] != null && data['results'].isNotEmpty) {
+        final result = data['results'][0];
+        final areas = result['region'];
+        final land = result['land'];
+
+        // final areaNames = [
+        //   areas['area1']['name'],
+        //   areas['area2']['name'],
+        //   areas['area3']['name'],
+        //   areas['area4']['name']
+        // ].where((name) => name != null && name.isNotEmpty).join(' ');
+
+        final additionNames = [
+          land['addition0'] != null && !_isNumeric(land['addition0']['value'])
+              ? land['addition0']['value']
+              : null,
+          land['addition1'] != null && !_isNumeric(land['addition1']['value'])
+              ? land['addition1']['value']
+              : null,
+          land['addition2'] != null && !_isNumeric(land['addition2']['value'])
+              ? land['addition2']['value']
+              : null,
+          land['addition3'] != null && !_isNumeric(land['addition3']['value'])
+              ? land['addition3']['value']
+              : null,
+          land['addition4'] != null && !_isNumeric(land['addition4']['value'])
+              ? land['addition4']['value']
+              : null,
+        ].where((name) => name != null && name.isNotEmpty).join(' ');
+
+        // final fullAddress = '$areaNames $additionNames ${land['name']} ${land['number1']}';
+
+        final fullAddress = '$additionNames ${land['name']} ${land['number1']}';
+
+        print("Jehee ; ${data}");
+        return fullAddress;
+      } else {
+        print("Jehee Log : ${response.statusCode}");
+        throw Exception('No address found for the given coordinates');
+      }
+    } else {
+      print("Jehee Log 2 : ${response.statusCode}");
+      throw Exception('Failed to load address');
+    }
+  }
+
+  static bool _isNumeric(String? s) {
+    if (s == null) {
+      return false;
+    }
+    return double.tryParse(s) != null;
   }
 }
