@@ -8,12 +8,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import '../../consts/colors.dart';
 import '../../consts/strings.dart';
 import '../../view_models/route_view_model.dart';
+import '../../view_models/routine_view_model.dart';
 import '../widgets/button_icon.dart';
+import '../widgets/infinity_button.dart';
 import 'favorite_page.dart';
 
 class RouteGuidePage extends StatefulWidget {
@@ -34,6 +37,8 @@ class _RouteGuidePageState extends State<RouteGuidePage> {
   bool _isListening = false;
   Timer? _timer;
   late RouteViewModel _routeViewModel;
+  late RoutineViewModel _routineViewModel;
+  bool _isStart = true;
 
   @override
   void initState() {
@@ -42,12 +47,32 @@ class _RouteGuidePageState extends State<RouteGuidePage> {
     _speech = stt.SpeechToText();
 
     _routeViewModel = Provider.of<RouteViewModel>(context, listen: false);
+    _routineViewModel = Provider.of<RoutineViewModel>(context, listen: false);
+    _checkTodayStart();
   }
 
   Future<void> _initializeMap() async {
     Position position = await getCurrentLocation();
     setState(() {
       _currentPosition = position;
+    });
+  }
+
+  void _checkTodayStart() {
+    int length = _routineViewModel.scheduleList.data?.routines.length ?? 0;
+    String today = DateFormat('yyyy-MM-dd').format(DateTime.now());
+
+    for (int i = 0; i < length; i++) {
+      if (_routineViewModel.scheduleList.data?.routines[i].startDate == today) {
+        setState(() {
+          _isStart = true;
+        });
+        return;
+      }
+    }
+
+    setState(() {
+      _isStart = false;
     });
   }
 
@@ -145,6 +170,12 @@ class _RouteGuidePageState extends State<RouteGuidePage> {
       context,
       MaterialPageRoute(builder: (context) => const SearchPage(isRoute: true)),
     );
+  }
+
+  void _isStartFalse() {
+    setState(() {
+      _isStart = false;
+    });
   }
 
   Widget _buildNaverMap() {
@@ -340,13 +371,91 @@ class _RouteGuidePageState extends State<RouteGuidePage> {
     );
   }
 
+  Widget _buildRouteStartWidget() {
+    return Padding(
+      padding: EdgeInsets.only(
+          top: ScreenUtil().setHeight(40.0),
+          left: ScreenUtil().setWidth(16.0),
+          right: ScreenUtil().setWidth(16.0)),
+      child: Container(
+        width: double.infinity,
+        height: ScreenUtil().setHeight(142.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(
+            color: const Color(UserColors.gray03),
+            width: 1.0,
+          ),
+          borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0)),
+        ),
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+              vertical: ScreenUtil().setHeight(16.0),
+              horizontal: ScreenUtil().setWidth(20.0)),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      UserText(
+                          text: Strings.scheduleStartGuide1,
+                          color: const Color(UserColors.gray07),
+                          weight: FontWeight.w700,
+                          size: ScreenUtil().setSp(16.0)),
+                      UserText(
+                          text: Strings.scheduleStartColorGuide1,
+                          color: const Color(UserColors.pointGreen),
+                          weight: FontWeight.w700,
+                          size: ScreenUtil().setSp(16.0)),
+                      UserText(
+                          text: Strings.scheduleStartGuide3,
+                          color: const Color(UserColors.gray07),
+                          weight: FontWeight.w700,
+                          size: ScreenUtil().setSp(16.0)),
+                    ],
+                  ),
+                  ButtonIcon(
+                      icon: Icons.close,
+                      iconColor: const Color(UserColors.gray05),
+                      iconSize: ScreenUtil().setWidth(20.0),
+                      callback: () => _isStartFalse()),
+                ],
+              ),
+              UserText(
+                  text: Strings.scheduleStartGuide2,
+                  color: const Color(UserColors.gray07),
+                  weight: FontWeight.w700,
+                  size: ScreenUtil().setSp(16.0)),
+              SizedBox(height: ScreenUtil().setHeight(12.0)),
+              InfinityButton(
+                height: ScreenUtil().setHeight(56.0),
+                radius: ScreenUtil().radius(8.0),
+                backgroundColor: const Color(UserColors.pointGreen),
+                text: Strings.routeStart,
+                textSize: ScreenUtil().setSp(16.0),
+                textColor: Colors.white,
+                textWeight: FontWeight.w600,
+                // callback: () => _isStartFalse(),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
           _buildNaverMap(),
-          _buildDestinationInputBox(),
+          (_isStart == true)
+              ? _buildRouteStartWidget()
+              : _buildDestinationInputBox(),
           _buildLocationEnableButton(),
         ],
       ),

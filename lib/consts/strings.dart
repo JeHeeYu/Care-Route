@@ -125,6 +125,11 @@ class Strings {
   static const String connection = "연결하기";
   static const String destinationSet = "목적지가 설정되었습니다.";
   static const String addScheduleComplete = "일정이 생성되었습니다.";
+  static const String scheduleStartGuide1 = "일정이 ";
+  static const String scheduleStartGuide2 = "길 안내를 시작할까요?";
+  static const String scheduleStartGuide3 = "됐어요!";
+  static const String scheduleStartColorGuide1 = "시작";
+  static const String routeStart = "길 안내 시작";
 
   // === API KEY ===
   static const String idTokenKey = "idToken";

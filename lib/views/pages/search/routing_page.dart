@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:care_route/views/pages/search/search_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:geolocator/geolocator.dart';
 import '../../../consts/colors.dart';
 import '../../../consts/images.dart';
 import '../../../consts/strings.dart';
@@ -8,6 +11,7 @@ import '../../widgets/button_icon.dart';
 import '../../widgets/button_image.dart';
 import '../../../services/odsay_route_service.dart';
 import '../../widgets/user_text.dart';
+import 'package:flutter_naver_map/flutter_naver_map.dart';
 
 class RoutingPage extends StatefulWidget {
   final String? startTitle;
@@ -46,6 +50,11 @@ class _RoutingPageState extends State<RoutingPage> {
   int _selectedRouteTypeIndex = -1;
   List<Map<String, dynamic>> _routes = [];
 
+  late NaverMapController _mapController;
+  final Completer<NaverMapController> _mapControllerCompleter = Completer();
+  NMarker? _currentMarker;
+  Position? _currentPosition;
+
   @override
   void initState() {
     super.initState();
@@ -56,6 +65,21 @@ class _RoutingPageState extends State<RoutingPage> {
     _endX = widget.endX;
     _endY = widget.endY;
     _fetchRouteIfReady();
+    _initializeMap();
+  }
+
+  Future<void> _initializeMap() async {
+    Position position = await getCurrentLocation();
+    setState(() {
+      _currentPosition = position;
+    });
+  }
+
+  Future<Position> getCurrentLocation() async {
+    LocationPermission permission = await Geolocator.requestPermission();
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    return position;
   }
 
   void _navigateToSearchPage(String from) async {
@@ -274,122 +298,187 @@ class _RoutingPageState extends State<RoutingPage> {
     return "$period $hourStr:$minuteStr";
   }
 
-Widget _buildDestinationInputBox() {
-  return Padding(
-    padding: EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(22.0)),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        GestureDetector(
-          onTap: () => _navigateToSearchPage('start'),
-          child: Container(
-            height: ScreenUtil().setHeight(56.0),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0)),
-              border: Border.all(
-                color: const Color(UserColors.gray03),
-              ),
-            ),
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(12.0)),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Row(
-                      children: [
-                        UserText(
-                          text: Strings.start,
-                          color: const Color(UserColors.gray05),
-                          weight: FontWeight.w700,
-                          size: ScreenUtil().setSp(16.0),
-                        ),
-                        SizedBox(width: ScreenUtil().setWidth(16.0)),
-                        Expanded(
-                          child: UserText(
-                            text: (_startLocation.isEmpty)
-                                ? Strings.rouingStartGuide
-                                : _startLocation,
-                            color: (_startLocation.isEmpty)
-                                ? const Color(UserColors.gray04)
-                                : const Color(UserColors.gray07),
-                            weight: FontWeight.w700,
-                            size: ScreenUtil().setSp(16.0),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        SizedBox(width: ScreenUtil().setWidth(16.0)),
-                      ],
-                    ),
-                  ),
-                  ButtonIcon(
-                    icon: Icons.arrow_back_ios,
-                    iconColor: const Color(UserColors.gray05),
-                    callback: () => Navigator.of(context).pop(),
-                  ),
-                ],
-              ),
-            ),
-          ),
+  Widget _buildNaverMap() {
+    if (_currentPosition == null) {
+      return const Center(child: CircularProgressIndicator());
+    } else {
+      return NaverMap(
+        options: NaverMapViewOptions(
+          initialCameraPosition: NCameraPosition(
+              target: NLatLng(_currentPosition?.latitude ?? 0.0,
+                  _currentPosition?.longitude ?? 0.0),
+              zoom: 16,
+              bearing: 0,
+              tilt: 0),
+          indoorEnable: true,
+          locationButtonEnable: true,
+          consumeSymbolTapEvents: false,
+          locale: const Locale('ko'),
+          logoClickEnable: false,
         ),
-        SizedBox(height: ScreenUtil().setHeight(8.0)),
-        GestureDetector(
-          onTap: () => _navigateToSearchPage('arrive'),
-          child: Container(
-            height: ScreenUtil().setHeight(56.0),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0)),
-              border: Border.all(
-                color: const Color(UserColors.gray03),
+        onMapReady: (controller) async {
+          _mapController = controller;
+          if (!_mapControllerCompleter.isCompleted) {
+            _mapControllerCompleter.complete(controller);
+            _mapController
+                .setLocationTrackingMode(NLocationTrackingMode.follow);
+          }
+
+          NOverlayImage markerImage =
+              const NOverlayImage.fromAssetImage(Images.defaultMarker);
+          final marker = NMarker(
+            id: DateTime.now().millisecondsSinceEpoch.toString(),
+            position: NLatLng(_currentPosition?.latitude ?? 0.0,
+                _currentPosition?.longitude ?? 0.0),
+            icon: markerImage,
+            size:
+                Size(ScreenUtil().setWidth(40.0), ScreenUtil().setHeight(44.0)),
+          );
+
+          _mapController.addOverlay(marker);
+          _currentMarker = marker;
+        },
+        onMapTapped: (point, latLng) {
+          NOverlayImage markerImage =
+              const NOverlayImage.fromAssetImage(Images.defaultMarker);
+          final marker = NMarker(
+            id: DateTime.now().millisecondsSinceEpoch.toString(),
+            position: latLng,
+            icon: markerImage,
+            size:
+                Size(ScreenUtil().setWidth(40.0), ScreenUtil().setHeight(44.0)),
+          );
+
+          if (_currentMarker != null) {
+            _mapController.clearOverlays();
+          }
+
+          _mapController.addOverlay(marker);
+          _currentMarker = marker;
+
+          print('Marker added at: ${latLng.latitude}, ${latLng.longitude}');
+        },
+      );
+    }
+  }
+
+  Widget _buildDestinationInputBox() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(22.0)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          GestureDetector(
+            onTap: () => _navigateToSearchPage('start'),
+            child: Container(
+              height: ScreenUtil().setHeight(56.0),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0)),
+                border: Border.all(
+                  color: const Color(UserColors.gray03),
+                ),
               ),
-            ),
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(12.0)),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Row(
-                      children: [
-                        UserText(
-                            text: Strings.arrive,
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                    horizontal: ScreenUtil().setWidth(12.0)),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Row(
+                        children: [
+                          UserText(
+                            text: Strings.start,
                             color: const Color(UserColors.gray05),
                             weight: FontWeight.w700,
-                            size: ScreenUtil().setSp(16.0)),
-                        SizedBox(width: ScreenUtil().setWidth(16.0)),
-                        Expanded(
-                          child: UserText(
-                            text: (_arriveLocation.isEmpty)
-                                ? Strings.rouingArriveGuide
-                                : _arriveLocation,
-                            color: (_arriveLocation.isEmpty)
-                                ? const Color(UserColors.gray04)
-                                : const Color(UserColors.gray07),
-                            weight: FontWeight.w700,
                             size: ScreenUtil().setSp(16.0),
-                            overflow: TextOverflow.ellipsis,
                           ),
-                        ),
-                        SizedBox(width: ScreenUtil().setWidth(16.0)),
-                      ],
+                          SizedBox(width: ScreenUtil().setWidth(16.0)),
+                          Expanded(
+                            child: UserText(
+                              text: (_startLocation.isEmpty)
+                                  ? Strings.rouingStartGuide
+                                  : _startLocation,
+                              color: (_startLocation.isEmpty)
+                                  ? const Color(UserColors.gray04)
+                                  : const Color(UserColors.gray07),
+                              weight: FontWeight.w700,
+                              size: ScreenUtil().setSp(16.0),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          SizedBox(width: ScreenUtil().setWidth(16.0)),
+                        ],
+                      ),
                     ),
-                  ),
-                  ButtonImage(
-                    imagePath: Images.mic,
-                    callback: () => Navigator.of(context).pop(),
-                  ),
-                ],
+                    ButtonIcon(
+                      icon: Icons.arrow_back_ios,
+                      iconColor: const Color(UserColors.gray05),
+                      callback: () => Navigator.of(context).pop(),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-      ],
-    ),
-  );
-}
-
+          SizedBox(height: ScreenUtil().setHeight(8.0)),
+          GestureDetector(
+            onTap: () => _navigateToSearchPage('arrive'),
+            child: Container(
+              height: ScreenUtil().setHeight(56.0),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0)),
+                border: Border.all(
+                  color: const Color(UserColors.gray03),
+                ),
+              ),
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                    horizontal: ScreenUtil().setWidth(12.0)),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Row(
+                        children: [
+                          UserText(
+                              text: Strings.arrive,
+                              color: const Color(UserColors.gray05),
+                              weight: FontWeight.w700,
+                              size: ScreenUtil().setSp(16.0)),
+                          SizedBox(width: ScreenUtil().setWidth(16.0)),
+                          Expanded(
+                            child: UserText(
+                              text: (_arriveLocation.isEmpty)
+                                  ? Strings.rouingArriveGuide
+                                  : _arriveLocation,
+                              color: (_arriveLocation.isEmpty)
+                                  ? const Color(UserColors.gray04)
+                                  : const Color(UserColors.gray07),
+                              weight: FontWeight.w700,
+                              size: ScreenUtil().setSp(16.0),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          SizedBox(width: ScreenUtil().setWidth(16.0)),
+                        ],
+                      ),
+                    ),
+                    ButtonImage(
+                      imagePath: Images.mic,
+                      callback: () => Navigator.of(context).pop(),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget _buildRouteTypeWidget() {
     return Container(
@@ -473,42 +562,47 @@ Widget _buildDestinationInputBox() {
     List<double> percentages =
         times.map((time) => time / totalMinutes).toList();
 
-    return Container(
-      width: double.infinity,
-      height: ScreenUtil().setHeight(138.0),
-      margin: EdgeInsets.symmetric(vertical: ScreenUtil().setHeight(8.0)),
-      decoration: BoxDecoration(
-        color: const Color(UserColors.gray02),
-        borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0)),
-      ),
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-            horizontal: ScreenUtil().setWidth(16.0),
-            vertical: ScreenUtil().setHeight(8.0)),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                UserText(
-                  text: numberList[routeIndex],
-                  color: const Color(UserColors.pointGreen),
-                  weight: FontWeight.w700,
-                  size: ScreenUtil().setSp(25.0),
-                ),
-                SizedBox(width: ScreenUtil().setHeight(9.0)),
-                _buildTotalTime(totalMinutes),
-              ],
-            ),
-            UserText(
-              text: "${destinationTime(totalMinutes)} 도착 예정 / $payment원 예상",
-              color: const Color(UserColors.gray06),
-              weight: FontWeight.w400,
-              size: ScreenUtil().setSp(12.0),
-            ),
-            SizedBox(height: ScreenUtil().setHeight(8.0)),
-            _buildRouteTimeWidget(percentages, labels, times),
-          ],
+    return GestureDetector(
+      onTap: () {
+        // 길 안내 필요
+      },
+      child: Container(
+        width: double.infinity,
+        height: ScreenUtil().setHeight(138.0),
+        margin: EdgeInsets.symmetric(vertical: ScreenUtil().setHeight(8.0)),
+        decoration: BoxDecoration(
+          color: const Color(UserColors.gray02),
+          borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0)),
+        ),
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+              horizontal: ScreenUtil().setWidth(16.0),
+              vertical: ScreenUtil().setHeight(8.0)),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  UserText(
+                    text: numberList[routeIndex],
+                    color: const Color(UserColors.pointGreen),
+                    weight: FontWeight.w700,
+                    size: ScreenUtil().setSp(25.0),
+                  ),
+                  SizedBox(width: ScreenUtil().setHeight(9.0)),
+                  _buildTotalTime(totalMinutes),
+                ],
+              ),
+              UserText(
+                text: "${destinationTime(totalMinutes)} 도착 예정 / $payment원 예상",
+                color: const Color(UserColors.gray06),
+                weight: FontWeight.w400,
+                size: ScreenUtil().setSp(12.0),
+              ),
+              SizedBox(height: ScreenUtil().setHeight(8.0)),
+              _buildRouteTimeWidget(percentages, labels, times),
+            ],
+          ),
         ),
       ),
     );
@@ -697,7 +791,9 @@ Widget _buildDestinationInputBox() {
             thickness: 1.0,
           ),
           SizedBox(height: ScreenUtil().setHeight(16.0)),
-          (_isFinish == true) ? _buildRouteTypeWidget() : Container(),
+          // (_isFinish == true) ? _buildRouteTypeWidget() : Container(),
+           (_isFinish == true) ? _buildNaverMap() : Container(),
+          
           Expanded(
               child: SingleChildScrollView(
             child: Padding(
