@@ -2,6 +2,7 @@ import 'package:care_route/view_models/member_view_model.dart';
 import 'package:care_route/view_models/mypage_view_model.dart';
 import 'package:care_route/view_models/route_view_model.dart';
 import 'package:care_route/view_models/routine_view_model.dart';
+import 'package:care_route/views/pages/connection_request_page.dart';
 import 'package:care_route/views/pages/favorite_page.dart';
 import 'package:care_route/views/pages/login_page.dart';
 import 'package:care_route/views/pages/my_page/number_change_page.dart';
@@ -21,6 +22,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'app.dart';
+import 'networks/web_socket_manager.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
@@ -36,6 +38,11 @@ void main() async {
   await NaverMapSdk.instance.initialize(
     clientId: 'b8fgmkfu11',
   );
+
+  WebSocketManager webSocketManager = WebSocketManager();
+  webSocketManager.connect('wss://readyou.shop/ws');
+    String memberId = "2";
+  
 
   initializeDateFormatting().then((_) => runApp(const MyApp()));
 }
@@ -148,13 +155,12 @@ class _MyAppState extends State<MyApp> {
       child: ScreenUtilInit(
         designSize: const Size(360, 640),
         builder: (BuildContext context, child) => MaterialApp(
-          title: 'Flutter Demo',
-          theme: ThemeData(
-            primarySwatch: Colors.blue,
-          ),
-          // home: const App(initialPageType: "GUIDE",),
-          home: const SplashPage()  
-        ),
+            title: 'Flutter Demo',
+            theme: ThemeData(
+              primarySwatch: Colors.blue,
+            ),
+            // home: const App(initialPageType: "GUIDE",),
+            home: const SplashPage()),
       ),
     );
   }

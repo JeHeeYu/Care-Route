@@ -63,12 +63,9 @@ class RoutineViewModel with ChangeNotifier {
       final responseMap = jsonDecode(response) as Map<String, dynamic>;
       final json = AddScheduleModel.fromJson(responseMap);
 
-      print("jehee 1");
-
       addScheduleList(ApiResponse.complete(json));
       return json.statusCode;
     } catch (e) {
-      print("Jehee2  : ${e}");
       addScheduleList(ApiResponse.error(e.toString()));
       throw Exception("");
     }

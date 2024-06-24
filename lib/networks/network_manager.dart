@@ -9,7 +9,6 @@ class NetworkManager {
 
   Future<Map<String, String>> get commonHeaders async {
     String? idToken = await _storage.read(key: Strings.idTokenKey);
-    print("Jehee token : ${idToken}");
     return {
       "Content-Type": "application/json",
       "Accept": "application/json",

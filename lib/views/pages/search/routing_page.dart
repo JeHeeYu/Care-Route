@@ -112,7 +112,6 @@ class _RoutingPageState extends State<RoutingPage> {
           int walkTime = 0;
           bool lastWasWalk = false;
 
-
           for (var subPath in path['subPath']) {
             int trafficType = subPath['trafficType'];
             int sectionTime = (subPath['sectionTime'] as num).toInt();
@@ -275,30 +274,30 @@ class _RoutingPageState extends State<RoutingPage> {
     return "$period $hourStr:$minuteStr";
   }
 
-  Widget _buildDestinationInputBox() {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(22.0)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          GestureDetector(
-            onTap: () => _navigateToSearchPage('start'),
-            child: Container(
-              height: ScreenUtil().setHeight(56.0),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0)),
-                border: Border.all(
-                  color: const Color(UserColors.gray03),
-                ),
+Widget _buildDestinationInputBox() {
+  return Padding(
+    padding: EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(22.0)),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        GestureDetector(
+          onTap: () => _navigateToSearchPage('start'),
+          child: Container(
+            height: ScreenUtil().setHeight(56.0),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0)),
+              border: Border.all(
+                color: const Color(UserColors.gray03),
               ),
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal: ScreenUtil().setWidth(12.0)),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
+            ),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(12.0)),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Row(
                       children: [
                         UserText(
                           text: Strings.start,
@@ -307,48 +306,52 @@ class _RoutingPageState extends State<RoutingPage> {
                           size: ScreenUtil().setSp(16.0),
                         ),
                         SizedBox(width: ScreenUtil().setWidth(16.0)),
-                        UserText(
-                          text: (_startLocation.isEmpty)
-                              ? Strings.rouingStartGuide
-                              : _startLocation,
-                          color: (_startLocation.isEmpty)
-                              ? const Color(UserColors.gray04)
-                              : const Color(UserColors.gray07),
-                          weight: FontWeight.w700,
-                          size: ScreenUtil().setSp(16.0),
+                        Expanded(
+                          child: UserText(
+                            text: (_startLocation.isEmpty)
+                                ? Strings.rouingStartGuide
+                                : _startLocation,
+                            color: (_startLocation.isEmpty)
+                                ? const Color(UserColors.gray04)
+                                : const Color(UserColors.gray07),
+                            weight: FontWeight.w700,
+                            size: ScreenUtil().setSp(16.0),
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
                         SizedBox(width: ScreenUtil().setWidth(16.0)),
                       ],
                     ),
-                    ButtonIcon(
-                      icon: Icons.arrow_back_ios,
-                      iconColor: const Color(UserColors.gray05),
-                      callback: () => Navigator.of(context).pop(),
-                    ),
-                  ],
-                ),
+                  ),
+                  ButtonIcon(
+                    icon: Icons.arrow_back_ios,
+                    iconColor: const Color(UserColors.gray05),
+                    callback: () => Navigator.of(context).pop(),
+                  ),
+                ],
               ),
             ),
           ),
-          SizedBox(height: ScreenUtil().setHeight(8.0)),
-          GestureDetector(
-            onTap: () => _navigateToSearchPage('arrive'),
-            child: Container(
-              height: ScreenUtil().setHeight(56.0),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0)),
-                border: Border.all(
-                  color: const Color(UserColors.gray03),
-                ),
+        ),
+        SizedBox(height: ScreenUtil().setHeight(8.0)),
+        GestureDetector(
+          onTap: () => _navigateToSearchPage('arrive'),
+          child: Container(
+            height: ScreenUtil().setHeight(56.0),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0)),
+              border: Border.all(
+                color: const Color(UserColors.gray03),
               ),
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal: ScreenUtil().setWidth(12.0)),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
+            ),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(12.0)),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Row(
                       children: [
                         UserText(
                             text: Strings.arrive,
@@ -356,7 +359,8 @@ class _RoutingPageState extends State<RoutingPage> {
                             weight: FontWeight.w700,
                             size: ScreenUtil().setSp(16.0)),
                         SizedBox(width: ScreenUtil().setWidth(16.0)),
-                        UserText(
+                        Expanded(
+                          child: UserText(
                             text: (_arriveLocation.isEmpty)
                                 ? Strings.rouingArriveGuide
                                 : _arriveLocation,
@@ -364,23 +368,28 @@ class _RoutingPageState extends State<RoutingPage> {
                                 ? const Color(UserColors.gray04)
                                 : const Color(UserColors.gray07),
                             weight: FontWeight.w700,
-                            size: ScreenUtil().setSp(16.0)),
+                            size: ScreenUtil().setSp(16.0),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
                         SizedBox(width: ScreenUtil().setWidth(16.0)),
                       ],
                     ),
-                    ButtonImage(
-                      imagePath: Images.mic,
-                      callback: () => Navigator.of(context).pop(),
-                    ),
-                  ],
-                ),
+                  ),
+                  ButtonImage(
+                    imagePath: Images.mic,
+                    callback: () => Navigator.of(context).pop(),
+                  ),
+                ],
               ),
             ),
           ),
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
+}
+
 
   Widget _buildRouteTypeWidget() {
     return Container(
@@ -663,46 +672,57 @@ class _RoutingPageState extends State<RoutingPage> {
     }
   }
 
-@override
-Widget build(BuildContext context) {
-  return Scaffold(
-    backgroundColor: Colors.white,
-    body: Column(
-      children: [
-        SizedBox(height: ScreenUtil().setHeight(40.0)),
-        _buildDestinationInputBox(),
-        SizedBox(height: ScreenUtil().setHeight(6.0)),
-        const Divider(
-          color: Color(UserColors.gray03),
-          thickness: 1.0,
-        ),
-        SizedBox(height: ScreenUtil().setHeight(16.0)),
-        (_isFinish == true) ? _buildRouteTypeWidget() : Container(),
-        Expanded(
-            child: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(16.0)),
-            child: Column(
-              children: [
-                SizedBox(height: ScreenUtil().setHeight(16.0)),
-                if (_isLoading) CircularProgressIndicator(),
-                if (_routeData != null) ...[
-                  for (int i = 0; i < _routes.length; i++)
-                    _buildRouteResultWidget(
-                      i + 1,
-                      _routes[i]['times'],
-                      _routes[i]['labels'],
-                      _routes[i]['totalPayment'],
-                    ),
-                ],
-                if (_errorMessage.isNotEmpty) Text('Error: $_errorMessage'),
-              ],
-            ),
-          ),
-        )),
-      ],
-    ),
-  );
-}
+  Widget _buildEmptyWidget() {
+    return Center(
+      child: UserText(
+        text: "검색 결과가 없습니다.",
+        color: const Color(UserColors.gray05),
+        weight: FontWeight.w400,
+        size: ScreenUtil().setSp(16.0),
+      ),
+    );
+  }
 
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Column(
+        children: [
+          SizedBox(height: ScreenUtil().setHeight(40.0)),
+          _buildDestinationInputBox(),
+          SizedBox(height: ScreenUtil().setHeight(6.0)),
+          const Divider(
+            color: Color(UserColors.gray03),
+            thickness: 1.0,
+          ),
+          SizedBox(height: ScreenUtil().setHeight(16.0)),
+          (_isFinish == true) ? _buildRouteTypeWidget() : Container(),
+          Expanded(
+              child: SingleChildScrollView(
+            child: Padding(
+              padding:
+                  EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(16.0)),
+              child: Column(
+                children: [
+                  SizedBox(height: ScreenUtil().setHeight(16.0)),
+                  if (_isLoading) CircularProgressIndicator(),
+                  if (_routeData != null) ...[
+                    for (int i = 0; i < _routes.length; i++)
+                      _buildRouteResultWidget(
+                        i + 1,
+                        _routes[i]['times'],
+                        _routes[i]['labels'],
+                        _routes[i]['totalPayment'],
+                      ),
+                  ],
+                  if (_errorMessage.isNotEmpty) _buildEmptyWidget(),
+                ],
+              ),
+            ),
+          )),
+        ],
+      ),
+    );
+  }
 }

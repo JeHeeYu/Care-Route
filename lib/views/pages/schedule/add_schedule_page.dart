@@ -95,7 +95,7 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
 
     _routineViewModel.registSchedule(data).then((statusCode) {
       if (statusCode == 200) {
-        print("jehee Test");
+        _routineViewModel.getScheduleList();
         CompleteDialog.showCompleteDialog(context, Strings.addScheduleComplete);
         Navigator.of(context).pop();
       } else {}
