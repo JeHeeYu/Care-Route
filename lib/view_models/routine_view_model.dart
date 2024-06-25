@@ -4,6 +4,7 @@ import 'package:care_route/models/routine/target_list_model.dart';
 import 'package:flutter/cupertino.dart';
 
 import '../models/routine/add_schedule_model.dart';
+import '../models/routine/delete_target_model.dart';
 import '../models/routine/schedule_list_model.dart';
 import '../networks/api_response.dart';
 import '../networks/api_url.dart';
@@ -13,6 +14,7 @@ class RoutineViewModel with ChangeNotifier {
   ApiResponse<TargetListModel> targetList = ApiResponse.loading();
   ApiResponse<ScheduleListModel> scheduleList = ApiResponse.loading();
   ApiResponse<AddScheduleModel> addScheduleData = ApiResponse.loading();
+  ApiResponse<DeleteTargetModel> deleteTarget = ApiResponse.loading();
 
   void setTargetList(ApiResponse<TargetListModel> response) {
     targetList = response;
@@ -26,6 +28,11 @@ class RoutineViewModel with ChangeNotifier {
 
   void addScheduleList(ApiResponse<AddScheduleModel> response) {
     addScheduleData = response;
+    notifyListeners();
+  }
+
+    void setDeleteTarget(ApiResponse<DeleteTargetModel> response) {
+    deleteTarget = response;
     notifyListeners();
   }
 
@@ -68,6 +75,21 @@ class RoutineViewModel with ChangeNotifier {
       return json.statusCode;
     } catch (e) {
       addScheduleList(ApiResponse.error(e.toString()));
+      throw Exception("");
+    }
+  }
+
+  Future<int> targetDelete(Map<String, dynamic> data) async {
+    try {
+      final response =
+          await NetworkManager.instance.post(ApiUrl.deleteTarget, data);
+      final responseMap = jsonDecode(response) as Map<String, dynamic>;
+      final json = DeleteTargetModel.fromJson(responseMap);
+      notifyListeners();
+      setDeleteTarget(ApiResponse.complete(json));
+      return json.statusCode;
+    } catch (e) {
+      setDeleteTarget(ApiResponse.error(e.toString()));
       throw Exception("");
     }
   }

@@ -130,6 +130,7 @@ class Strings {
   static const String scheduleStartGuide3 = "됐어요!";
   static const String scheduleStartColorGuide1 = "시작";
   static const String routeStart = "길 안내 시작";
+  static const String retryGuide = "다시 시도해주세요.";
 
   // === API KEY ===
   static const String idTokenKey = "idToken";
@@ -154,4 +155,5 @@ class Strings {
   static const String destinationLatitude = "destinationLatitude";
   static const String destinationLongitude = "destinationLongitude";
   static const String isRoundTripKey = "isRoundTrip";
+  static const String targetIdKey = "targetId";
 }

@@ -1,5 +1,6 @@
 import 'package:care_route/views/pages/my_page/target_connection_page.dart';
 import 'package:care_route/views/widgets/back_app_bar.dart';
+import 'package:care_route/views/widgets/complete_dialog.dart';
 import 'package:care_route/views/widgets/user_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -17,8 +18,7 @@ class TargetListPage extends StatefulWidget {
   const TargetListPage({Key? key, required this.userType}) : super(key: key);
 
   @override
-  State<TargetListPage> createState() =>
-      _TargetConnectionListPageState();
+  State<TargetListPage> createState() => _TargetConnectionListPageState();
 }
 
 class _TargetConnectionListPageState extends State<TargetListPage> {
@@ -28,6 +28,23 @@ class _TargetConnectionListPageState extends State<TargetListPage> {
   void initState() {
     super.initState();
     _routineViewModel = Provider.of<RoutineViewModel>(context, listen: false);
+  }
+
+  void _deleteTarget(int index) async {
+    int memberId =
+        _routineViewModel.targetList.data?.targetInfos[index].memberId ?? -1;
+    Map<String, dynamic> data = {Strings.targetIdKey: memberId};
+
+    if (memberId == -1) {
+      CompleteDialog.showCompleteDialog(context, Strings.retryGuide);
+    } else {
+      final result = await _routineViewModel.targetDelete(data);
+
+      if(result == 200) {
+        CompleteDialog.showCompleteDialog(context, Strings.deleteComplete);
+        _routineViewModel.getTargetList();
+      }
+    }
   }
 
   void _navigateToConnectionPage(BuildContext context) {
@@ -100,7 +117,7 @@ class _TargetConnectionListPageState extends State<TargetListPage> {
               ButtonIcon(
                 icon: Icons.close,
                 iconColor: Colors.red,
-                // callback: () => _deleteBookMark(bookmarkId)
+                callback: () => _deleteTarget(index),
               ),
             ],
           ),
@@ -127,7 +144,9 @@ class _TargetConnectionListPageState extends State<TargetListPage> {
     return Padding(
       padding: EdgeInsets.only(bottom: ScreenUtil().setHeight(20.0)),
       child: UserText(
-          text: (widget.userType == Strings.targetKey) ? Strings.targetListGuide : Strings.guideListGuide,
+          text: (widget.userType == Strings.targetKey)
+              ? Strings.targetListGuide
+              : Strings.guideListGuide,
           color: const Color(UserColors.gray05),
           weight: FontWeight.w400,
           size: ScreenUtil().setSp(12.0)),
@@ -180,10 +199,9 @@ class _TargetConnectionListPageState extends State<TargetListPage> {
             child: InfinityButton(
               height: ScreenUtil().setHeight(56.0),
               radius: ScreenUtil().radius(8.0),
-              backgroundColor:
-                  _isButtonEnabled()
-                      ? const Color(UserColors.pointGreen)
-                      : const Color(UserColors.gray03),
+              backgroundColor: _isButtonEnabled()
+                  ? const Color(UserColors.pointGreen)
+                  : const Color(UserColors.gray03),
               text: Strings.addTarget,
               textSize: ScreenUtil().setSp(16.0),
               textColor: const Color(UserColors.gray01),
