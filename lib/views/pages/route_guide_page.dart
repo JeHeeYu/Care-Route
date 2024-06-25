@@ -165,10 +165,10 @@ class _RouteGuidePageState extends State<RouteGuidePage> {
     _timer?.cancel();
   }
 
-  void _showFavoriteScreen() {
+  void _showFavoriteScreen(String title) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const FavoritePage()),
+      MaterialPageRoute(builder: (context) => FavoritePage(title: title)),
     );
   }
 
@@ -180,14 +180,11 @@ class _RouteGuidePageState extends State<RouteGuidePage> {
   }
 
   void _navigateToStartPage() {
-    print("Jehee : ${_todayDestinations[0].name}");
     NaverSearchService.getAddressFromCoordinates(
       _currentPosition?.latitude ?? 0.0,
       _currentPosition?.longitude ?? 0.0,
     ).then((address) {
-      print("Jehee 123 : $address");
     }).catchError((error) {
-      print("Jehee Error getting address: $error");
     });
 
     Navigator.push(
@@ -280,41 +277,41 @@ class _RouteGuidePageState extends State<RouteGuidePage> {
         itemCount: _routeViewModel.getBookMarkData.data?.bookmarks.length ?? 0,
         itemBuilder: (context, index) {
           var bookmark = _routeViewModel.getBookMarkData.data!.bookmarks[index];
-          return Padding(
-            padding: EdgeInsets.only(right: ScreenUtil().setWidth(8.0)),
-            child: IntrinsicWidth(
-              child: Container(
-                height: ScreenUtil().setHeight(48.0),
-                decoration: BoxDecoration(
-                  color: const Color(UserColors.gray02),
-                  border: Border.all(
-                    color: const Color(UserColors.gray04),
-                    width: 1.0,
+          return GestureDetector(
+            onTap: () => _showFavoriteScreen(bookmark.title ?? ''),
+            child: Padding(
+              padding: EdgeInsets.only(right: ScreenUtil().setWidth(8.0)),
+              child: IntrinsicWidth(
+                child: Container(
+                  height: ScreenUtil().setHeight(48.0),
+                  decoration: BoxDecoration(
+                    color: const Color(UserColors.gray02),
+                    border: Border.all(
+                      color: const Color(UserColors.gray04),
+                      width: 1.0,
+                    ),
+                    borderRadius:
+                        BorderRadius.circular(ScreenUtil().radius(28.0)),
                   ),
-                  borderRadius:
-                      BorderRadius.circular(ScreenUtil().radius(28.0)),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: ScreenUtil().setWidth(20.0)),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      ButtonIcon(
-                        icon: Icons.star_border,
-                        iconSize: ScreenUtil().setWidth(25.0),
-                        iconColor: const Color(UserColors.pointGreen),
-                        callback: _destinationDialogOpen
-                            ? () {}
-                            : _showDestinationDialog,
-                      ),
-                      SizedBox(width: ScreenUtil().setWidth(8.0)),
-                      UserText(
-                          text: bookmark.title ?? '',
-                          color: const Color(UserColors.gray07),
-                          weight: FontWeight.w700,
-                          size: ScreenUtil().setSp(16.0)),
-                    ],
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: ScreenUtil().setWidth(20.0)),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        ButtonIcon(
+                          icon: Icons.star_border,
+                          iconSize: ScreenUtil().setWidth(25.0),
+                          iconColor: const Color(UserColors.pointGreen),
+                        ),
+                        SizedBox(width: ScreenUtil().setWidth(8.0)),
+                        UserText(
+                            text: bookmark.title ?? '',
+                            color: const Color(UserColors.gray07),
+                            weight: FontWeight.w700,
+                            size: ScreenUtil().setSp(16.0)),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -376,8 +373,9 @@ class _RouteGuidePageState extends State<RouteGuidePage> {
                   imagePath: (_destinationDialogOpen == false)
                       ? Images.favoriteEnable
                       : Images.favoriteDisable,
-                  callback:
-                      _destinationDialogOpen ? () {} : _showFavoriteScreen,
+                  callback: _destinationDialogOpen
+                      ? () {}
+                      : () => _showFavoriteScreen(""),
                 ),
               ],
             ),

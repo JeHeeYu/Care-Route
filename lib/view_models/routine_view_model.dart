@@ -24,7 +24,7 @@ class RoutineViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-    void addScheduleList(ApiResponse<AddScheduleModel> response) {
+  void addScheduleList(ApiResponse<AddScheduleModel> response) {
     addScheduleData = response;
     notifyListeners();
   }
@@ -34,7 +34,7 @@ class RoutineViewModel with ChangeNotifier {
       final response = await NetworkManager.instance.get(ApiUrl.targetList);
       final responseMap = jsonDecode(response) as Map<String, dynamic>;
       final json = TargetListModel.fromJson(responseMap);
-
+      notifyListeners();
       setTargetList(ApiResponse.complete(json));
       return json.statusCode;
     } catch (e) {
@@ -48,7 +48,7 @@ class RoutineViewModel with ChangeNotifier {
       final response = await NetworkManager.instance.get(ApiUrl.scheduleList);
       final responseMap = jsonDecode(response) as Map<String, dynamic>;
       final json = ScheduleListModel.fromJson(responseMap);
-
+      notifyListeners();
       setScheduleList(ApiResponse.complete(json));
       return json.statusCode;
     } catch (e) {
@@ -59,10 +59,11 @@ class RoutineViewModel with ChangeNotifier {
 
   Future<int> registSchedule(Map<String, dynamic> data) async {
     try {
-      final response = await NetworkManager.instance.post(ApiUrl.scheduleRegist, data);
+      final response =
+          await NetworkManager.instance.post(ApiUrl.scheduleRegist, data);
       final responseMap = jsonDecode(response) as Map<String, dynamic>;
       final json = AddScheduleModel.fromJson(responseMap);
-
+      notifyListeners();
       addScheduleList(ApiResponse.complete(json));
       return json.statusCode;
     } catch (e) {

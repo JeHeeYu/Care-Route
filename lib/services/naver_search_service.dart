@@ -80,7 +80,6 @@ class NaverSearchService {
     );
 
     if (response.statusCode == 200) {
-      print("Jehee Log 1 : ${response.statusCode}");
       final Map<String, dynamic> data = json.decode(response.body);
       if (data['results'] != null && data['results'].isNotEmpty) {
         final result = data['results'][0];
@@ -116,14 +115,11 @@ class NaverSearchService {
 
         final fullAddress = '$additionNames ${land['name']} ${land['number1']}';
 
-        print("Jehee ; ${data}");
         return fullAddress;
       } else {
-        print("Jehee Log : ${response.statusCode}");
         throw Exception('No address found for the given coordinates');
       }
     } else {
-      print("Jehee Log 2 : ${response.statusCode}");
       throw Exception('Failed to load address');
     }
   }

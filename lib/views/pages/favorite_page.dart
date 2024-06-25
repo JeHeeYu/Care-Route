@@ -18,7 +18,12 @@ import '../../networks/api_response.dart';
 import '../../services/naver_search_service.dart';
 
 class FavoritePage extends StatefulWidget {
-  const FavoritePage({super.key});
+  final String title;
+
+  const FavoritePage({
+    super.key,
+    this.title = "",
+  });
 
   @override
   State<FavoritePage> createState() => _FavoritePageState();
@@ -39,6 +44,13 @@ class _FavoritePageState extends State<FavoritePage> {
     super.initState();
     _routeViewModel = Provider.of<RouteViewModel>(context, listen: false);
     _speech = stt.SpeechToText();
+    if (widget.title.isNotEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _searchController.text = widget.title;
+        _searchText = widget.title;
+        _searchPlaces(widget.title);
+      });
+    }
   }
 
   void _showDestinationDialog() {
@@ -173,6 +185,24 @@ class _FavoritePageState extends State<FavoritePage> {
     } catch (e) {}
   }
 
+  void _bookMarkToggle(bool isBookMark, String title, String address) {
+    int length = _routeViewModel.getBookMarkData.data?.bookmarks.length ?? 0;
+    int bookMarkId = 0;
+
+    if (isBookMark == true) {
+      for (int i = 0; i < length; i++) {
+        if (_routeViewModel.getBookMarkData.data?.bookmarks[i].title == title) {
+          bookMarkId =
+              _routeViewModel.getBookMarkData.data?.bookmarks[i].bookmarkId ??
+                  0;
+        }
+      }
+      _deleteBookMark(bookMarkId);
+    } else {
+      _setBookMark(title, address);
+    }
+  }
+
   Widget _buildSearchInputBox() {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(22.0)),
@@ -293,6 +323,12 @@ class _FavoritePageState extends State<FavoritePage> {
   }
 
   Widget _buildSearchList(String result, String address) {
+    bool isResultBookmarked() {
+      return _routeViewModel.getBookMarkData.data?.bookmarks
+              .any((bookmark) => bookmark.title == result) ??
+          false;
+    }
+
     return Padding(
       padding: EdgeInsets.only(
           top: ScreenUtil().setHeight(8.0),
@@ -340,47 +376,18 @@ class _FavoritePageState extends State<FavoritePage> {
                   ],
                 ),
               ),
-              FutureBuilder<bool>(
-                future: _isAlreadyBookmarkedWithGPS(address),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    bool isBookmarked = snapshot.data!;
-                    return ButtonImage(
-                      // Check if already bookmarked to decide image
-                      imagePath: isBookmarked
-                          ? Images.favoriteButtonEnable
-                          : Images.favoriteButtonDisable,
-                      callback: () => _setBookMark(result, address),
-                    );
-                  } else {
-                    return CircularProgressIndicator(); // Placeholder or loading indicator
-                  }
-                },
+              ButtonImage(
+                imagePath: isResultBookmarked()
+                    ? Images.favoriteButtonEnable
+                    : Images.favoriteButtonDisable,
+                callback: () =>
+                    _bookMarkToggle(isResultBookmarked(), result, address),
               ),
             ],
           ),
         ),
       ),
     );
-  }
-
-  Future<bool> _isAlreadyBookmarkedWithGPS(String address) async {
-    try {
-      // Get GPS coordinates for the address
-      Map<String, dynamic> coordinates =
-          await NaverSearchService.getCoordinates(address);
-
-      // Check if these coordinates are already bookmarked
-      bool isBookmarked = _routeViewModel.getBookMarkData.data!.bookmarks.any(
-          (bookmark) =>
-              bookmark.latitude == coordinates['latitude'] &&
-              bookmark.longitude == coordinates['longitude']);
-
-      return isBookmarked;
-    } catch (e) {
-      print('Error checking bookmark status: $e');
-      return false;
-    }
   }
 
   TextSpan _buildHighlightedText(String fullText, String searchText,
