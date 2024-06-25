@@ -1,5 +1,6 @@
 import 'package:care_route/views/pages/schedule/target_list_widget.dart';
 import 'package:care_route/views/widgets/complete_dialog.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -42,6 +43,8 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
   double _startLatitude = 0.0;
   double _startLongitude = 0.0;
   List<Map<String, dynamic>> destinations = [];
+  TimeOfDay? _selectedTime;
+  DateTime? _selectedDate;
 
   @override
   void initState() {
@@ -76,6 +79,32 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
             });
           }
         }
+      });
+    }
+  }
+
+  Future<void> _selectTime(BuildContext context) async {
+    final TimeOfDay? picked = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+    if (picked != null && picked != _selectedTime) {
+      setState(() {
+        _selectedTime = picked;
+      });
+    }
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null && picked != _selectedDate) {
+      setState(() {
+        _selectedDate = picked;
       });
     }
   }
@@ -347,23 +376,32 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
           ),
         ),
         SizedBox(height: ScreenUtil().setHeight(8.0)),
-        _buildDateWidget(),
+        _buildDateWidget(index),
         SizedBox(height: ScreenUtil().setHeight(8.0)),
-        Container(
-          width: double.infinity,
-          height: ScreenUtil().setHeight(56.0),
-          decoration: BoxDecoration(
+        GestureDetector(
+          onTap: () => _showTimePickerBottomSheet(context),
+          child: Container(
+            width: double.infinity,
+            height: ScreenUtil().setHeight(56.0),
+            decoration: BoxDecoration(
               color: const Color(UserColors.gray02),
-              borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0))),
-          child: Padding(
-            padding: EdgeInsets.only(left: ScreenUtil().setWidth(20.0)),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: UserText(
-                  text: Strings.scheduleStartTimeHint,
-                  color: const Color(UserColors.gray05),
+              borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0)),
+            ),
+            child: Padding(
+              padding: EdgeInsets.only(left: ScreenUtil().setWidth(20.0)),
+              child: Align(
+                alignment: Alignment.center,
+                child: UserText(
+                  text: _selectedTime != null
+                      ? _selectedTime!.format(context)
+                      : Strings.scheduleStartTimeHint,
+                  color: _selectedTime != null
+                      ? const Color(UserColors.gray07)
+                      : const Color(UserColors.gray05),
                   weight: FontWeight.w400,
-                  size: ScreenUtil().setSp(16.0)),
+                  size: ScreenUtil().setSp(16.0),
+                ),
+              ),
             ),
           ),
         ),
@@ -395,20 +433,26 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
     );
   }
 
-  Widget _buildDateWidget() {
-    return Container(
-      width: double.infinity,
-      height: ScreenUtil().setHeight(56.0),
-      decoration: BoxDecoration(
-        color: const Color(UserColors.gray02),
-        borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0)),
-      ),
-      child: Center(
-        child: UserText(
-            text: "2000/12/31",
+  Widget _buildDateWidget(int index) {
+    return GestureDetector(
+      onTap: () => _showDatePickerBottomSheet(context),
+      child: Container(
+        width: double.infinity,
+        height: ScreenUtil().setHeight(56.0),
+        decoration: BoxDecoration(
+          color: const Color(UserColors.gray02),
+          borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0)),
+        ),
+        child: Center(
+          child: UserText(
+            text: _selectedDate != null
+                ? "${_selectedDate!.year}/${_selectedDate!.month}/${_selectedDate!.day}"
+                : widget.selectedDate,
             color: const Color(UserColors.gray07),
             weight: FontWeight.w400,
-            size: ScreenUtil().setSp(16.0)),
+            size: ScreenUtil().setSp(16.0),
+          ),
+        ),
       ),
     );
   }
@@ -516,6 +560,89 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
         _destinationControllers.add(TextEditingController());
       });
     }
+  }
+
+  void _showTimePickerBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return SizedBox(
+          height: ScreenUtil().setHeight(250.0),
+          child: CupertinoTheme(
+            data: CupertinoThemeData(
+              textTheme: CupertinoTextThemeData(
+                dateTimePickerTextStyle: TextStyle(
+                  fontSize: ScreenUtil().setSp(18.0),
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black,
+                  fontFamily: "Pretendard",
+                ),
+              ),
+            ),
+            child: Column(
+              children: [
+                SizedBox(
+                  height: ScreenUtil().setHeight(200.0),
+                  child: CupertinoDatePicker(
+                    mode: CupertinoDatePickerMode.time,
+                    initialDateTime: DateTime.now(),
+                    onDateTimeChanged: (DateTime newDateTime) {
+                      setState(() {
+                        _selectedTime = TimeOfDay(
+                          hour: newDateTime.hour,
+                          minute: newDateTime.minute,
+                        );
+                      });
+                    },
+                    use24hFormat: false,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _showDatePickerBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return SizedBox(
+          height: ScreenUtil().setHeight(250.0),
+          child: CupertinoTheme(
+            data: CupertinoThemeData(
+              textTheme: CupertinoTextThemeData(
+                dateTimePickerTextStyle: TextStyle(
+                  fontSize: ScreenUtil().setSp(18.0),
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black,
+                  fontFamily: "Pretendard",
+                ),
+              ),
+            ),
+            child: Column(
+              children: [
+                SizedBox(
+                  height: ScreenUtil().setHeight(200.0),
+                  child: CupertinoDatePicker(
+                    mode: CupertinoDatePickerMode.date,
+                    initialDateTime: DateTime.now(),
+                    onDateTimeChanged: (DateTime newDateTime) {
+                      setState(() {
+                        _selectedDate = newDateTime;
+                      });
+                    },
+                    dateOrder: DatePickerDateOrder.ymd,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
