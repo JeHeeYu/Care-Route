@@ -14,6 +14,9 @@ import '../../app.dart';
 import '../../consts/images.dart';
 import '../../consts/strings.dart';
 import '../../view_models/member_view_model.dart';
+import '../../view_models/mypage_view_model.dart';
+import '../../view_models/route_view_model.dart';
+import '../../view_models/routine_view_model.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -25,11 +28,26 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   late MemberViewModel _memberViewModel;
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
+  late RoutineViewModel _routineViewModel;
+  late RouteViewModel _routeViewModel;
+  late MypageViewModel _mypageViewModel;
 
   @override
   void initState() {
     super.initState();
     _memberViewModel = Provider.of<MemberViewModel>(context, listen: false);
+    _routineViewModel = Provider.of<RoutineViewModel>(context, listen: false);
+    _routeViewModel = Provider.of<RouteViewModel>(context, listen: false);
+    _mypageViewModel = Provider.of<MypageViewModel>(context, listen: false);
+
+    _initialize();
+  }
+
+  Future<void> _initialize() async {
+    await _routineViewModel.getTargetList();
+    await _routineViewModel.getScheduleList();
+    await _routeViewModel.getBookMark();
+    await _mypageViewModel.getMypage();
   }
 
   Future<void> handleLogin(Map<String, dynamic> userData) async {
@@ -41,6 +59,7 @@ class _LoginPageState extends State<LoginPage> {
         _storage.write(key: Strings.idTokenKey, value: userData['idToken']);
         _storage.write(
             key: Strings.typeKey, value: _memberViewModel.loginData.data?.type);
+
         navigateToNextPage();
       }
     } catch (error) {
