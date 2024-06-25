@@ -189,7 +189,7 @@ class _NumberChangePageState extends State<NumberChangePage> {
               backgroundColor: _getButtonEnableState()
                   ? const Color(UserColors.pointGreen)
                   : const Color(UserColors.gray03),
-              text: Strings.appStart,
+              text: Strings.phoneNumberChange,
               textSize: ScreenUtil().setSp(16.0),
               textColor: const Color(UserColors.gray01),
               textWeight: FontWeight.w600,

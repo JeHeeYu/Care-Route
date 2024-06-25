@@ -134,6 +134,7 @@ class Strings {
   static const String cancelEmergencyCall = "긴급 전화 취소";
   static const String immediatelyCall = "즉시 연결하기";
   static const String emergencyCallGuide = "15초 뒤 보호자에게\n긴급 전화가 연결됩니다.";
+  static const String phoneNumberChange = "번호 변경하기";
 
   // === API KEY ===
   static const String idTokenKey = "idToken";
