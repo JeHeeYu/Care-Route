@@ -131,6 +131,9 @@ class Strings {
   static const String scheduleStartColorGuide1 = "시작";
   static const String routeStart = "길 안내 시작";
   static const String retryGuide = "다시 시도해주세요.";
+  static const String cancelEmergencyCall = "긴급 전화 취소";
+  static const String immediatelyCall = "즉시 연결하기";
+  static const String emergencyCallGuide = "15초 뒤 보호자에게\n긴급 전화가 연결됩니다.";
 
   // === API KEY ===
   static const String idTokenKey = "idToken";

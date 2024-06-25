@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 
 class UserText extends StatelessWidget {
   final String text;
@@ -9,6 +7,8 @@ class UserText extends StatelessWidget {
   final double size;
   final bool? softWrap;
   final TextOverflow? overflow;
+  final TextAlign? textAlign;
+  final double? height; // Optional height parameter
 
   const UserText({
     Key? key,
@@ -18,6 +18,8 @@ class UserText extends StatelessWidget {
     required this.size,
     this.softWrap,
     this.overflow = TextOverflow.ellipsis,
+    this.textAlign,
+    this.height,
   }) : super(key: key);
 
   @override
@@ -26,11 +28,13 @@ class UserText extends StatelessWidget {
       text,
       softWrap: softWrap,
       overflow: overflow ?? TextOverflow.ellipsis,
+      textAlign: textAlign,
       style: TextStyle(
         fontFamily: "Pretendard",
         fontSize: size,
         fontWeight: weight,
         color: color,
+        height: height,
       ),
     );
   }

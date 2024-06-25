@@ -9,6 +9,7 @@ class InfinityButton extends StatelessWidget {
   final FontWeight textWeight;
   final Color textColor;
   final VoidCallback callback;
+  final Color? borderColor; // borderColor를 선택적으로 받을 수 있도록 변경
 
   const InfinityButton({
     Key? key,
@@ -20,6 +21,7 @@ class InfinityButton extends StatelessWidget {
     required this.textWeight,
     this.textColor = Colors.black,
     this.callback = _callback,
+    this.borderColor,
   }) : super(key: key);
 
   static void _callback() {}
@@ -37,6 +39,7 @@ class InfinityButton extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(radius),
               color: backgroundColor,
+              border: borderColor != null ? Border.all(color: borderColor!) : null,
             ),
           ),
           Text(
