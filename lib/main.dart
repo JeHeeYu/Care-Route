@@ -1,38 +1,53 @@
-import 'package:care_route/view_models/member_view_model.dart';
-import 'package:care_route/view_models/mypage_view_model.dart';
-import 'package:care_route/view_models/route_view_model.dart';
-import 'package:care_route/view_models/routine_view_model.dart';
-import 'package:care_route/views/pages/connection_request_page.dart';
-import 'package:care_route/views/pages/favorite_page.dart';
-import 'package:care_route/views/pages/login_page.dart';
-import 'package:care_route/views/pages/my_page/number_change_page.dart';
-import 'package:care_route/views/pages/my_page/target_connection_page.dart';
-import 'package:care_route/views/pages/route_guide_page.dart';
-import 'package:care_route/views/pages/search/routing_page.dart';
-import 'package:care_route/views/pages/splash_page.dart';
-import 'package:care_route/views/pages/type_select_page.dart';
-import 'package:care_route/views/pages/user_info_page.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-
-import 'app.dart';
-import 'networks/web_socket_manager.dart';
+import 'package:care_route/view_models/member_view_model.dart';
+import 'package:care_route/view_models/mypage_view_model.dart';
+import 'package:care_route/view_models/route_view_model.dart';
+import 'package:care_route/view_models/routine_view_model.dart';
+import 'package:care_route/views/pages/splash_page.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
-  print("FCM Message: ${message.messageId}");
+  print("백그라운드 메시지 처리: ${message.notification?.body}");
+}
+
+void initializeNotification() async {
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+  final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+  await flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannel(const AndroidNotificationChannel(
+          'high_importance_channel', 'High Importance Notifications',
+          importance: Importance.max));
+
+  await flutterLocalNotificationsPlugin.initialize(
+    const InitializationSettings(
+      android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+    ),
+  );
+
+  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+    alert: true,
+    badge: true,
+    sound: true,
+  );
 }
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+  initializeNotification();
 
   KakaoSdk.init(nativeAppKey: '2009513e88266b07a15ad4578d2eacee');
   await NaverMapSdk.instance.initialize(
@@ -50,10 +65,13 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  String messageString = "";
+
   @override
   void initState() {
     super.initState();
     _setupFCM();
+    getMyDeviceToken();
   }
 
   Future<void> _setupFCM() async {
@@ -64,7 +82,7 @@ class _MyAppState extends State<MyApp> {
       provisional: false,
       sound: true,
     );
-    // iOS foreground notification 권한
+
     await FirebaseMessaging.instance
         .setForegroundNotificationPresentationOptions(
       alert: true,
@@ -73,70 +91,41 @@ class _MyAppState extends State<MyApp> {
     );
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print("Foreground Message");
-    });
+      print("Foreground 메시지 수신: ${message.notification?.body}");
 
-    FirebaseMessaging.instance.getInitialMessage().then((message) {
-      debugPrint('fcm getInitialMessage, message : ${message?.data ?? ''}');
-      if (message != null) {
-        return;
+      RemoteNotification? notification = message.notification;
+      if (notification != null) {
+        FlutterLocalNotificationsPlugin().show(
+          notification.hashCode,
+          notification.title,
+          notification.body,
+          const NotificationDetails(
+            android: AndroidNotificationDetails(
+              'high_importance_channel',
+              'High Importance Notifications',
+              importance: Importance.max,
+            ),
+          ),
+        );
+
+        setState(() {
+          messageString = message.notification?.body ?? "";
+        });
       }
     });
 
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      print('Message clicked!');
+    });
+
     String token = await FirebaseMessaging.instance.getToken() ?? '';
-    debugPrint("fcmToken : $token");
+    print("FCM Token: $token");
   }
 
-  Future<void> backgroundHandler(RemoteMessage message) async {
-    debugPrint('fcm backgroundHandler, message');
-
-    debugPrint(message.notification?.title ?? '');
-    debugPrint(message.notification?.body ?? '');
+  void getMyDeviceToken() async {
+    final token = await FirebaseMessaging.instance.getToken();
+    print("내 디바이스 토큰: $token");
   }
-
-  Future<void> setFCM() async {
-    //백그라운드 메세지 핸들링(수신처리)
-    FirebaseMessaging.onBackgroundMessage(backgroundHandler);
-  }
-
-  // Future<void> _setupFCM() async {
-  //   FirebaseMessaging messaging = FirebaseMessaging.instance;
-
-  //   NotificationSettings settings = await messaging.requestPermission(
-  //     alert: true,
-  //     announcement: false,
-  //     badge: true,
-  //     carPlay: false,
-  //     criticalAlert: false,
-  //     provisional: false,
-  //     sound: true,
-  //   );
-
-  //   if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-  //     print('User granted permission');
-  //   } else if (settings.authorizationStatus ==
-  //       AuthorizationStatus.provisional) {
-  //     print('User granted provisional permission');
-  //   } else {
-  //     print('User declined or has not accepted permission');
-  //   }
-
-  //   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-  //     print('Got a message whilst in the foreground!');
-  //     print('Message data: ${message.data}');
-
-  //     if (message.notification != null) {
-  //       print('Message also contained a notification: ${message.notification}');
-  //     }
-  //   });
-
-  //   FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-  //     print('Message clicked!');
-  //   });
-
-  //   String? token = await messaging.getToken();
-  //   print("FCM Token: $token");
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -150,12 +139,12 @@ class _MyAppState extends State<MyApp> {
       child: ScreenUtilInit(
         designSize: const Size(360, 640),
         builder: (BuildContext context, child) => MaterialApp(
-            title: 'Flutter Demo',
-            theme: ThemeData(
-              primarySwatch: Colors.blue,
-            ),
-            // home: const App(initialPageType: "GUIDE",),
-            home: const SplashPage()),
+          title: 'Flutter Demo',
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+          ),
+          home: const SplashPage(),
+        ),
       ),
     );
   }
