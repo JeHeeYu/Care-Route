@@ -791,8 +791,8 @@ class _RoutingPageState extends State<RoutingPage> {
             thickness: 1.0,
           ),
           SizedBox(height: ScreenUtil().setHeight(16.0)),
-          // (_isFinish == true) ? _buildRouteTypeWidget() : Container(),
-           (_isFinish == true) ? _buildNaverMap() : Container(),
+          (_isFinish == true) ? _buildRouteTypeWidget() : Container(),
+          //  (_isFinish == true) ? _buildNaverMap() : Container(),
           
           Expanded(
               child: SingleChildScrollView(
