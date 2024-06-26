@@ -7,6 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../consts/colors.dart';
 import '../../../consts/strings.dart';
+import '../../../networks/web_socket_manager.dart';
 import '../../widgets/infinity_button.dart';
 import '../../widgets/user_text.dart';
 
@@ -193,6 +194,7 @@ class _NumberChangePageState extends State<NumberChangePage> {
               textSize: ScreenUtil().setSp(16.0),
               textColor: const Color(UserColors.gray01),
               textWeight: FontWeight.w600,
+              // callback: () => _sendMessage(),
             ),
           ),
         ],

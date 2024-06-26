@@ -96,6 +96,31 @@ class NetworkManager {
     }
   }
 
+  Future<dynamic> delete(
+      String serverUrl, Map<String, dynamic> queryParams) async {
+    dynamic responseJson;
+
+    try {
+      final Uri uri =
+          Uri.parse(serverUrl).replace(queryParameters: queryParams);
+
+      final response = await http.delete(
+        uri,
+        headers: await commonHeaders,
+      );
+
+
+      responseJson = utf8.decode(response.bodyBytes);
+
+      print("GET with Query 성공: ${responseJson}");
+
+      return responseJson;
+    } catch (error) {
+      print("에러 발생: $error");
+      return "";
+    }
+  }
+
   Future<dynamic> bookMarkDelete(String serverUrl, String postId) async {
     dynamic responseJson;
 

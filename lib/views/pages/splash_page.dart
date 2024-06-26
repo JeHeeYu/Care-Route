@@ -22,6 +22,7 @@ class _SplashPageState extends State<SplashPage> {
   late RoutineViewModel _routineViewModel;
   late RouteViewModel _routeViewModel;
   late MypageViewModel _mypageViewModel;
+  
 
   @override
   void initState() {

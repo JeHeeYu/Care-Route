@@ -92,6 +92,7 @@ class _MyAppState extends State<MyApp> {
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       print("Foreground 메시지 수신: ${message.notification?.body}");
+      print("Foreground 메시지 수신: 123 ${message.notification?.title}");
 
       RemoteNotification? notification = message.notification;
       if (notification != null) {

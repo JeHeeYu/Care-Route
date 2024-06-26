@@ -33,16 +33,18 @@ class _TargetConnectionListPageState extends State<TargetListPage> {
   void _deleteTarget(int index) async {
     int memberId =
         _routineViewModel.targetList.data?.targetInfos[index].memberId ?? -1;
-    Map<String, dynamic> data = {Strings.targetIdKey: memberId};
+    Map<String, dynamic> data = {Strings.targetIdKey: memberId.toString()};
 
     if (memberId == -1) {
       CompleteDialog.showCompleteDialog(context, Strings.retryGuide);
     } else {
       final result = await _routineViewModel.targetDelete(data);
 
-      if(result == 200) {
+      if (result == 200) {
         CompleteDialog.showCompleteDialog(context, Strings.deleteComplete);
-        _routineViewModel.getTargetList();
+        setState(() {
+          _routineViewModel.getTargetList();
+        });
       }
     }
   }

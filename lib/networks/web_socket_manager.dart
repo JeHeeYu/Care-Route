@@ -1,10 +1,9 @@
 import 'package:socket_io_client/socket_io_client.dart' as IO;
-import 'dart:convert';
 
 class WebSocketManager {
   static final WebSocketManager _instance = WebSocketManager._internal();
   IO.Socket? _socket;
-  String _url = 'http://readyou.shop:4000'; // 서버 주소와 포트를 설정합니다.
+  String _url = 'http://localhost:4000'; // 프로토콜 추가
 
   factory WebSocketManager() {
     return _instance;
@@ -57,6 +56,7 @@ class WebSocketManager {
   void sendMessage(String to, String message) {
     if (_socket != null) {
       var messageData = {'to': to, 'message': message};
+      print('Sending message:');
       _socket!.emit('send_message', messageData);
     } else {
       print('Socket.IO is not connected');

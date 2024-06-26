@@ -71,6 +71,17 @@ class _RouteStartPageState extends State<RouteStartPage> {
         child: Column(
           children: [
             _buildDestinationInputBox(),
+            SizedBox(height: ScreenUtil().setHeight(16.0)),
+            // Container(
+            //   height: ScreenUtil().setHeight(56.0),
+            //   decoration: BoxDecoration(
+            //     color: Colors.white,
+            //     borderRadius: BorderRadius.circular(ScreenUtil().radius(8.0)),
+            //     border: Border.all(
+            //       color: const Color(UserColors.gray03),
+            //     ),
+            //   ),
+            // ),
           ],
         ),
       ),

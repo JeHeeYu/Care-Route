@@ -77,12 +77,12 @@ class RoutineViewModel with ChangeNotifier {
       addScheduleList(ApiResponse.error(e.toString()));
       throw Exception("");
     }
-  }
+  } 
 
   Future<int> targetDelete(Map<String, dynamic> data) async {
     try {
       final response =
-          await NetworkManager.instance.post(ApiUrl.deleteTarget, data);
+          await NetworkManager.instance.delete(ApiUrl.deleteTarget, data);
       final responseMap = jsonDecode(response) as Map<String, dynamic>;
       final json = DeleteTargetModel.fromJson(responseMap);
       notifyListeners();
