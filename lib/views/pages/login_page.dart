@@ -1,6 +1,7 @@
 import 'package:care_route/consts/colors.dart';
 import 'package:care_route/views/pages/type_select_page.dart';
 import 'package:care_route/views/widgets/button_image.dart';
+import 'package:care_route/views/widgets/complete_dialog.dart';
 import 'package:care_route/views/widgets/user_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -56,7 +57,7 @@ class _LoginPageState extends State<LoginPage> {
 
       if (result == 200) {
         _storage.write(key: Strings.loginKey, value: 'true');
-        _storage.write(key: Strings.idTokenKey, value: userData['idToken']);
+        _storage.write(key: Strings.emailKey, value: userData['email']);
         _storage.write(
             key: Strings.typeKey, value: _memberViewModel.loginData.data?.type);
 
@@ -92,24 +93,25 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void kakaoLogin() async {
-    User user = await UserApi.instance.me();
-    if (await isKakaoTalkInstalled()) {
-      OAuthToken token = await UserApi.instance.loginWithKakaoTalk();
-      Map<String, dynamic> userData = {
-        "idToken": token.idToken,
-        "nickname": user.kakaoAccount?.profile?.nickname,
-      };
-      await handleLogin(userData);
-    } else {
-      OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
-      Map<String, dynamic> userData = {
-        "idToken": token.idToken,
-        "nickname": user.kakaoAccount?.profile?.nickname,
-      };
-      await handleLogin(userData);
-    }
+    CompleteDialog.showCompleteDialog(context, '잠시 후 다시 시도해주세요.');
+    // User user = await UserApi.instance.me();
+    // if (await isKakaoTalkInstalled()) {
+    //   OAuthToken token = await UserApi.instance.loginWithKakaoTalk();
+    //   Map<String, dynamic> userData = {
+    //     "email": token.idToken,
+    //     "nickname": user.kakaoAccount?.profile?.nickname,
+    //   };
+    //   await handleLogin(userData);
+    // } else {
+    //   OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
+    //   Map<String, dynamic> userData = {
+    //     "idToken": token.idToken,
+    //     "nickname": user.kakaoAccount?.profile?.nickname,
+    //   };
+    //   await handleLogin(userData);
+    // }
 
-    print("Profile Image : ${user.kakaoAccount?.profile?.profileImageUrl}");
+    // print("Profile Image : ${user.kakaoAccount?.profile?.profileImageUrl}");
   }
 
   void googleLogin() async {
@@ -124,10 +126,10 @@ class _LoginPageState extends State<LoginPage> {
       print('idToken = ${googleAuth.idToken}');
 
       Map<String, dynamic> userData = {
-        "idToken": googleAuth.idToken,
+        // "idToken": googleAuth.idToken,
         "email": googleUser?.email,
-        "name": googleUser?.displayName,
-        "sns": "google",
+        // "name": googleUser?.displayName,
+        // "sns": "google",
       };
 
       await handleLogin(userData);

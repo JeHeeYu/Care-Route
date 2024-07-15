@@ -13,6 +13,8 @@ import 'package:care_route/view_models/route_view_model.dart';
 import 'package:care_route/view_models/routine_view_model.dart';
 import 'package:care_route/views/pages/splash_page.dart';
 
+import 'app.dart';
+
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
   print("백그라운드 메시지 처리: ${message.notification?.body}");
@@ -144,6 +146,7 @@ class _MyAppState extends State<MyApp> {
           theme: ThemeData(
             primarySwatch: Colors.blue,
           ),
+          // home: App(initialPageType: "GUIDE",),
           home: const SplashPage(),
         ),
       ),

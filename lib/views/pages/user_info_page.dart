@@ -39,7 +39,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
     if (_phoneNumberController.text.length < 10 ||
         _phoneNumberController.text.length > 11) {
       CompleteDialog.showCompleteDialog(context, Strings.invalidAuthCode,
-          shouldPop: true);
+          shouldPop: false);
 
       return;
     }
@@ -51,7 +51,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
     _memberViewModel.auth(data);
 
     CompleteDialog.showCompleteDialog(context, Strings.sendAuthComplete,
-        shouldPop: true);
+        shouldPop: false);
   }
 
   void _sendAccount() async {
@@ -76,7 +76,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
       );
     } else {
       CompleteDialog.showCompleteDialog(context, Strings.authCodeFail,
-          shouldPop: true);
+          shouldPop: false);
     }
   }
 

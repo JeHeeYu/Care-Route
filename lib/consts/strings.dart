@@ -140,7 +140,7 @@ class Strings {
   static const String nextScheduleGuide2 = "버튼을 누르시면 안내를 시작할게요.";
 
   // === API KEY ===
-  static const String idTokenKey = "idToken";
+  static const String emailKey = "email";
   static const String typeKey = "type";
   static const String guideKey = "GUIDE";
   static const String targetKey = "TARGET";

@@ -220,9 +220,9 @@ class _MyPageState extends State<MyPage> {
                         TargetListPage(
                           userType: widget.userType,
                         )),
-                    _buildContentsWidget(Strings.setEasyAddress, Container()),
-                    _buildContentsWidget(Strings.customerCenter, Container()),
-                    _buildContentsWidget(Strings.notification, Container()),
+                    // _buildContentsWidget(Strings.setEasyAddress, Container()),
+                    // _buildContentsWidget(Strings.customerCenter, Container()),
+                    // _buildContentsWidget(Strings.notification, Container()),
                     SizedBox(height: ScreenUtil().setHeight(6.0)),
                     _buildLogoutAndWithdrawal(),
                   ],

@@ -8,11 +8,11 @@ class NetworkManager {
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
   Future<Map<String, String>> get commonHeaders async {
-    String? idToken = await _storage.read(key: Strings.idTokenKey);
+    String? emailKey = await _storage.read(key: Strings.emailKey);
     return {
       "Content-Type": "application/json",
       "Accept": "application/json",
-      "Authorization": "$idToken"
+      "Authorization": "$emailKey"
     };
   }
 

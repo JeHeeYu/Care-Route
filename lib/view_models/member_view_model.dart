@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:care_route/models/member/%08account_model.dart';
+import 'package:care_route/models/member/account_model.dart';
 import 'package:care_route/models/member/auth_model.dart';
 import 'package:care_route/models/member/type_model.dart';
 import 'package:care_route/networks/api_url.dart';
