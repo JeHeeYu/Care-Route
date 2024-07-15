@@ -93,25 +93,32 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void kakaoLogin() async {
-    CompleteDialog.showCompleteDialog(context, '잠시 후 다시 시도해주세요.');
-    // User user = await UserApi.instance.me();
-    // if (await isKakaoTalkInstalled()) {
-    //   OAuthToken token = await UserApi.instance.loginWithKakaoTalk();
-    //   Map<String, dynamic> userData = {
-    //     "email": token.idToken,
-    //     "nickname": user.kakaoAccount?.profile?.nickname,
-    //   };
-    //   await handleLogin(userData);
-    // } else {
-    //   OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
-    //   Map<String, dynamic> userData = {
-    //     "idToken": token.idToken,
-    //     "nickname": user.kakaoAccount?.profile?.nickname,
-    //   };
-    //   await handleLogin(userData);
-    // }
+    try {
+      OAuthToken token;
+      if (await isKakaoTalkInstalled()) {
+        token = await UserApi.instance.loginWithKakaoTalk();
+      } else {
+        token = await UserApi.instance.loginWithKakaoAccount();
+      }
 
-    // print("Profile Image : ${user.kakaoAccount?.profile?.profileImageUrl}");
+      User user = await UserApi.instance.me();
+
+      Map<String, dynamic> userData = {
+        "email": user.kakaoAccount?.email,
+        "nickname": user.kakaoAccount?.profile?.nickname,
+      };
+
+      await handleLogin(userData);
+    } catch (error) {
+      print('카카오 로그인 실패: $error');
+      if (error is KakaoClientException) {
+        print('KakaoClientException: ${error.message}');
+      } else if (error is KakaoAuthException) {
+        print('KakaoAuthException: ${error.message}');
+      } else {
+        print('Unknown error: $error');
+      }
+    }
   }
 
   void googleLogin() async {
@@ -126,10 +133,10 @@ class _LoginPageState extends State<LoginPage> {
       print('idToken = ${googleAuth.idToken}');
 
       Map<String, dynamic> userData = {
-        // "idToken": googleAuth.idToken,
+        "idToken": googleAuth.idToken,
         "email": googleUser?.email,
-        // "name": googleUser?.displayName,
-        // "sns": "google",
+        "name": googleUser?.displayName,
+        "sns": "google",
       };
 
       await handleLogin(userData);

@@ -1,3 +1,4 @@
+import 'package:care_route/views/pages/login_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -51,7 +52,7 @@ void main() async {
 
   initializeNotification();
 
-  KakaoSdk.init(nativeAppKey: '2009513e88266b07a15ad4578d2eacee');
+  KakaoSdk.init(nativeAppKey: '5b55fa279bc5ed6298df6db3373250a5');
   await NaverMapSdk.instance.initialize(
     clientId: 'b8fgmkfu11',
   );
@@ -147,7 +148,7 @@ class _MyAppState extends State<MyApp> {
             primarySwatch: Colors.blue,
           ),
           // home: App(initialPageType: "GUIDE",),
-          home: const SplashPage(),
+          home: const LoginPage(),
         ),
       ),
     );
