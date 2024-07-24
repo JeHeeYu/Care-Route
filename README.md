@@ -1,16 +1,104 @@
-# care_route
+# 케어 루트
 
-A new Flutter project.
+<p align="center">
+  <img width="1490" alt="image" src="https://github.com/user-attachments/assets/cb89c795-fa24-4b18-8bda-29da2fa424a9">
+</p>
 
-## Getting Started
+## 프로젝트 개요
 
-This project is a starting point for a Flutter application.
+- 가족의 일정과 이동을 한 눈에 볼 수 있는 애플리케이션
+- 안내인과 안내대상으로 앱 시스템이 바뀌어 상대방에게 길 안내, 현재 위치 전송 등을 하여 안전한 길 안내 서비스를 제공
 
-A few resources to get you started if this is your first Flutter project:
+## :calendar: 프로젝트 기간
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+<b>2024.06.03 ~ 2023.06.28</b>
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 개발 환경
+
+- Flutter / Dart
+- Visual Studio Code
+- Git
+- 배포 앱 : Android
+
+## 배포 앱 아이콘
+
+
+<p align="center">
+  <img width="250" alt="image" src="https://github.com/user-attachments/assets/ea57e1d7-5412-4dc8-a78e-6dfa4b124d98">
+</p>
+
+
+## 앱 주요 기능
+
+- 안내인 또는 안내대상을 선택하여 기능 구분
+
+<p align="center">
+  <img width="1371" alt="image" src="https://github.com/user-attachments/assets/31061af9-f9c9-40f6-827e-75d10e1e13ff">
+</p>
+
+### 안내인과 안내대상 시작 화면
+
+- 안내인은 안내 대상의 일정 관리를 위해 일정 관리가 먼저 시작됨
+- 안내 대상은 안내인의 길 안내를 위하여 일정마다 길 안내 시작
+
+<p align="center">
+  <img width="304" alt="image" src="https://github.com/user-attachments/assets/8c01a3d2-1953-4ea3-ba30-d47fbe627f94">
+           
+  <img width="306" alt="image" src="https://github.com/user-attachments/assets/1e8d3025-80f9-46c8-b37f-271721eceacf">
+</p>
+
+### 초기 화면
+
+<p align="center">
+  <img width="260" alt="image" src="https://github.com/user-attachments/assets/036c721b-110b-4f26-829b-ec76239fbbdb">
+
+</p>
+
+### 
+
+### 일정 추가 및 이동 루트 설정
+
+- 안내인에게 제공할 일정 관리 화면
+- 일정에 맞는 이동 루트 제공
+- ODsay API를 이용한 대중교통 루트 서비스 구현
+
+<p align="center">
+
+  <img width="307" alt="image" src="https://github.com/user-attachments/assets/a6b6d0e5-ac88-4d05-81c4-7a3e4f770916">
+           
+  <img width="307" alt="image" src="https://github.com/user-attachments/assets/2ccce819-3e11-4785-baa3-7f7702546c0c">
+
+</p>
+
+### 즐겨 찾기
+
+- 자주가는 지역을 즐겨찾기 하여 간편한 접근
+
+<p align="center">
+  <img width="280" alt="image" src="https://github.com/user-attachments/assets/5eace2de-4f06-448f-9820-944c6bee4344">
+           
+  <img width="280" alt="image" src="https://github.com/user-attachments/assets/88546cc0-fad4-42ff-8248-938c649125db">
+           
+  <img width="280" alt="image" src="https://github.com/user-attachments/assets/03c9db55-0a2e-47ba-b3e5-40761ed01175">
+
+</p>
+
+### 길 안내 및 길 찾기 서비스
+
+- 네이버 길 안내 API를 이용하여 지도 표출 및 길 안내
+
+<p align="center">
+  <img width="311" alt="image" src="https://github.com/user-attachments/assets/d9d73952-4e77-4641-8264-a27fbe408443">           
+  
+  <img width="309" alt="image" src="https://github.com/user-attachments/assets/c9d79334-8b43-4fd4-a9b2-fc32a1a8aa75">
+
+</p>
+
+### 알람 서비스
+
+- 안내인 또는 안내대상에게 맞는 알람을 보여줌
+
+<p align="center">
+  <img width="213" alt="image" src="https://github.com/user-attachments/assets/30b37b5e-622d-48d4-81dc-0c0b3ca31933">
+
+</p>
